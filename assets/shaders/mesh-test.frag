@@ -20,7 +20,7 @@ void main(){
         break;
 
         case 1:
-        frag_color = fs_in.color;
+        frag_color = fs_in.color; // here is the error
         break;
         
         case 2:
