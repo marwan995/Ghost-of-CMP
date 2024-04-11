@@ -65,7 +65,7 @@ class EntityTestState : public our::State
             our::Material *material = meshRenderer->material;
             material->setup();    
              glm::mat4 MVP = VP*entity->getLocalToWorldMatrix();
-            material->shader->set("transform", MVP );
+            material->shader->set("transform", MVP );// the error was the order of the camera multiplication 
             meshRenderer->mesh->draw();
             // Then we setup the material, send the transform matrix to the shader then draw the mesh
         }
