@@ -2,7 +2,7 @@
 #include "../deserialize-utils.hpp"
 
 #include <glm/gtx/euler_angles.hpp>
-
+#include<iostream>
 namespace our {
 
     // This function computes and returns a matrix that represents this transform
@@ -10,7 +10,11 @@ namespace our {
     // HINT: to convert euler angles to a rotation matrix, you can use glm::yawPitchRoll
     glm::mat4 Transform::toMat4() const {
         //TODO: (Req 3) Write this function
-        return glm::mat4(1.0f); 
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+        glm::mat4 rotationMatrix = glm::yawPitchRoll(rotation.y, rotation.x,rotation.z);
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
+        glm::mat4 matrixOutput = translationMatrix*rotationMatrix*scaleMatrix ;
+        return matrixOutput; 
     }
 
      // Deserializes the entity data and components from a json object
