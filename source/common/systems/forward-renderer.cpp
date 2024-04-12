@@ -2,6 +2,8 @@
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
 #include <iostream>
+using namespace std;
+
 namespace our
 {
     void printMatrix(const glm::mat4 &matrix)
@@ -70,13 +72,26 @@ namespace our
         if (config.contains("postprocess"))
         {
             // TODO: (Req 11) Create a framebuffer
+            glGenFramebuffers(1, &postprocessFrameBuffer);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
+
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+                cout << "------------------------------";
+                cout << "framebuffer is not complete\n";
+                cout << "-------------------------------";
+            }
 
             // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             //  The depth format can be (Depth component with 24 bits).
-
+            // void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+            colorTarget = texture_utils::empty(GL_RGBA8, windowSize);
+            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
+            
+            depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT24, windowSize);
+            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
             // TODO: (Req 11) Unbind the framebuffer just to be safe
-
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             // Create a vertex array to use for drawing the texture
             glGenVertexArrays(1, &postProcessVertexArray);
 
@@ -194,6 +209,7 @@ namespace our
         if (postprocessMaterial)
         {
             // TODO: (Req 11) bind the framebuffer
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
         }
 
         // TODO: (Req 9) Clear the color and depth buffers
@@ -210,8 +226,9 @@ namespace our
             command.material->shader->set("transform", VP * command.localToWorld);
             // Draw the mesh using the material's shader
             command.mesh->draw();
+            cout << "Before PritnMatrix\n";
             printMatrix(VP * command.localToWorld);
-        }
+        }   
         // If there is a sky material, draw the sky
         if (this->skyMaterial)
         {
@@ -230,14 +247,7 @@ namespace our
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 1.0f);
-            std::cout << "skyMatrix\n";
-            printMatrix(skyMatrix);
-            std::cout << "view matrix\n";
-
-            printMatrix(skyModelMatrix);
-            std::cout << "final\n";
-
-            printMatrix(alwaysBehindTransform * skyMatrix);
+            
             // TODO: (Req 10) set the "transform" uniform
             skyMaterial->shader->set("transform", alwaysBehindTransform * skyMatrix);
             // TODO: (Req 10) draw the sky sphere
@@ -258,9 +268,12 @@ namespace our
         if (postprocessMaterial)
         {
             // TODO: (Req 11) Return to the default framebuffer
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
+            postprocessMaterial->setup();
+            glBindVertexArray(postProcessVertexArray);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
-
 }
