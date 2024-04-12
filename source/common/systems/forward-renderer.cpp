@@ -6,20 +6,6 @@ using namespace std;
 
 namespace our
 {
-    void printMatrix(const glm::mat4 &matrix)
-    {
-        std::cout << "--------------------------------------------------" << std::endl;
-        for (int i = 0; i < 4; ++i)
-        {
-            for (int j = 0; j < 4; ++j)
-            {
-                std::cout << matrix[i][j] << " ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << "--------------------------------------------------" << std::endl;
-    }
-
     void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json &config)
     {
         // First, we store the window size for later use
@@ -44,7 +30,6 @@ namespace our
             skyPipelineState.depthTesting.enabled = true;
             skyPipelineState.depthTesting.function = GL_LEQUAL;
             skyPipelineState.faceCulling.enabled = false;
-
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
@@ -74,12 +59,6 @@ namespace our
             // TODO: (Req 11) Create a framebuffer
             glGenFramebuffers(1, &postprocessFrameBuffer);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
-
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
-                cout << "------------------------------";
-                cout << "framebuffer is not complete\n";
-                cout << "-------------------------------";
-            }
 
             // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
@@ -175,7 +154,6 @@ namespace our
                 }
             }
         }
-
         // If there is no camera, we return (we cannot render without a camera)
         if (camera == nullptr)
             return;
@@ -194,10 +172,9 @@ namespace our
 
         // TODO: (Req 9) Get the camera ViewProjection matrix and store it in VP
         glm::mat4 VP = camera->getProjectionMatrix(windowSize) * viewMatrix;
-
         // TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize.x, windowSize.y); // ask MO3ED for viewportStart
-
+        
         // TODO: (Req 9) Set the clear color to black and the clear depth to 1
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0f);
@@ -226,13 +203,10 @@ namespace our
             command.material->shader->set("transform", VP * command.localToWorld);
             // Draw the mesh using the material's shader
             command.mesh->draw();
-            cout << "Before PritnMatrix\n";
-            printMatrix(VP * command.localToWorld);
         }   
         // If there is a sky material, draw the sky
         if (this->skyMaterial)
         {
-
             // TODO: (Req 10) setup the sky material
             skyMaterial->setup();
             // TODO: (Req 10) Get the camera position
@@ -260,7 +234,6 @@ namespace our
             // Set the model-view-projection matrix (transform) uniform for the shader
             command.material->setup();
             command.material->shader->set("transform", VP * command.localToWorld);
-
             // Draw the mesh using the material's shader
             command.mesh->draw();
         }
@@ -269,7 +242,6 @@ namespace our
         {
             // TODO: (Req 11) Return to the default framebuffer
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
             postprocessMaterial->setup();
             glBindVertexArray(postProcessVertexArray);
