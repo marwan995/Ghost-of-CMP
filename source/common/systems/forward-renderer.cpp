@@ -1,9 +1,22 @@
 #include "forward-renderer.hpp"
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
-
+#include <iostream>
 namespace our
 {
+    void printMatrix(const glm::mat4 &matrix)
+    {
+        std::cout << "--------------------------------------------------" << std::endl;
+        for (int i = 0; i < 4; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                std::cout << matrix[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "--------------------------------------------------" << std::endl;
+    }
 
     void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json &config)
     {
@@ -26,6 +39,10 @@ namespace our
             //  Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
             //  We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
+            skyPipelineState.depthTesting.enabled = true;
+            skyPipelineState.depthTesting.function = GL_LEQUAL;
+            skyPipelineState.faceCulling.enabled = false;
+
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
@@ -147,7 +164,6 @@ namespace our
         // If there is no camera, we return (we cannot render without a camera)
         if (camera == nullptr)
             return;
-
         // TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         //  HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
         glm::mat4 viewMatrix = camera->getViewMatrix();
@@ -159,11 +175,10 @@ namespace our
             float distanceToFirst = glm::dot(first.center, cameraForward);
             float distanceToSecond = glm::dot(second.center, cameraForward);
     
-            return distanceToFirst > distanceToSecond;
-            });
+            return distanceToFirst > distanceToSecond; });
 
         // TODO: (Req 9) Get the camera ViewProjection matrix and store it in VP
-        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * viewMatrix;
 
         // TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize.x, windowSize.y); // ask MO3ED for viewportStart
@@ -187,34 +202,46 @@ namespace our
 
         // TODO: (Req 9) Draw all the opaque commands
         //  Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
+
         for (const auto &command : opaqueCommands)
         {
             // Set the model-view-projection matrix (transform) uniform for the shader
-            command.material->setup();  //  u called the set before the setup what an idiot 
+            command.material->setup(); //  u called the set before the setup what an idiot
             command.material->shader->set("transform", VP * command.localToWorld);
-
             // Draw the mesh using the material's shader
             command.mesh->draw();
+            printMatrix(VP * command.localToWorld);
         }
         // If there is a sky material, draw the sky
         if (this->skyMaterial)
         {
+
             // TODO: (Req 10) setup the sky material
-
+            skyMaterial->setup();
             // TODO: (Req 10) Get the camera position
-
-            // TODO: (Req 10) Create a model matrix for the sy such that it always follows the camera (sky sphere center = camera position)
-
+            glm::vec3 cameraPosition = glm::vec3(-1 * viewMatrix[3][0], -1 * viewMatrix[3][1], -1 * viewMatrix[3][2]);
+            // TODO: (Req 10) Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
+            glm::mat4 skyModelMatrix = glm::translate(glm::mat4(1.0f), cameraPosition);
+            glm::mat4 skyMatrix = VP * skyModelMatrix;
             // TODO: (Req 10) We want the sky to be drawn behind everything (in NDC space, z=1)
             //  We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
             glm::mat4 alwaysBehindTransform = glm::mat4(
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f);
-            // TODO: (Req 10) set the "transform" uniform
+                0.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 1.0f);
+            std::cout << "skyMatrix\n";
+            printMatrix(skyMatrix);
+            std::cout << "view matrix\n";
 
+            printMatrix(skyModelMatrix);
+            std::cout << "final\n";
+
+            printMatrix(alwaysBehindTransform * skyMatrix);
+            // TODO: (Req 10) set the "transform" uniform
+            skyMaterial->shader->set("transform", alwaysBehindTransform * skyMatrix);
             // TODO: (Req 10) draw the sky sphere
+            skySphere->draw();
         }
         // TODO: (Req 9) Draw all the transparent commands
         //  Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
