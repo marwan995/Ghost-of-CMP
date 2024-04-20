@@ -202,3 +202,18 @@ if( ($tests.Count -eq 0) -or ($tests -contains "postprocess-test")){
     Write-Output ""
     Invoke-Tests $configs
 }
+###################################################
+###################################################
+
+if( ($tests.Count -eq 0) -or ($tests -contains "seif")){
+    $configs = @(
+        "config/app.jsonc"
+    )
+    Write-Output ""
+    Write-Output "Running seif:"
+    Write-Output ""
+    Invoke-Tests $configs
+}
+
+###################################################
+###################################################
