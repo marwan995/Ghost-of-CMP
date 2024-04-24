@@ -1,74 +1,104 @@
 {
-    "start-scene": "menu",
-    "window":
-    {
-        "title":"Default Game Window",
-        "size":{
-            "width":1280,
-            "height":720
+    "start-scene": "play",
+    "window": {
+        "title": "Default Game Window",
+        "size": {
+            "width": 1280,
+            "height": 720
         },
         "fullscreen": false
     },
     "scene": {
-        "renderer":{
+        "renderer": {
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag"
         },
-        "assets":{
-            "shaders":{
-                "tinted":{
-                    "vs":"assets/shaders/tinted.vert",
-                    "fs":"assets/shaders/tinted.frag"
+        "assets": {
+            "shaders": {
+                "tinted": {
+                    "vs": "assets/shaders/tinted.vert",
+                    "fs": "assets/shaders/tinted.frag"
                 },
-                "textured":{
-                    "vs":"assets/shaders/textured.vert",
-                    "fs":"assets/shaders/textured.frag"
+                "textured": {
+                    "vs": "assets/shaders/textured.vert",
+                    "fs": "assets/shaders/textured.frag"
                 }
             },
-            "textures":{
+            "textures": {
                 "moon": "assets/textures/moon.jpg",
                 "grass": "assets/textures/digital_ground.jpg",
                 "wood": "assets/textures/wood.jpg",
-                "glass": "assets/textures/glass-panels.png",
-                "monkey": "assets/textures/monkey.png"
+                "texture1": "assets/textures/texture1.png",
+                "Image_5": "assets/textures/Image_5.png",
+                "Image_2": "assets/textures/Image_2.png",
+                "Image_16": "assets/textures/Image_16.png",
+                "Image_19": "assets/textures/Image_19.png",
+                "Image_7": "assets/textures/Image_7.png",
+                "Image_1": "assets/textures/Image_1.png",
+                "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png"
             },
-            "meshes":{
-                "cube": "assets/models/cube.obj",
-                "monkey": "assets/models/monkey.obj",
+            "meshes": {
+                "sniper": "assets/models/sniper.obj",
+                "obstacle1": "assets/models/obstacle1.obj",
+                "tv1": "assets/models/tv1.obj",
+                "column-1": "assets/models/column-1.obj",
+                "column-2": "assets/models/column-2.obj",
+                "column-3": "assets/models/column-3.obj",
+                "atef": "assets/models/Atef.obj",
+                "bed": "assets/models/bed.obj",
+                "keyboard": "assets/models/keyboard.obj",
                 "plane": "assets/models/plane.obj",
-                "sphere": "assets/models/sphere.obj"
+                "sphere": "assets/models/sphere.obj",
+                "groundObstacles": "assets/models/ground_obstacles.obj"
             },
-            "samplers":{
-                "default":{},
-                "pixelated":{
+            "samplers": {
+                "default": {},
+                "pixelated": {
                     "MAG_FILTER": "GL_NEAREST"
+                },
+                "grassSampler": {
+                    "MAG_FILTER": "GL_LINEAR",
+                    "MIN_FILTER": "GL_LINEAR",
+                    "WRAP_S": "GL_MIRRORED_REPEAT",
+                    "WRAP_T": "GL_MIRRORED_REPEAT"
+                },
+                "groundObstaclesSampler": {
+                    "MAG_FILTER": "GL_NEAREST",
+                    "MIN_FILTER": "GL_LINEAR"
                 }
             },
-            "materials":{
-                "metal":{
-                    "type": "tinted",
-                    "shader": "tinted",
-                    "pipelineState": {
-                        "faceCulling":{
-                            "enabled": false
-                        },
-                        "depthTesting":{
-                            "enabled": true
-                        }
-                    },
-                    "tint": [0.45, 0.4, 0.5, 1]
-                },
-                "glass":{
+            "materials": {
+                "metal": {
                     "type": "textured",
                     "shader": "textured",
                     "pipelineState": {
-                        "faceCulling":{
+                        "faceCulling": {
                             "enabled": false
                         },
-                        "depthTesting":{
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "texture": "grass",
+                    "sampler": "grassSampler"
+                },
+                "glass": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
                             "enabled": true
                         },
-                        "blending":{
+                        "blending": {
                             "enabled": true,
                             "sourceFactor": "GL_SRC_ALPHA",
                             "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
@@ -76,60 +106,223 @@
                         "depthMask": false
                     },
                     "transparent": true,
-                    "tint": [1, 1, 1, 1],
-                    "texture": "glass",
+                    "tint": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "texture": "Image_16",
                     "sampler": "pixelated"
                 },
-                "grass":{
+                "grass": {
                     "type": "textured",
                     "shader": "textured",
                     "pipelineState": {
-                        "faceCulling":{
+                        "faceCulling": {
                             "enabled": false
                         },
-                        "depthTesting":{
+                        "depthTesting": {
                             "enabled": true
                         }
                     },
-                    "tint": [1, 1, 1, 1],
+                    "tint": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
                     "texture": "grass",
-                    "sampler": "default"
+                    "sampler": "grassSampler"
                 },
-                "monkey":{
-                    "type": "textured",
-                    "shader": "textured",
+                "groundObstacles": {
+                    "type": "tinted",
+                    "shader": "tinted",
                     "pipelineState": {
-                        "faceCulling":{
+                        "faceCulling": {
                             "enabled": false
                         },
-                        "depthTesting":{
+                        "depthTesting": {
                             "enabled": true
                         }
                     },
-                    "tint": [1, 1, 1, 1],
-                    "texture": "monkey",
-                    "sampler": "default"
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ]
                 },
-                "moon":{
+                "texture1": {
                     "type": "textured",
                     "shader": "textured",
                     "pipelineState": {
-                        "faceCulling":{
+                        "faceCulling": {
                             "enabled": false
                         },
-                        "depthTesting":{
+                        "depthTesting": {
                             "enabled": true
                         }
                     },
-                    "tint": [1, 1, 1, 1],
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ],
+                    "texture": "texture1",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "M_Screen_Emissive": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ],
+                    "texture": "M_Screen_Emissive",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "Image_5": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ],
+                    "texture": "Image_5",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "Image_2": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ],
+                    "texture": "Image_2",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "Image_7": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.1
+                    ],
+                    "texture": "Image_7",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "Image_19": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.8,
+                        0,
+                        0.8,
+                        0.8
+                    ],
+                    "texture": "Image_19",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "keyboard": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.6,
+                        0,
+                        0.8,
+                        0.8
+                    ],
+                    "texture": "Image_1",
+                    "sampler": "groundObstaclesSampler"
+                },
+                
+                "moon": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.5,
+                        0,
+                        0.5,
+                        0.7
+                    ],
                     "texture": "moon",
                     "sampler": "default"
                 }
             }
         },
-        "world":[
+        "world": [
             {
-                "position": [0, 0, 10],
+                "position": [
+                    0,
+                    0,
+                    10
+                ],
                 "components": [
                     {
                         "type": "Camera"
@@ -140,13 +333,25 @@
                 ],
                 "children": [
                     {
-                        "position": [1, -1, -1],
-                        "rotation": [45, 45, 0],
-                        "scale": [0.1, 0.1, 1.0],
+                        "position": [
+                            1,
+                            -1,
+                            -1
+                        ],
+                        "rotation": [
+                            0,
+                            30,
+                            0
+                        ],
+                        "scale": [
+                            0.03,
+                            0.03,
+                            0.01
+                        ],
                         "components": [
                             {
                                 "type": "Mesh Renderer",
-                                "mesh": "cube",
+                                "mesh": "sniper",
                                 "material": "metal"
                             }
                         ]
@@ -154,24 +359,213 @@
                 ]
             },
             {
-                "rotation": [-45, 0, 0],
+                "scale": [
+                    4,
+                    6,
+                    1
+                ],
+                "position": [
+                    -4,
+                    -3.3,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
                 "components": [
                     {
                         "type": "Mesh Renderer",
-                        "mesh": "monkey",
-                        "material": "monkey"
-                    },
-                    {
-                        "type": "Movement",
-                        "linearVelocity": [0, 0.1, 0],
-                        "angularVelocity": [0, 45, 0]
+                        "mesh": "obstacle1",
+                        "material": "texture1"
                     }
                 ]
             },
             {
-                "position": [0, -1, 0],
-                "rotation": [-90, 0, 0],
-                "scale": [10, 10, 1],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0.2,
+                    -1.1,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "tv1",
+                        "material": "M_Screen_Emissive"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -1.1,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "column-1",
+                        "material": "Image_5"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -1.3,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "atef",
+                        "material": "Image_19"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -1.3,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "bed",
+                        "material": "Image_7"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -0.8,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "keyboard",
+                        "material": "keyboard"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -1.1,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "column-2",
+                        "material": "Image_5"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -1.1,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "column-3",
+                        "material": "Image_5"
+                    }
+                ]
+            },
+            {
+                "position": [
+                    0,
+                    -1,
+                    0
+                ],
+                "rotation": [
+                    -90,
+                    0,
+                    0
+                ],
+                "scale": [
+                    10,
+                    10,
+                    1
+                ],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -181,9 +575,21 @@
                 ]
             },
             {
-                "position": [0, 10, 0],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
+                "position": [
+                    0,
+                    30,
+                    1
+                ],
+                "rotation": [
+                    45,
+                    45,
+                    0
+                ],
+                "scale": [
+                    5,
+                    5,
+                    5
+                ],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -192,7 +598,11 @@
                     },
                     {
                         "type": "Movement",
-                        "angularVelocity": [0, 90, 0]
+                        "angularVelocity": [
+                            0,
+                            90,
+                            0
+                        ]
                     }
                 ]
             }
