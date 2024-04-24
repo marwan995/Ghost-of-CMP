@@ -1,4 +1,5 @@
 #include "world.hpp"
+#include <unordered_set>
 
 namespace our
 {
@@ -10,18 +11,23 @@ namespace our
     {
         if (!data.is_array())
             return;
+        int i  = 0;
+        std::unordered_set<nlohmann::json> obstacles;
         for (const auto &entityData : data)
         {
             // TODO: (Req 8) Create an entity, make its parent "parent" and call its deserialize with "entityData".
             Entity *entity = add();
             entity->parent = parent;
             entity->deserialize(entityData);
+            if( i > 2 )
+                obstacles.insert(entityData);
             if (entityData.contains("children"))
             {
                 // TODO: (Req 8) Recursively call this world's "deserialize" using the children data
                 //  and the current entity as the parent
                 deserialize(entityData["children"], entity);
             }
+            i++;
         }
     }
 

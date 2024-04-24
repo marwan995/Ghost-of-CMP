@@ -35,6 +35,8 @@
                 "Image_19": "assets/textures/Image_19.png",
                 "Image_7": "assets/textures/Image_7.png",
                 "Image_1": "assets/textures/Image_1.png",
+                "vase": "assets/textures/Image_14.png",
+                "ground-box": "assets/textures/Image_17.png",
                 "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png"
             },
             "meshes": {
@@ -47,6 +49,8 @@
                 "atef": "assets/models/Atef.obj",
                 "bed": "assets/models/bed.obj",
                 "keyboard": "assets/models/keyboard.obj",
+                "ground-box": "assets/models/ground-box.obj",
+                "vase": "assets/models/vase.obj",
                 "plane": "assets/models/plane.obj",
                 "sphere": "assets/models/sphere.obj",
                 "groundObstacles": "assets/models/ground_obstacles.obj"
@@ -207,7 +211,7 @@
                     "tint": [
                         0.5,
                         0,
-                        0.5,
+                        0.8,
                         0.7
                     ],
                     "texture": "Image_5",
@@ -293,6 +297,46 @@
                     "texture": "Image_1",
                     "sampler": "groundObstaclesSampler"
                 },
+                "vase": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.6,
+                        0,
+                        0.8,
+                        0.8
+                    ],
+                    "texture": "vase",
+                    "sampler": "groundObstaclesSampler"
+                },
+                "ground-box": {
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling": {
+                            "enabled": false
+                        },
+                        "depthTesting": {
+                            "enabled": true
+                        }
+                    },
+                    "tint": [
+                        0.6,
+                        0,
+                        0.8,
+                        0.8
+                    ],
+                    "texture": "ground-box",
+                    "sampler": "groundObstaclesSampler"
+                },
                 
                 "moon": {
                     "type": "textured",
@@ -355,6 +399,62 @@
                                 "material": "metal"
                             }
                         ]
+                    }
+                ]
+            },
+            {
+                "position": [
+                    0,
+                    30,
+                    1
+                ],
+                "rotation": [
+                    45,
+                    45,
+                    0
+                ],
+                "scale": [
+                    5,
+                    5,
+                    5
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "sphere",
+                        "material": "moon"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [
+                            0,
+                            90,
+                            0
+                        ]
+                    }
+                ]
+            },
+            {
+                "position": [
+                    0,
+                    -1,
+                    0
+                ],
+                "rotation": [
+                    -90,
+                    0,
+                    0
+                ],
+                "scale": [
+                    10,
+                    10,
+                    1
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "plane",
+                        "material": "grass"
                     }
                 ]
             },
@@ -510,6 +610,54 @@
                 ],
                 "position": [
                     0,
+                    -0.8,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "vase",
+                        "material": "vase"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
+                    -0.8,
+                    0
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "ground-box",
+                        "material": "ground-box"
+                    }
+                ]
+            },
+            {
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "position": [
+                    0,
                     -1.1,
                     0
                 ],
@@ -547,62 +695,6 @@
                         "type": "Mesh Renderer",
                         "mesh": "column-3",
                         "material": "Image_5"
-                    }
-                ]
-            },
-            {
-                "position": [
-                    0,
-                    -1,
-                    0
-                ],
-                "rotation": [
-                    -90,
-                    0,
-                    0
-                ],
-                "scale": [
-                    10,
-                    10,
-                    1
-                ],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "grass"
-                    }
-                ]
-            },
-            {
-                "position": [
-                    0,
-                    30,
-                    1
-                ],
-                "rotation": [
-                    45,
-                    45,
-                    0
-                ],
-                "scale": [
-                    5,
-                    5,
-                    5
-                ],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [
-                            0,
-                            90,
-                            0
-                        ]
                     }
                 ]
             }
