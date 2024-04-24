@@ -27,7 +27,7 @@
             },
             "textures":{
                 "moon": "assets/textures/moon.jpg",
-                "grass": "assets/textures/grass_ground_d.jpg",
+                "grass": "assets/textures/digital_ground.jpg",
                 "wood": "assets/textures/wood.jpg",
                 "glass": "assets/textures/glass-panels.png",
                 "monkey": "assets/textures/monkey.png"
@@ -177,66 +177,6 @@
                         "type": "Mesh Renderer",
                         "mesh": "plane",
                         "material": "grass"
-                    }
-                ]
-            },
-            {
-                "position": [0, 1, 2],
-                "rotation": [0, 0, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "glass"
-                    }
-                ]
-            },
-            {
-                "position": [0, 1, -2],
-                "rotation": [0, 0, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "glass"
-                    }
-                ]
-            },
-            {
-                "position": [2, 1, 0],
-                "rotation": [0, 90, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "glass"
-                    }
-                ]
-            },
-            {
-                "position": [-2, 1, 0],
-                "rotation": [0, 90, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "glass"
-                    }
-                ]
-            },
-            {
-                "position": [0, 3, 0],
-                "rotation": [90, 0, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "plane",
-                        "material": "glass"
                     }
                 ]
             },
