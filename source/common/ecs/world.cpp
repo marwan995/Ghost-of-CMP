@@ -1,5 +1,6 @@
 #include "world.hpp"
 #include <unordered_set>
+#include <iostream>
 
 namespace our
 {
@@ -12,7 +13,7 @@ namespace our
         if (!data.is_array())
             return;
         int i  = 0;
-        std::unordered_set<nlohmann::json> obstacles;
+        std::vector<nlohmann::json> obstacles;
         for (const auto &entityData : data)
         {
             // TODO: (Req 8) Create an entity, make its parent "parent" and call its deserialize with "entityData".
@@ -20,7 +21,7 @@ namespace our
             entity->parent = parent;
             entity->deserialize(entityData);
             if( i > 2 )
-                obstacles.insert(entityData);
+                obstacles.push_back(entityData);
             if (entityData.contains("children"))
             {
                 // TODO: (Req 8) Recursively call this world's "deserialize" using the children data
@@ -29,6 +30,29 @@ namespace our
             }
             i++;
         }
+        // This part is for repeating the obstacles
+        std::vector<nlohmann::json> repeatedObstacles;
+        for(auto &obstacle : obstacles)
+        {
+            if(obstacle.contains("position")) {
+                auto positionArray = obstacle["position"];
+                glm::vec3 position(positionArray[0].get<float>(), positionArray[1].get<float>(), positionArray[2].get<float>());
+                int repeatCount = rand() % 50 + 1;
+                for(int i = 0; i < repeatCount; i++) {
+                    obstacle["position"] = { position.x + rand() % 101 - 55
+                                            , position.y + rand() % 6,
+                                            position.z + rand() % 81 - 40};
+                    repeatedObstacles.push_back(obstacle);
+                }
+            }
+        }
+        
+        for(const auto &obstacle : repeatedObstacles) {
+            Entity *entity = add();
+            entity->parent = parent;
+            entity->deserialize(obstacle);
+        }
+        
     }
 
 }
