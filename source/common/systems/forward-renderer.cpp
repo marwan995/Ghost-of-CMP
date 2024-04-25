@@ -2,6 +2,7 @@
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
 #include <iostream>
+
 using namespace std;
 
 namespace our
@@ -68,7 +69,7 @@ namespace our
             // void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
             colorTarget = texture_utils::empty(GL_RGBA8, windowSize);
             glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
-            
+
             depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT24, windowSize);
             glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
             // TODO: (Req 11) Unbind the framebuffer just to be safe
@@ -128,6 +129,7 @@ namespace our
     {
         // First of all, we search for a camera and for all the mesh renderers
         CameraComponent *camera = nullptr;
+        // RenderCommand bulletCommand;
         opaqueCommands.clear();
         transparentCommands.clear();
         for (auto entity : world->getEntities())
@@ -155,6 +157,14 @@ namespace our
                     opaqueCommands.push_back(command);
                 }
             }
+            // if (auto bullet = entity->getComponent<Bullet>(); bullet)
+            // {
+            //     // Construct a command for the bullet
+            //     bulletCommand.localToWorld = bullet->getOwner()->getLocalToWorldMatrix();
+            //     bulletCommand.center = bullet->position; // Assuming bullet's position is at the center
+            //     bulletCommand.mesh = bullet->mesh;
+            //     bulletCommand.material = bullet->material;
+            // }
         }
         // If there is no camera, we return (we cannot render without a camera)
         if (camera == nullptr)
@@ -176,7 +186,7 @@ namespace our
         glm::mat4 VP = camera->getProjectionMatrix(windowSize) * viewMatrix;
         // TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize.x, windowSize.y); // ask MO3ED for viewportStart
-        
+
         // TODO: (Req 9) Set the clear color to black and the clear depth to 1
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0f);
@@ -205,7 +215,13 @@ namespace our
             command.material->shader->set("transform", VP * command.localToWorld);
             // Draw the mesh using the material's shader
             command.mesh->draw();
-        }   
+        }
+
+        // bulletCommand.material->setup(); //  u called the set before the setup what an idiot
+        // bulletCommand.material->shader->set("transform", VP * bulletCommand.localToWorld);
+        // // Draw the mesh using the material's shader
+        // bulletCommand.mesh->draw();
+
         // If there is a sky material, draw the sky
         if (this->skyMaterial)
         {
@@ -223,7 +239,7 @@ namespace our
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 1.0f);
-            
+
             // TODO: (Req 10) set the "transform" uniform
             skyMaterial->shader->set("transform", alwaysBehindTransform * skyMatrix);
             // TODO: (Req 10) draw the sky sphere

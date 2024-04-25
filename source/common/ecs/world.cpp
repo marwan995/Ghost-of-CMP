@@ -20,7 +20,7 @@ namespace our
             Entity *entity = add();
             entity->parent = parent;
             entity->deserialize(entityData);
-            if( i > 2 )
+            if( i > 3 )
                 obstacles.push_back(entityData);
             if (entityData.contains("children"))
             {
@@ -37,7 +37,7 @@ namespace our
             if(obstacle.contains("position")) {
                 auto positionArray = obstacle["position"];
                 glm::vec3 position(positionArray[0].get<float>(), positionArray[1].get<float>(), positionArray[2].get<float>());
-                int repeatCount = rand() % 50 + 1;
+                int repeatCount = rand() % 100 + 1;
                 for(int i = 0; i < repeatCount; i++) {
                     obstacle["position"] = { position.x + rand() % 101 - 55
                                             , position.y + rand() % 6,

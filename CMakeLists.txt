@@ -73,6 +73,9 @@ set(COMMON_SOURCES
         source/common/components/camera.cpp
         source/common/components/mesh-renderer.hpp
         source/common/components/mesh-renderer.cpp
+        source/common/components/bullet.hpp
+        source/common/components/bullet.cpp
+
         source/common/components/free-camera-controller.hpp
         source/common/components/free-camera-controller.cpp
         source/common/components/movement.hpp
