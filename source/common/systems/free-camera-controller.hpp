@@ -27,6 +27,7 @@ namespace our
         void enter(Application *app)
         {
             this->app = app;
+            app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
@@ -53,18 +54,19 @@ namespace our
             // Get the entity that we found via getOwner of camera (we could use controller->getOwner())
             Entity *entity = camera->getOwner();
 
-            // If the left mouse button is pressed, we lock and hide the mouse. This common in First Person Games.
-            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1) && !mouse_locked)
-            {
-                app->getMouse().lockMouse(app->getWindow());
-                mouse_locked = true;
-                // If the left mouse button is released, we unlock and unhide the mouse.
-            }
-            else if (!app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1) && mouse_locked)
-            {
-                app->getMouse().unlockMouse(app->getWindow());
-                mouse_locked = false;
-            }
+            // Mouse is always locked
+            ////// If the left mouse button is pressed, we lock and hide the mouse. This common in First Person Games.
+            ////if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1) && !mouse_locked)
+            ////{
+            ////    app->getMouse().lockMouse(app->getWindow());
+            ////    mouse_locked = true;
+            ////    // If the left mouse button is released, we unlock and unhide the mouse.
+            ////}
+            ////else if (!app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1) && mouse_locked)
+            ////{
+            ////    app->getMouse().unlockMouse(app->getWindow());
+            ////    mouse_locked = false;
+            ////}
 
             // We get a reference to the entity's position and rotation
             glm::vec3 &position = entity->localTransform.position;
@@ -72,12 +74,14 @@ namespace our
 
             // If the left mouse button is pressed, we get the change in the mouse location
             // and use it to update the camera rotation
-            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
-            {
+            
+            // Mouse movement is always checked
+            ////if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
+            ////{
                 glm::vec2 delta = app->getMouse().getMouseDelta();
                 rotation.x -= delta.y * controller->rotationSensitivity; // The y-axis controls the pitch
                 rotation.y -= delta.x * controller->rotationSensitivity; // The x-axis controls the yaw
-            }
+            ////}
 
             // We prevent the pitch from exceeding a certain angle from the XZ plane to prevent gimbal locks
             if (rotation.x < -glm::half_pi<float>() * 0.99f)
@@ -118,11 +122,14 @@ namespace our
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
                 position -= front * (deltaTime * current_sensitivity.z);
-            // Q & E moves the player up and down
-            if (app->getKeyboard().isPressed(GLFW_KEY_Q))
-                position += up * (deltaTime * current_sensitivity.y);
-            if (app->getKeyboard().isPressed(GLFW_KEY_E))
-                position -= up * (deltaTime * current_sensitivity.y);
+            
+            // Not used in our case
+            //// Q & E moves the player up and down
+            //// if (app->getKeyboard().isPressed(GLFW_KEY_Q))
+            ////     position += up * (deltaTime * current_sensitivity.y);
+            //// if (app->getKeyboard().isPressed(GLFW_KEY_E))
+            ////     position -= up * (deltaTime * current_sensitivity.y);
+            
             // A & D moves the player left or right
             if (app->getKeyboard().isPressed(GLFW_KEY_D))
                 position += right * (deltaTime * current_sensitivity.x);
@@ -130,7 +137,7 @@ namespace our
                 position -= right * (deltaTime * current_sensitivity.x);
 
             // Check if jump key is pressed
-            if (app->getKeyboard().isPressed(GLFW_KEY_SPACE))
+            if (app->getKeyboard().isPressed(GLFW_KEY_SPACE))//// || app->getKeyboard().isPressed(GLFW_KEY_RIGHT_ALT))
             {
                 if (!isJumping)
                 {
@@ -154,11 +161,11 @@ namespace our
         // When the state exits, it should call this function to ensure the mouse is unlocked
         void exit()
         {
-            if (mouse_locked)
-            {
-                mouse_locked = false;
+            //// if (mouse_locked)
+            //// {
+            ////    mouse_locked = false;
                 app->getMouse().unlockMouse(app->getWindow());
-            }
+            //// }
         }
     };
 }
