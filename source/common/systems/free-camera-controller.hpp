@@ -110,7 +110,10 @@ namespace our
             // S & W moves the player back and forth
             if (app->getKeyboard().isPressed(GLFW_KEY_W))
             {
-                glm::vec3 forwardMotion = glm::vec3(front.x, 0.0f, front.z); // Ignore the y-component of front
+                // Project y-component to x-z plane
+                float yProjection = front.y * sin(rotation.x);
+                // Ignore the y-component of front and project yProjection to x and z axes
+                glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
                 position += forwardMotion * (deltaTime * current_sensitivity.z);
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
@@ -127,7 +130,7 @@ namespace our
                 position -= right * (deltaTime * current_sensitivity.x);
 
             // Check if jump key is pressed
-            if (app->getKeyboard().isPressed(GLFW_KEY_LEFT_ALT) || app->getKeyboard().isPressed(GLFW_KEY_RIGHT_ALT))
+            if (app->getKeyboard().isPressed(GLFW_KEY_SPACE))
             {
                 if (!isJumping)
                 {
