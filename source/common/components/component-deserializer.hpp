@@ -6,6 +6,7 @@
 #include "free-camera-controller.hpp"
 #include "movement.hpp"
 #include "bullet.hpp"
+#include "collision-component.hpp"
 namespace our
 {
 
@@ -31,6 +32,10 @@ namespace our
         else if (type == MeshRendererComponent::getID())
         {
             component = entity->addComponent<MeshRendererComponent>();
+        }
+        else if (type == ColliderComponent::getID())
+        {
+            component = entity->addComponent<ColliderComponent>();
         }
         // else if (type == Bullet::getID())
         // {

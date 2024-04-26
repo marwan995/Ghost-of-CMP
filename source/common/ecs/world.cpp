@@ -28,6 +28,19 @@ namespace our
                 //  and the current entity as the parent
                 deserialize(entityData["children"], entity);
             }
+
+            // if (entityData.contains("Collider"))
+            // {
+            //     std::string colliderTypeStr = entityData["Collider"].value("colliderType", "static");
+
+            //     if(colliderTypeStr == "dynamic"){
+            //         dynamicColliders.push_back(&entityData["Collider"])
+            //     }else{
+            //         ;
+            //         staticColliders.push_back();
+            // }
+            // }
+
             i++;
         }
         // This part is for repeating the obstacles
@@ -37,11 +50,20 @@ namespace our
             if(obstacle.contains("position")) {
                 auto positionArray = obstacle["position"];
                 glm::vec3 position(positionArray[0].get<float>(), positionArray[1].get<float>(), positionArray[2].get<float>());
-                int repeatCount = rand() % 100 + 1;
+                int repeatCount = 0;//rand() % 100 + 1;
                 for(int i = 0; i < repeatCount; i++) {
-                    obstacle["position"] = { position.x + rand() % 101 - 55
-                                            , position.y + rand() % 6,
-                                            position.z + rand() % 81 - 40};
+
+                    float randX = position.x + rand() % 101 - 55;
+                    float randY = position.y + rand() % 6;
+                    float randZ = position.z + rand() % 81 - 40;
+                    
+                    obstacle["position"] = { randX, randY, randZ};
+                    
+                    // if (obstacle.contains("children"))
+                    // {
+                    //     deserialize(obstacle["children"], entity);
+                    // }
+
                     repeatedObstacles.push_back(obstacle);
                 }
             }
