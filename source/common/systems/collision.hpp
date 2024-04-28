@@ -8,6 +8,8 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
+#include "../components/camera.hpp"
+
 namespace our
 {
 
@@ -15,6 +17,7 @@ namespace our
     class CollisionSystem {
         std::vector<Entity*> staticEntities;    // to contain the static objects that don't move
         std::vector<Entity*> dynamicEntities;   // to contain the dynamic objects (camera and bullets)
+        CameraComponent* camera;
         
         ColliderComponent* getCollider(Entity* entity){
             ColliderComponent* collider = entity->getComponent<ColliderComponent>();
@@ -26,9 +29,17 @@ namespace our
         // Only called when the play state starts to add the colliders in an array 
         void enter(World* world) {
             // For each entity in the world
+
             for(auto entity : world->getEntities()){
                 // Get the movement component if it exists
                 ColliderComponent* collider = entity->getComponent<ColliderComponent>();
+
+                CameraComponent* worldCamera = entity->getComponent<CameraComponent>();
+                if (worldCamera)
+                {
+                    camera = worldCamera;
+                }
+
                 // If the movement component exists
                 if(collider){
                     collider->setEntity(entity);
@@ -50,17 +61,19 @@ namespace our
             // For each entity in the world
             for(auto dynamicEntity : dynamicEntities)
             {
+                // CameraComponent* camera = world->getEntities()->getComponent<CameraComponent>(0);
                 for (auto staticEntity : staticEntities)
                 {
                     glm::vec3 collisionDepth = dynamicEntity->getComponent<ColliderComponent>()->collisionDepth(staticEntity->getComponent<ColliderComponent>());
                     // TODO: continue here
                     if (ColliderComponent::isColliding(collisionDepth))
                     {
-                        // FreeCameraControllerComponent* camera = dynamicEntity->getComponent<FreeCameraControllerComponent>();
-                        // if (camera)
-                        // {
+                        if (dynamicEntity->getComponent<CameraComponent>())
+                        {
+                            // camera collided with wall
+                            camera->getOwner()->localTransform.position = camera->lastPosition;
+                        }
                             std::cout<<"collision\n";
-                        // }
                     }
                 }
             }

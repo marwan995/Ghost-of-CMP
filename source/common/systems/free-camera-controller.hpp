@@ -56,6 +56,7 @@ namespace our
             // Get the entity that we found via getOwner of camera (we could use controller->getOwner())
             Entity *entity = camera->getOwner();
 
+
             // Mouse is always locked
             ////// If the left mouse button is pressed, we lock and hide the mouse. This common in First Person Games.
             ////if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1) && !mouse_locked)
@@ -73,6 +74,7 @@ namespace our
             // We get a reference to the entity's position and rotation
             glm::vec3 &position = entity->localTransform.position;
             glm::vec3 &rotation = entity->localTransform.rotation;
+            camera->lastPosition = entity->localTransform.position;
 
             // If the left mouse button is pressed, we get the change in the mouse location
             // and use it to update the camera rotation
@@ -121,6 +123,7 @@ namespace our
                 // Ignore the y-component of front and project yProjection to x and z axes
                 glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
                 position += forwardMotion * (deltaTime * current_sensitivity.z);
+                std::cout<<"forward: "<<forwardMotion[0]<<' '<<forwardMotion[1]<<' '<<forwardMotion[2]<<' '<<std::endl;
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
                 position -= front * (deltaTime * current_sensitivity.z);

@@ -337,9 +337,9 @@
         ]
       },
       {
-        "position": [0.0, 0.0, 1.0],
-        "rotation": [45, 0, 0],
-        "scale": [1, 1, 10],
+        "position": [0.1, -0.1, 9.71],
+        "rotation": [0, 20, 0],
+        "scale": [1, 1, 1],
         "components": [
           {
             "type": "Mesh Renderer",
@@ -348,7 +348,7 @@
           },
           {
             "type": "Movement",
-            "linearVelocity": [0, 1, 0]
+            "linearVelocity": [-0.34, 0.0, -0.93]
           }
         ]
       },
