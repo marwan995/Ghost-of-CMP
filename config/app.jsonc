@@ -313,6 +313,12 @@
           },
           {
             "type": "Free Camera Controller"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "dynamic",
+            "radius": 1
           }
         ],
         "children": [
@@ -325,13 +331,6 @@
                 "type": "Mesh Renderer",
                 "mesh": "sniper",
                 "material": "metal"
-              },
-              {
-                "type": "Collider",
-                "colliderShape": "sphere",
-                "colliderType": "dynamic",
-                // "position": [1, -1, -1],
-                "radius": 1
               }
             ]
           }
@@ -500,6 +499,12 @@
             "type": "Mesh Renderer",
             "mesh": "column-3",
             "material": "Image_5"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "static",
+            "radius": 1
           }
         ]
       }

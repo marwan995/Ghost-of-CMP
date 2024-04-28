@@ -25,9 +25,17 @@ class ColliderComponent : public Component{
     public:
         ColliderShape shape;
         ColliderType type;
+        Entity* colliderEntity;
         float x,y,z;
         float scaleX, scaleY, scaleZ;
         float radius;
+
+        void setEntity(Entity* entity){
+            colliderEntity = entity;
+            x = entity->localTransform.position[0];
+            y = entity->localTransform.position[1];
+            z = entity->localTransform.position[2];
+        }
 
         static std::string getID() { return "Collider"; }
 
@@ -86,7 +94,11 @@ class ColliderComponent : public Component{
         glm::vec3 collisionDepth(ColliderComponent* other)
         {
             // 3ayzeen ngeeb al position
-            std::cout<<glm::distance(getOwner()->localTransform.position, glm::vec3(other->x,other->y,other->z))<<std::endl;
+            x = colliderEntity->localTransform.position[0];
+            y = colliderEntity->localTransform.position[1];
+            z = colliderEntity->localTransform.position[2];
+
+            std::cout<<glm::distance(glm::vec3(x,y,z), other->colliderEntity->localTransform.position)<<std::endl;
 
             if (shape == ColliderShape::SPHERE && other->shape == ColliderShape::SPHERE)
             {
@@ -111,7 +123,6 @@ class ColliderComponent : public Component{
         {
             if ( glm::distance(glm::vec3(x,y,z), glm::vec3(other->x,other->y,other->z)) < radius + other->radius )
             {
-               std::cout<<"collision happened sphere1, sphere2\n";
                 return {
                     other->x - x,
                     other->y - y,

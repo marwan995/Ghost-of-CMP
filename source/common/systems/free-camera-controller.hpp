@@ -11,6 +11,8 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
+#include <iostream>
+
 namespace our
 {
 

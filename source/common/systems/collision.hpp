@@ -13,8 +13,8 @@ namespace our
 
     // The collision system is responsible for checking collisions between colliders. 
     class CollisionSystem {
-        std::vector<Entity*> staticColliders;    // to contain the static objects that don't move
-        std::vector<Entity*> dynamicColliders;   // to contain the dynamic objects (camera and bullets)
+        std::vector<Entity*> staticEntities;    // to contain the static objects that don't move
+        std::vector<Entity*> dynamicEntities;   // to contain the dynamic objects (camera and bullets)
         
         ColliderComponent* getCollider(Entity* entity){
             ColliderComponent* collider = entity->getComponent<ColliderComponent>();
@@ -31,13 +31,15 @@ namespace our
                 ColliderComponent* collider = entity->getComponent<ColliderComponent>();
                 // If the movement component exists
                 if(collider){
+                    collider->setEntity(entity);
+
                     // Change the position and rotation based on the linear & angular velocity and delta time.
                     if(collider->type == ColliderType::STATIC)
                     {
-                        staticColliders.push_back(entity);
+                        staticEntities.push_back(entity);
                     }
                     else{
-                        dynamicColliders.push_back(entity);
+                        dynamicEntities.push_back(entity);
                     }
                 }
             }
@@ -46,14 +48,19 @@ namespace our
         //
         void update(World* world, float deltaTime) {
             // For each entity in the world
-            for(auto dynamicCollider : dynamicColliders)
+            for(auto dynamicEntity : dynamicEntities)
             {
-                for (auto staticCollider : staticColliders)
+                for (auto staticEntity : staticEntities)
                 {
+                    glm::vec3 collisionDepth = dynamicEntity->getComponent<ColliderComponent>()->collisionDepth(staticEntity->getComponent<ColliderComponent>());
                     // TODO: continue here
-                    if (ColliderComponent::isColliding(dynamicCollider->collisionDepth(staticCollider)))
+                    if (ColliderComponent::isColliding(collisionDepth))
                     {
-                        std::cout<<"We did it\n";
+                        // FreeCameraControllerComponent* camera = dynamicEntity->getComponent<FreeCameraControllerComponent>();
+                        // if (camera)
+                        // {
+                            std::cout<<"collision\n";
+                        // }
                     }
                 }
             }
