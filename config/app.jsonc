@@ -330,7 +330,7 @@
                 "type": "Collider",
                 "colliderShape": "sphere",
                 "colliderType": "dynamic",
-                "position": [1, -1, -1],
+                // "position": [1, -1, -1],
                 "radius": 1
               }
             ]
@@ -500,13 +500,6 @@
             "type": "Mesh Renderer",
             "mesh": "column-3",
             "material": "Image_5"
-          }, 
-          {
-            "type": "Collider",
-            "colliderShape": "sphere",
-            "colliderType": "static",
-            "position": [0, 0, -5],
-            "radius": 0.5
           }
         ]
       }

@@ -29,18 +29,6 @@ namespace our
                 deserialize(entityData["children"], entity);
             }
 
-            // if (entityData.contains("Collider"))
-            // {
-            //     std::string colliderTypeStr = entityData["Collider"].value("colliderType", "static");
-
-            //     if(colliderTypeStr == "dynamic"){
-            //         dynamicColliders.push_back(&entityData["Collider"])
-            //     }else{
-            //         ;
-            //         staticColliders.push_back();
-            // }
-            // }
-
             i++;
         }
         // This part is for repeating the obstacles

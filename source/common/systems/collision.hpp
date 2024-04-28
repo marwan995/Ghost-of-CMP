@@ -11,16 +11,19 @@
 namespace our
 {
 
-    // The movement system is responsible for moving every entity which contains a MovementComponent.
-    // This system is added as a simple example for how use the ECS framework to implement logic. 
-    // For more information, see "common/components/movement.hpp"
+    // The collision system is responsible for checking collisions between colliders. 
     class CollisionSystem {
-        std::vector<ColliderComponent*> staticColliders;
-        std::vector<ColliderComponent*> dynamicColliders;
+        std::vector<Entity*> staticColliders;    // to contain the static objects that don't move
+        std::vector<Entity*> dynamicColliders;   // to contain the dynamic objects (camera and bullets)
+        
+        ColliderComponent* getCollider(Entity* entity){
+            ColliderComponent* collider = entity->getComponent<ColliderComponent>();
+            return collider? collider : NULL;
+        } 
 
     public:
 
-        // This should be called every frame to update all entities containing a MovementComponent. 
+        // Only called when the play state starts to add the colliders in an array 
         void enter(World* world) {
             // For each entity in the world
             for(auto entity : world->getEntities()){
@@ -31,10 +34,10 @@ namespace our
                     // Change the position and rotation based on the linear & angular velocity and delta time.
                     if(collider->type == ColliderType::STATIC)
                     {
-                        staticColliders.push_back(collider);
+                        staticColliders.push_back(entity);
                     }
                     else{
-                        dynamicColliders.push_back(collider);
+                        dynamicColliders.push_back(entity);
                     }
                 }
             }
@@ -47,6 +50,7 @@ namespace our
             {
                 for (auto staticCollider : staticColliders)
                 {
+                    // TODO: continue here
                     if (ColliderComponent::isColliding(dynamicCollider->collisionDepth(staticCollider)))
                     {
                         std::cout<<"We did it\n";

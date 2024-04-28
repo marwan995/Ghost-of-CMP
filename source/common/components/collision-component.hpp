@@ -40,6 +40,8 @@ class ColliderComponent : public Component{
             std::cout<<"collider\n";
             if (!data.is_object())
                 return;
+
+            // get the collider shape
             std::string colliderShapeStr = data.value("colliderShape", "rect");
             if(colliderShapeStr == "sphere"){
                 shape = ColliderShape::SPHERE;
@@ -47,6 +49,7 @@ class ColliderComponent : public Component{
                 shape = ColliderShape::RECT;
             }
 
+            // get the collider type
             std::string colliderTypeStr = data.value("colliderType", "static");
             if(colliderTypeStr == "dynamic"){
                 type = ColliderType::DYNAMIC;
@@ -54,14 +57,18 @@ class ColliderComponent : public Component{
                 type = ColliderType::STATIC;
             }
 
-            if (data.contains("position"))
-            {
-                auto position = data["position"];
-                x = position[0];
-                y = position[1];
-                z = position[2];
-            }
+            // if (data.contains("position"))
+            // {
+            //     auto position = data["position"];
+            //     x = position[0];
+            //     y = position[1];
+            //     z = position[2];
+            // }
+            // x = getOwner()->localTransform.position[0];
+            // y = getOwner()->localTransform.position[1];
+            // z = getOwner()->localTransform.position[2];
 
+            // get the collider scale (in case it's rect)
             if (data.contains("scale"))
             {
                 auto scale = data["scale"];
@@ -70,6 +77,7 @@ class ColliderComponent : public Component{
                 scaleZ = scale[2];
             }
             
+            // get collider radius (in case it's sphere)
             radius = data.value("radius", 0.0f);
         };
 
@@ -77,6 +85,9 @@ class ColliderComponent : public Component{
 
         glm::vec3 collisionDepth(ColliderComponent* other)
         {
+            // 3ayzeen ngeeb al position
+            std::cout<<glm::distance(getOwner()->localTransform.position, glm::vec3(other->x,other->y,other->z))<<std::endl;
+
             if (shape == ColliderShape::SPHERE && other->shape == ColliderShape::SPHERE)
             {
                 return collisionDepthBetweenSphereAndSphere(other);
