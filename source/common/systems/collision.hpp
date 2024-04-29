@@ -84,19 +84,22 @@ namespace our
                             return;
                         }
 
-                        // TODO:
-                        // check if it's a bullet
+                        // TODO: a way to access the bullet from the entity
                         // then check if it's enemy or ally
                         // when collision happens remove the bullet from the entities and from the colliders
                         // apply damage to the other collider
-                        // if ()
-
+                        ColliderComponent* possibleBullet = dynamicEntity->getComponent<ColliderComponent>();
+                        if (possibleBullet->type == ColliderType::BULLET)
+                        {
+                            // check if it's friendly fire
                             world->markForRemoval(staticEntity);
                             world->markForRemoval(dynamicEntity);
+                            // TODO: ask emad for optimization
                             auto it = find(staticEntities.begin(),staticEntities.end(),staticEntity);
                             staticEntities.erase(it);
                             it = find(dynamicEntities.begin(),dynamicEntities.end(),dynamicEntity);
                             dynamicEntities.erase(it);
+                        }
                     }
                 }
             }

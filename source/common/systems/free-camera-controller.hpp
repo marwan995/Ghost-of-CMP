@@ -14,6 +14,8 @@
 #include "collision.hpp"
 #include "../components/collision-component.hpp"
 
+#include "../ecs/laser-bullet.hpp"
+
 #include <iostream>
 
 namespace our
@@ -26,6 +28,33 @@ namespace our
     {
         Application *app;          // The application in which the state runs
         bool mouse_locked = false; // Is the mouse locked
+        int activeWeapon = 0;
+        int deltasCounter=0;
+        const float weapons_BPS[3] = {8,1,1};   // hold weapons bullets per seconds
+
+        const double avgDeltaTime = 0.008335638028169f;
+
+        // utility to return true if a bullet should be spawned
+        bool checkRateOfFire(float deltaTime) {
+            // get current weapon BPS
+            float bulletsPerSecond = weapons_BPS[activeWeapon];
+            std::cout<<deltasCounter<<std::endl;
+            // check for it's cooldown
+            if (deltasCounter == 0)
+            {
+                deltasCounter++;
+                return true;
+            }
+            else if((deltasCounter) * deltaTime >= (1/bulletsPerSecond))
+            {
+            std::cout<<deltasCounter<<std::endl;
+                deltasCounter = 0;
+            }
+            else{
+                deltasCounter++;
+            }
+            return false;   
+        }
 
     public:
         // When a state enters, it should call this function and give it the pointer to the application
@@ -79,49 +108,42 @@ namespace our
             glm::vec3 &rotation = entity->localTransform.rotation;
             camera->lastPosition = entity->localTransform.position;
 
+            // TODO: if the weapon is changed reset deltasCounter
+
             // Mouse left click (shoot fire)
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
             {
-                // TODO: make sure the right amount of bullets is created
-                // TODO: move this code to the bullet file
-                // create a new entity for the bullet
-                Entity *bulletEntity = world->add();
+                if(checkRateOfFire(deltaTime))
+                {
 
+                float bulletRotation[3] = {180-glm::degrees(rotation.x), glm::degrees(rotation.y)-180, glm::degrees(rotation.z)};
                 float bulletSpeedX = -cos(-rotation.x)*sin(rotation.y);
                 float bulletSpeedY = -sin(-rotation.x);
                 float bulletSpeedZ = -cos(-rotation.x)*cos(rotation.y);
-                // std::cout<<glm::degrees(rotation.x)<<' '<<rotation.y<<' '<<glm::degrees(rotation.z)<<' '<<std::endl;
+                float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
+                // TODO: make the bullet in front of the player
+                float bulletPosition[3] = {position.x + bulletSpeedX/4, position.y + bulletSpeedY/4, position.z + bulletSpeedZ/4};
 
-                nlohmann::json bulletData = {
-                    {"position", {position.x, position.y, position.z}},
-                    {"rotation", {180-glm::degrees(rotation.x), glm::degrees(rotation.y)-180, glm::degrees(rotation.z)}},
-                    {"scale", {0.2, 0.2, 0.01}},
-                    {"components", nlohmann::json::array({
-                        {
-                            {"type", "Mesh Renderer"},
-                            {"mesh", "laser"},
-                            {"material", "laser"}
-                        },
-                        {
-                            {"type", "Movement"},
-                            {"linearVelocity", {bulletSpeedX, bulletSpeedY, bulletSpeedZ}}//{-0.34, 0.0, -0.93}} 
-                        }
-                    })}
-                };
+                // TODO: can use down casting and polymorphism here
+                // switch(activeWeapon)
+                // {
+                    // laser rifle
+                    // case 0:
+                        LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world);
+                        laserBullet->isFriendly = true;
+                        laserBullet->shoot();
+                //     break;
+                    
+                //     case 1:
+                //     std::cout<<"\n";
+                //     break;
 
-                // add collider component to the entity
-                bulletEntity->addComponent<ColliderComponent>();
-                ColliderComponent* bulletCollider = bulletEntity->getComponent<ColliderComponent>();
-
-                bulletCollider->setEntity(bulletEntity);
-                bulletCollider->shape = ColliderShape::SPHERE;
-                bulletCollider->type = ColliderType::DYNAMIC;
-                bulletCollider->radius = 0.2;
-
-                // push the entity to the collision system
-                CollisionSystem::addDynamicEntity(bulletEntity);
-
-                bulletEntity->deserialize(bulletData);
+                //     case 2:
+                //     std::cout<<"\n";
+                //     break;
+                // }
+                // TODO: move this code to the bullet file
+                }
             }
 
             // If the left mouse button is pressed, we get the change in the mouse location
@@ -171,6 +193,7 @@ namespace our
                 // Ignore the y-component of front and project yProjection to x and z axes
                 glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
                 position += forwardMotion * (deltaTime * current_sensitivity.z);
+                // std::cout<<deltaTime<<std::endl;
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
                 position -= front * (deltaTime * current_sensitivity.z);

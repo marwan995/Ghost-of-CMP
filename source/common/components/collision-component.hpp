@@ -17,7 +17,8 @@ namespace our{
     };
     enum class ColliderType {
         STATIC,
-        DYNAMIC
+        DYNAMIC,
+        BULLET
     };
 
 // Abstract class for all colliders
@@ -40,6 +41,7 @@ class ColliderComponent : public Component{
 
         static std::string getID() { return "Collider"; }
 
+        // TODO: check if the collision depth is needed
         static bool isColliding(glm::vec3 vector){
             return vector != glm::vec3(0,0,0);
         }
