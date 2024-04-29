@@ -76,6 +76,38 @@ namespace our
             glm::vec3 &rotation = entity->localTransform.rotation;
             camera->lastPosition = entity->localTransform.position;
 
+            // Mouse left click (shoot fire)
+            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
+            {
+                // create a new entity for the bullet
+                Entity *entity = world->add();
+
+                float bulletSpeedX = -cos(-rotation.x)*sin(rotation.y);
+                float bulletSpeedY = -sin(-rotation.x);
+                float bulletSpeedZ = -cos(-rotation.x)*cos(rotation.y);
+                // std::cout<<glm::degrees(rotation.x)<<' '<<rotation.y<<' '<<glm::degrees(rotation.z)<<' '<<std::endl;
+
+                nlohmann::json bulletData = {
+                    {"position", {position.x, position.y, position.z + 10}},
+                    {"rotation", {180-glm::degrees(rotation.x), glm::degrees(rotation.y)-180, glm::degrees(rotation.z)}},
+                    {"scale", {1, 1, 1}},
+                    {"components", nlohmann::json::array({
+                        {
+                            {"type", "Mesh Renderer"},
+                            {"mesh", "laser"},
+                            {"material", "laser"}
+                        },
+                        {
+                            {"type", "Movement"},
+                            {"linearVelocity", {bulletSpeedX, bulletSpeedY, bulletSpeedZ}}//{-0.34, 0.0, -0.93}} 
+                        }
+                    })}
+                };
+
+                entity->deserialize(bulletData);
+
+            }
+
             // If the left mouse button is pressed, we get the change in the mouse location
             // and use it to update the camera rotation
             
@@ -123,7 +155,6 @@ namespace our
                 // Ignore the y-component of front and project yProjection to x and z axes
                 glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
                 position += forwardMotion * (deltaTime * current_sensitivity.z);
-                std::cout<<"forward: "<<forwardMotion[0]<<' '<<forwardMotion[1]<<' '<<forwardMotion[2]<<' '<<std::endl;
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
                 position -= front * (deltaTime * current_sensitivity.z);

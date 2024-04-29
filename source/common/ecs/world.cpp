@@ -38,7 +38,7 @@ namespace our
             if(obstacle.contains("position")) {
                 auto positionArray = obstacle["position"];
                 glm::vec3 position(positionArray[0].get<float>(), positionArray[1].get<float>(), positionArray[2].get<float>());
-                int repeatCount = rand() % 100 + 1;
+                int repeatCount = 0;//rand() % 100 + 1;
                 for(int i = 0; i < repeatCount; i++) {
 
                     float randX = position.x + rand() % 101 - 55;

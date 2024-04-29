@@ -76,7 +76,7 @@ namespace our
                             auto it = find(staticEntities.begin(),staticEntities.end(),staticEntity);
                             staticEntities.erase(it);
                         }
-                            std::cout<<"collision\n";
+                            // std::cout<<"collision\n";
                     }
                 }
             }

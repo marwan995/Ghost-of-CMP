@@ -5,7 +5,6 @@
 #include "mesh-renderer.hpp"
 #include "free-camera-controller.hpp"
 #include "movement.hpp"
-#include "bullet.hpp"
 #include "collision-component.hpp"
 namespace our
 {
@@ -37,10 +36,6 @@ namespace our
         {
             component = entity->addComponent<ColliderComponent>();
         }
-        // else if (type == Bullet::getID())
-        // {
-        //     component = entity->addComponent<Bullet>();
-        // }
         if (component)
             component->deserialize(data);
     }
