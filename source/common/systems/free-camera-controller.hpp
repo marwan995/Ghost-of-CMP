@@ -142,7 +142,7 @@ namespace our
                 position -= right * (deltaTime * current_sensitivity.x);
 
             // Check if jump key is pressed
-            if (app->getKeyboard().isPressed(GLFW_KEY_SPACE))//// || app->getKeyboard().isPressed(GLFW_KEY_RIGHT_ALT))
+            if (app->getKeyboard().isPressed(GLFW_KEY_SPACE) || app->getKeyboard().isPressed(GLFW_KEY_LEFT_ALT))
             {
                 if (!isJumping)
                 {

@@ -504,9 +504,12 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "static",
-            "radius": 1
+            "radius": 1,
+            "shifted" : [2, 0, 2]
+
           }
         ]
+    
       }
     ]
   }

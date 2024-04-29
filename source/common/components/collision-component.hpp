@@ -5,7 +5,7 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
-#include "component.hpp"
+#include "../ecs/component.hpp"
 
 #include <iostream>
 
@@ -28,13 +28,14 @@ class ColliderComponent : public Component{
         Entity* colliderEntity;
         float x,y,z;
         float scaleX, scaleY, scaleZ;
+        glm::vec3 shifted = glm::vec3(0,0,0);
         float radius;
 
         void setEntity(Entity* entity){
             colliderEntity = entity;
-            x = entity->localTransform.position[0];
-            y = entity->localTransform.position[1];
-            z = entity->localTransform.position[2];
+            x = entity->localTransform.position[0]+shifted[0];
+            y = entity->localTransform.position[1]+shifted[1];
+            z = entity->localTransform.position[2]+shifted[2];
         }
 
         static std::string getID() { return "Collider"; }
@@ -84,6 +85,13 @@ class ColliderComponent : public Component{
                 scaleY = scale[1];
                 scaleZ = scale[2];
             }
+            if (data.contains("shifted"))
+            {
+                auto shiftAmount = data["shifted"];
+                shifted[0] = shiftAmount[0];
+                shifted[1] = shiftAmount[1];
+                shifted[2] = shiftAmount[2];
+            }
             
             // get collider radius (in case it's sphere)
             radius = data.value("radius", 0.0f);
@@ -94,9 +102,9 @@ class ColliderComponent : public Component{
         glm::vec3 collisionDepth(ColliderComponent* other)
         {
             // 3ayzeen ngeeb al position
-            x = colliderEntity->localTransform.position[0];
-            y = colliderEntity->localTransform.position[1];
-            z = colliderEntity->localTransform.position[2];
+            x = colliderEntity->localTransform.position[0]+shifted[0];
+            y = colliderEntity->localTransform.position[1]+shifted[1];
+            z = colliderEntity->localTransform.position[2]+shifted[2];
 
             std::cout<<glm::distance(glm::vec3(x,y,z), other->colliderEntity->localTransform.position)<<std::endl;
 

@@ -72,6 +72,9 @@ namespace our
                         {
                             // camera collided with wall
                             camera->getOwner()->localTransform.position = camera->lastPosition;
+                            world->markForRemoval(staticEntity);
+                            auto it = find(staticEntities.begin(),staticEntities.end(),staticEntity);
+                            staticEntities.erase(it);
                         }
                             std::cout<<"collision\n";
                     }
