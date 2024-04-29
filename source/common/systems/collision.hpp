@@ -15,8 +15,8 @@ namespace our
 
     // The collision system is responsible for checking collisions between colliders. 
     class CollisionSystem {
-        std::vector<Entity*> staticEntities;    // to contain the static objects that don't move
-        std::vector<Entity*> dynamicEntities;   // to contain the dynamic objects (camera and bullets)
+        inline static std::vector<Entity*> staticEntities = std::vector<Entity*>();    // to contain the static objects that don't move
+        inline static std::vector<Entity*> dynamicEntities = std::vector<Entity*>();   // to contain the dynamic objects (camera and bullets)
         CameraComponent* camera;
         
         ColliderComponent* getCollider(Entity* entity){
@@ -25,6 +25,11 @@ namespace our
         } 
 
     public:
+
+        // mainly used to add bullets
+        static void addDynamicEntity(Entity* newEntity){
+                dynamicEntities.push_back(newEntity);
+        }
 
         // Only called when the play state starts to add the colliders in an array 
         void enter(World* world) {
@@ -56,9 +61,10 @@ namespace our
             }
         }
 
-        //
+        // runs in each frame
         void update(World* world, float deltaTime) {
             // For each entity in the world
+            // TODO: make the loop use iterators
             for(auto dynamicEntity : dynamicEntities)
             {
                 // CameraComponent* camera = world->getEntities()->getComponent<CameraComponent>(0);
@@ -75,8 +81,22 @@ namespace our
                             world->markForRemoval(staticEntity);
                             auto it = find(staticEntities.begin(),staticEntities.end(),staticEntity);
                             staticEntities.erase(it);
+                            return;
                         }
-                            // std::cout<<"collision\n";
+
+                        // TODO:
+                        // check if it's a bullet
+                        // then check if it's enemy or ally
+                        // when collision happens remove the bullet from the entities and from the colliders
+                        // apply damage to the other collider
+                        // if ()
+
+                            world->markForRemoval(staticEntity);
+                            world->markForRemoval(dynamicEntity);
+                            auto it = find(staticEntities.begin(),staticEntities.end(),staticEntity);
+                            staticEntities.erase(it);
+                            it = find(dynamicEntities.begin(),dynamicEntities.end(),dynamicEntity);
+                            dynamicEntities.erase(it);
                     }
                 }
             }

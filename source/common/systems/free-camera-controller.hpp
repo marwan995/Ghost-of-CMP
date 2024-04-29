@@ -11,6 +11,9 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
+#include "collision.hpp"
+#include "../components/collision-component.hpp"
+
 #include <iostream>
 
 namespace our
@@ -79,8 +82,10 @@ namespace our
             // Mouse left click (shoot fire)
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
             {
+                // TODO: make sure the right amount of bullets is created
+                // TODO: move this code to the bullet file
                 // create a new entity for the bullet
-                Entity *entity = world->add();
+                Entity *bulletEntity = world->add();
 
                 float bulletSpeedX = -cos(-rotation.x)*sin(rotation.y);
                 float bulletSpeedY = -sin(-rotation.x);
@@ -88,9 +93,9 @@ namespace our
                 // std::cout<<glm::degrees(rotation.x)<<' '<<rotation.y<<' '<<glm::degrees(rotation.z)<<' '<<std::endl;
 
                 nlohmann::json bulletData = {
-                    {"position", {position.x, position.y, position.z + 10}},
+                    {"position", {position.x, position.y, position.z}},
                     {"rotation", {180-glm::degrees(rotation.x), glm::degrees(rotation.y)-180, glm::degrees(rotation.z)}},
-                    {"scale", {1, 1, 1}},
+                    {"scale", {0.2, 0.2, 0.01}},
                     {"components", nlohmann::json::array({
                         {
                             {"type", "Mesh Renderer"},
@@ -104,8 +109,19 @@ namespace our
                     })}
                 };
 
-                entity->deserialize(bulletData);
+                // add collider component to the entity
+                bulletEntity->addComponent<ColliderComponent>();
+                ColliderComponent* bulletCollider = bulletEntity->getComponent<ColliderComponent>();
 
+                bulletCollider->setEntity(bulletEntity);
+                bulletCollider->shape = ColliderShape::SPHERE;
+                bulletCollider->type = ColliderType::DYNAMIC;
+                bulletCollider->radius = 0.2;
+
+                // push the entity to the collision system
+                CollisionSystem::addDynamicEntity(bulletEntity);
+
+                bulletEntity->deserialize(bulletData);
             }
 
             // If the left mouse button is pressed, we get the change in the mouse location
