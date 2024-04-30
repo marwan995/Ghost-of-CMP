@@ -38,7 +38,6 @@ namespace our
         bool checkRateOfFire(float deltaTime) {
             // get current weapon BPS
             float bulletsPerSecond = weapons_BPS[activeWeapon];
-            std::cout<<deltasCounter<<std::endl;
             // check for it's cooldown
             if (deltasCounter == 0)
             {
@@ -47,7 +46,6 @@ namespace our
             }
             else if((deltasCounter) * deltaTime >= (1/bulletsPerSecond))
             {
-            std::cout<<deltasCounter<<std::endl;
                 deltasCounter = 0;
             }
             else{
@@ -186,17 +184,18 @@ namespace our
 
             // We change the camera position based on the keys WASD/QE
             // S & W moves the player back and forth
+            // forward/backward motion
+            // Project y-component to x-z plane
+            float yProjection = front.y * sin(rotation.x);
+            // Ignore the y-component of front and project yProjection to x and z axes
+            glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
+            
             if (app->getKeyboard().isPressed(GLFW_KEY_W))
             {
-                // Project y-component to x-z plane
-                float yProjection = front.y * sin(rotation.x);
-                // Ignore the y-component of front and project yProjection to x and z axes
-                glm::vec3 forwardMotion = glm::vec3(front.x - yProjection * sin(rotation.y), 0.0f, front.z - yProjection * cos(rotation.y) );
                 position += forwardMotion * (deltaTime * current_sensitivity.z);
-                // std::cout<<deltaTime<<std::endl;
             }
             if (app->getKeyboard().isPressed(GLFW_KEY_S))
-                position -= front * (deltaTime * current_sensitivity.z);
+                position -= forwardMotion * (deltaTime * current_sensitivity.z);
             
             // Not used in our case
             //// Q & E moves the player up and down

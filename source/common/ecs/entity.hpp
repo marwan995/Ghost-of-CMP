@@ -43,6 +43,7 @@ namespace our
             // Don't forget to return a pointer to the new component
             return newComponent;
         }
+        
 
         // This template method searhes for a component of type T and returns a pointer to it
         // If no component of type T was found, it returns a nullptr

@@ -72,15 +72,21 @@ namespace our{
             laserBulletCollider->setEntity(laserBulletEntity);
 
             // push the entity to the colliders array
-            CollisionSystem::addDynamicEntity(laserBulletEntity);
-            // addProjectile2Colliders(laserBulletEntity);
+            world->addDynamicEntity(laserBulletEntity);
 
-            // laserBulletEntity->addComponent<LaserBullet>();
+            // add the laser bullet component to the entity to use the hit function later
+            laserBulletEntity->addComponent<LaserBullet>();
         };
 
-        void hit() override
+        // returns true of the hit entity's health is depleted
+        bool hit(const Entity* hitEntity) override
         {
+            // TODO: access the hitEntity
+            // decrease it's health
+            // if the new health is negative or zero return true
+            // else return false
             std::cout<<"hit\n";
+            return true;
         };
     };    
 }

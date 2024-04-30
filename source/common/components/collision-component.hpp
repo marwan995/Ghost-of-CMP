@@ -48,7 +48,6 @@ class ColliderComponent : public Component{
         
        void deserialize(const nlohmann::json& data) override
        {
-            std::cout<<"collider\n";
             if (!data.is_object())
                 return;
 

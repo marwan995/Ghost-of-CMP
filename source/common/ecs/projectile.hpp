@@ -43,10 +43,6 @@ namespace our {
             }
         }
 
-        void addProjectile2Colliders(Entity* bulletEntity) {
-            CollisionSystem::addDynamicEntity(bulletEntity);
-        }
-
 
         void deserialize(const nlohmann::json& data) override{};
 
@@ -54,7 +50,7 @@ namespace our {
         virtual void shoot(){};
 
         // function to remove the bullet when it hits another collider
-        virtual void hit(){};
+        virtual bool hit(const Entity* hitEntity) = 0;
     };
     
 }
