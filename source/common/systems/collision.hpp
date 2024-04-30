@@ -9,9 +9,11 @@
 #include <glm/gtx/fast_trigonometry.hpp>
 
 #include "../components/camera.hpp"
+// #include "../ecs/laser-bullet.hpp"
 
 namespace our
 {
+    // class LaserBullet;
 
     // The collision system is responsible for checking collisions between colliders. 
     class CollisionSystem {
@@ -22,13 +24,13 @@ namespace our
         ColliderComponent* getCollider(Entity* entity){
             ColliderComponent* collider = entity->getComponent<ColliderComponent>();
             return collider? collider : NULL;
-        } 
+        }
 
     public:
 
         // mainly used to add bullets
         static void addDynamicEntity(Entity* newEntity){
-                dynamicEntities.push_back(newEntity);
+            dynamicEntities.push_back(newEntity);
         }
 
         // Only called when the play state starts to add the colliders in an array 
@@ -91,6 +93,11 @@ namespace our
                         ColliderComponent* possibleBullet = dynamicEntity->getComponent<ColliderComponent>();
                         if (possibleBullet->type == ColliderType::BULLET)
                         {
+                            // our::LaserBullet* laser = dynamicEntity->getComponent<our::LaserBullet>();
+                            // if (laser)
+                            // {
+                            //     laser->hit();
+                            // }
                             // check if it's friendly fire
                             world->markForRemoval(staticEntity);
                             world->markForRemoval(dynamicEntity);
@@ -106,5 +113,6 @@ namespace our
         }
 
     };
+
 
 }

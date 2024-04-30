@@ -15,6 +15,8 @@ namespace our{
         World* world;
 
     public:
+        LaserBullet() = default;
+
         // initialize the bullet attributes
         LaserBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld)
         {
@@ -71,11 +73,14 @@ namespace our{
 
             // push the entity to the colliders array
             CollisionSystem::addDynamicEntity(laserBulletEntity);
+            // addProjectile2Colliders(laserBulletEntity);
+
+            // laserBulletEntity->addComponent<LaserBullet>();
         };
 
         void hit() override
         {
-
+            std::cout<<"hit\n";
         };
     };    
 }
