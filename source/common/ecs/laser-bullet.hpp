@@ -40,33 +40,37 @@ namespace our{
                     {"scale", scale},
                     {"components", nlohmann::json::array({
                         {
+                            // bullet model
                             {"type", "Mesh Renderer"},
                             {"mesh", mesh},
                             {"material", material}
                         },
                         {
+                            // bullet motion
                             {"type", "Movement"},
                             {"linearVelocity", linearVelocity} 
+                        },
+                        {
+                            // collider attributes
+                            {"type", "Collider"},
+                            {"colliderShape", "sphere"},
+                            {"colliderType", "bullet"},
+                            {"radius", radius}
                         }
                     })}
                 };
 
-            // set collider component
-            laserBulletEntity->addComponent<ColliderComponent>();
+            // deserialize the entity data to render it and add bullet data
+            laserBulletEntity->deserialize(bulletData);
+            
             // get the collider component
             ColliderComponent* laserBulletCollider = laserBulletEntity->getComponent<ColliderComponent>();
             
             // set collider attributes
             laserBulletCollider->setEntity(laserBulletEntity);
-            laserBulletCollider->shape = ColliderShape::SPHERE;
-            laserBulletCollider->type = ColliderType::BULLET;
-            laserBulletCollider->radius =radius;
 
             // push the entity to the colliders array
             CollisionSystem::addDynamicEntity(laserBulletEntity);
-
-            // deserialize the entity data to render it
-            laserBulletEntity->deserialize(bulletData);
         };
 
         void hit() override

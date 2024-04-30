@@ -64,7 +64,11 @@ class ColliderComponent : public Component{
             std::string colliderTypeStr = data.value("colliderType", "static");
             if(colliderTypeStr == "dynamic"){
                 type = ColliderType::DYNAMIC;
-            }else{
+            }else if (colliderTypeStr == "bullet")
+            {
+                type = ColliderType::BULLET;
+            }
+            else{
                 type = ColliderType::STATIC;
             }
 
