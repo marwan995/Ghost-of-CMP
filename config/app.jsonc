@@ -16,12 +16,16 @@
     "assets": {
       "shaders": {
         "tinted": {
-          "vs": "assets/shaders/tinted.vert",
-          "fs": "assets/shaders/tinted.frag"
+            "vs": "assets/shaders/tinted.vert",
+            "fs": "assets/shaders/tinted.frag"
         },
         "textured": {
-          "vs": "assets/shaders/textured.vert",
-          "fs": "assets/shaders/textured.frag"
+            "vs": "assets/shaders/textured.vert",
+            "fs": "assets/shaders/textured.frag"
+        },
+        "lighted": {
+            "vs": "assets/shaders/lighting.vert",
+            "fs": "assets/shaders/lighting.frag"
         }
       },
       "textures": {
@@ -54,7 +58,9 @@
         "laser": "assets/models/Laser.obj",
         "plane": "assets/models/plane.obj",
         "sphere": "assets/models/sphere.obj",
-        "groundObstacles": "assets/models/ground_obstacles.obj"
+        "groundObstacles": "assets/models/ground_obstacles.obj",
+        "cube":"assets/models/cube.obj"
+
       },
       "samplers": {
         "default": {},
@@ -89,8 +95,8 @@
           "sampler": "grassSampler"
         },
         "glass": {
-          "type": "textured",
-          "shader": "textured",
+          "type": "lighted",
+          "shader": "lighted",
           "pipelineState": {
             "faceCulling": {
               "enabled": false
@@ -382,6 +388,18 @@
         ]
       },
 
+      {
+        "scale": [1.0, 1.0, 1.0],
+        "position": [1, 2, 2],
+        "rotation": [0, 0, 0],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "glass"
+          }
+        ]
+      },
       {
         "scale": [4, 6, 1],
         "position": [-4, -3.3, 0],

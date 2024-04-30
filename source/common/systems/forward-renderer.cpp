@@ -213,6 +213,8 @@ namespace our
             // Set the model-view-projection matrix (transform) uniform for the shader
             command.material->setup(); //  u called the set before the setup what an idiot
             command.material->shader->set("transform", VP * command.localToWorld);
+            command.material->shader->set("model", command.localToWorld);
+            command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
             // Draw the mesh using the material's shader
             command.mesh->draw();
         }
