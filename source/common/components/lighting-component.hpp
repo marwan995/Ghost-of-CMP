@@ -46,12 +46,12 @@ namespace our
                 return;
 
             // get the light type
-            std::string lightTypeStr = data.value("lightType", "directional");
-            if (lightTypeStr == "spot")
+            std::string lightTypeStr = data.value("lightType", "DIRECTIONAL");
+            if (lightTypeStr == "SPOT")
             {
                 type = lightingType::SPOT;
             }
-            else if(lightTypeStr == "point")
+            else if(lightTypeStr == "POINT")
             {
                 type = lightingType::POINT;
             }else{

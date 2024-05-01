@@ -61,7 +61,7 @@ uniform vec4 tint;
 uniform vec3 camPos;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);  
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir);
 
 
 void main(){
@@ -69,6 +69,7 @@ void main(){
     vec3 normalized = normalize(fs_in.normal);
     vec3 viewDirection = normalize(camPos - fs_in.fragPosition);
     vec3 combination = CalcDirLight(dirLight, normalized, viewDirection);
+    combination += CalcSpotLight(spotLight, normalized, viewDirection);
     frag_color = tint * vec4(combination,1.0);
 }
 
@@ -110,8 +111,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirect
 
     return (ambient + diffuse + specular); 
 }
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirection){
-       vec3 lightDirection =normalize(light.position - fs_in.fragPosition);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDirection){
+    vec3 lightDirection =normalize(light.position - fs_in.fragPosition);
     float diff = max(dot(normal, lightDirection), 0.0f);
 
 
@@ -129,8 +130,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirectio
     float theta = dot(lightDirection, normalize(-light.direction)); 
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    ambient  *= attenuation;  
-    diffuse   *= attenuation;
-    specular *= attenuation;  
-    return (ambient + diffuse + specular)*intensity;
+    ambient  *= attenuation*intensity;  
+    diffuse   *= attenuation*intensity;
+    specular *= attenuation*intensity;  
+    return (ambient + diffuse + specular);
 }

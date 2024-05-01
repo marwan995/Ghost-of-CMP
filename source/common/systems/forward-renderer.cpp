@@ -17,11 +17,10 @@ namespace our
         {
             // First, we create a sphere which will be used to draw the sky
             this->skySphere = mesh_utils::sphere(glm::ivec2(16, 16));
-
             // We can draw the sky using the same shader used to draw textured objects
             ShaderProgram *skyShader = new ShaderProgram();
-            skyShader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
-            skyShader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
+            skyShader->attach("assets/shaders/textureWithoutLight.vert", GL_VERTEX_SHADER);
+            skyShader->attach("assets/shaders/textureWithoutLight.frag", GL_FRAGMENT_SHADER);
             skyShader->link();
 
             // TODO: (Req 10) Pick the correct pipeline state to draw the sky
@@ -233,6 +232,24 @@ namespace our
                         command.material->shader->set("dirLight.ambient", lightCom->ambient);
                         command.material->shader->set("dirLight.diffuse",  lightCom->diffuse);
                         command.material->shader->set("dirLight.specular", lightCom->specular);
+                    }else if (lightCom->type == lightingType::SPOT){
+                        command.material->shader->set("spotLight.constant", lightCom->constant);
+                        command.material->shader->set("spotLight.linear",  lightCom->linear);
+                        command.material->shader->set("spotLight.quadratic", lightCom->quadratic);
+                        
+                        command.material->shader->set("spotLight.cutOff", glm::cos(glm::radians(25.0f)));
+                        command.material->shader->set("spotLight.outerCutOff", glm::cos(glm::radians(35.0f)));
+                        
+                        Entity* lightOwner = lightCom->getOwner();
+
+
+                        command.material->shader->set("spotLight.position", camera->getOwner()->localTransform.position);
+                        command.material->shader->set("spotLight.direction", camera->getFrontVector());
+
+                        command.material->shader->set("spotLight.ambient", lightCom->ambient);
+                        command.material->shader->set("spotLight.diffuse",  lightCom->diffuse);
+                        command.material->shader->set("spotLight.specular", lightCom->specular);
+
                     }
 
                     // command.material->shader->set("light.direction", glm::vec3(0.0f, 1.0f, 0.0f));
