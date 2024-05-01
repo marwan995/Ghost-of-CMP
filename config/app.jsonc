@@ -382,6 +382,17 @@
                 "type": "Mesh Renderer",
                 "mesh": "lamp",
                 "material": "Image_3"
+              },
+              {
+                "type": "Lighting",
+                "lightType":"SPOT",
+                "ambient" : [0.1, 0.1, 0.1],
+                "diffuse" : [0.8, 0.8, 0.8],
+                "specular" : [1.0, 1.0, 1.0],
+                "constant":1.0,
+                "linear":0.045,
+                "quadratic":0.0075
+                
               }
             ]
           },
@@ -407,6 +418,7 @@
         "components": [
           {
             "type": "Lighting",
+            "lightType":"DIRECTIONAL",
             "direction" : [0, -1, 0], 
             "ambient" : [0.2, 0.2, 0.2],
             "diffuse" : [0.5, 0.5, 0.5],
