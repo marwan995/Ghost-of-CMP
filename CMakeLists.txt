@@ -68,7 +68,8 @@ set(COMMON_SOURCES
         source/common/ecs/entity.cpp
         source/common/ecs/world.hpp
         source/common/ecs/world.cpp
-        # source/common/ecs/bullet.hpp
+        source/common/ecs/laser-bullet.hpp
+        source/common/ecs/projectile.hpp
 
         source/common/components/camera.hpp
         source/common/components/camera.cpp

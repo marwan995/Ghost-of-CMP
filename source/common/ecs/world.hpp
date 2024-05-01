@@ -6,6 +6,9 @@
 
 namespace our
 {
+    // forward delcaration for the collision system
+    // as the world stores static & dynamic entities
+    class CollisionSystem;
 
     // This class holds a set of entities
     class World
@@ -13,6 +16,11 @@ namespace our
         std::unordered_set<Entity *> entities;         // These are the entities held by this world
         std::unordered_set<Entity *> markedForRemoval; // These are the entities that are awaiting to be deleted
                                                        // when deleteMarkedEntities is called
+        std::vector<Entity*> staticEntities;
+        std::vector<Entity*> dynamicEntities;
+        
+        // to make the collision system able to access static/dynamic entities
+        friend CollisionSystem;
 
     public:
         World() = default;
@@ -34,6 +42,10 @@ namespace our
             entity->world = this;
             entities.insert(entity);
             return entity;
+        }
+
+        void addDynamicEntity(Entity* newEntity){
+            dynamicEntities.push_back(newEntity);
         }
 
         // This returns and immutable reference to the set of all entites in the world.

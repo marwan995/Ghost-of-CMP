@@ -17,7 +17,8 @@ namespace our{
     };
     enum class ColliderType {
         STATIC,
-        DYNAMIC
+        DYNAMIC,
+        BULLET
     };
 
 // Abstract class for all colliders
@@ -40,13 +41,13 @@ class ColliderComponent : public Component{
 
         static std::string getID() { return "Collider"; }
 
+        // TODO: check if the collision depth is needed
         static bool isColliding(glm::vec3 vector){
             return vector != glm::vec3(0,0,0);
         }
         
        void deserialize(const nlohmann::json& data) override
        {
-            std::cout<<"collider\n";
             if (!data.is_object())
                 return;
 
@@ -62,20 +63,13 @@ class ColliderComponent : public Component{
             std::string colliderTypeStr = data.value("colliderType", "static");
             if(colliderTypeStr == "dynamic"){
                 type = ColliderType::DYNAMIC;
-            }else{
+            }else if (colliderTypeStr == "bullet")
+            {
+                type = ColliderType::BULLET;
+            }
+            else{
                 type = ColliderType::STATIC;
             }
-
-            // if (data.contains("position"))
-            // {
-            //     auto position = data["position"];
-            //     x = position[0];
-            //     y = position[1];
-            //     z = position[2];
-            // }
-            // x = getOwner()->localTransform.position[0];
-            // y = getOwner()->localTransform.position[1];
-            // z = getOwner()->localTransform.position[2];
 
             // get the collider scale (in case it's rect)
             if (data.contains("scale"))
@@ -104,8 +98,6 @@ class ColliderComponent : public Component{
             x = colliderEntity->localTransform.position[0]+shifted[0];
             y = colliderEntity->localTransform.position[1]+shifted[1];
             z = colliderEntity->localTransform.position[2]+shifted[2];
-
-            // std::cout<<glm::distance(glm::vec3(x,y,z), other->colliderEntity->localTransform.position)<<std::endl;
 
             if (shape == ColliderShape::SPHERE && other->shape == ColliderShape::SPHERE)
             {
