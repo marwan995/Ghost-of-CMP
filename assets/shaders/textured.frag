@@ -8,6 +8,15 @@ in Varyings {
 
 } fs_in;
 
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+}; 
+
+uniform Material material;
+
 out vec4 frag_color;
 
 uniform vec4 tint;
