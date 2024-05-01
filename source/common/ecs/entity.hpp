@@ -24,6 +24,7 @@ namespace our
         Entity *parent;           // The parent of the entity. The transform of the entity is relative to its parent.
                                   // If parent is null, the entity is a root entity (has no parent).
         Transform localTransform; // The transform of this entity relative to its parent.
+        float health = FLT_MAX;  // as it's an FPS game almost all entities have health INT_MAX is for static objects
 
         World *getWorld() const { return world; } // Returns the world to which this entity belongs
 
@@ -43,6 +44,16 @@ namespace our
             // Don't forget to return a pointer to the new component
             return newComponent;
         }
+
+        // This template method appends an already created component of type T to the entity
+        template <typename T>
+        void appendComponent(T *newComponent)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+            newComponent->owner = this;
+            components.push_back(newComponent);
+        }
+        
 
         // This template method searhes for a component of type T and returns a pointer to it
         // If no component of type T was found, it returns a nullptr

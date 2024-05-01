@@ -3,8 +3,9 @@
 #include "../ecs/world.hpp"
 #include "../components/camera.hpp"
 #include "../components/mesh-renderer.hpp"
-#include "../components/bullet.hpp"
 #include "../asset-loader.hpp"
+
+#include "../components/lighting-component.hpp"
 
 #include <glad/gl.h>
 #include <vector>
@@ -34,6 +35,7 @@ namespace our
         // We define them here (instead of being local to the "render" function) as an optimization to prevent reallocating them every frame
         std::vector<RenderCommand> opaqueCommands;
         std::vector<RenderCommand> transparentCommands;
+        std::vector<Entity*> lightSourceEntities;
         // Objects used for rendering a skybox
         Mesh* skySphere;
         TexturedMaterial* skyMaterial;

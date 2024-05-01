@@ -5,7 +5,7 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
-#include "component.hpp"
+#include "../ecs/component.hpp"
 
 #include <iostream>
 
@@ -17,7 +17,8 @@ namespace our{
     };
     enum class ColliderType {
         STATIC,
-        DYNAMIC
+        DYNAMIC,
+        BULLET
     };
 
 // Abstract class for all colliders
@@ -28,24 +29,25 @@ class ColliderComponent : public Component{
         Entity* colliderEntity;
         float x,y,z;
         float scaleX, scaleY, scaleZ;
+        glm::vec3 shifted = glm::vec3(0,0,0);
         float radius;
 
         void setEntity(Entity* entity){
             colliderEntity = entity;
-            x = entity->localTransform.position[0];
-            y = entity->localTransform.position[1];
-            z = entity->localTransform.position[2];
+            x = entity->localTransform.position[0]+shifted[0];
+            y = entity->localTransform.position[1]+shifted[1];
+            z = entity->localTransform.position[2]+shifted[2];
         }
 
         static std::string getID() { return "Collider"; }
 
+        // TODO: check if the collision depth is needed
         static bool isColliding(glm::vec3 vector){
             return vector != glm::vec3(0,0,0);
         }
         
        void deserialize(const nlohmann::json& data) override
        {
-            std::cout<<"collider\n";
             if (!data.is_object())
                 return;
 
@@ -61,20 +63,13 @@ class ColliderComponent : public Component{
             std::string colliderTypeStr = data.value("colliderType", "static");
             if(colliderTypeStr == "dynamic"){
                 type = ColliderType::DYNAMIC;
-            }else{
+            }else if (colliderTypeStr == "bullet")
+            {
+                type = ColliderType::BULLET;
+            }
+            else{
                 type = ColliderType::STATIC;
             }
-
-            // if (data.contains("position"))
-            // {
-            //     auto position = data["position"];
-            //     x = position[0];
-            //     y = position[1];
-            //     z = position[2];
-            // }
-            // x = getOwner()->localTransform.position[0];
-            // y = getOwner()->localTransform.position[1];
-            // z = getOwner()->localTransform.position[2];
 
             // get the collider scale (in case it's rect)
             if (data.contains("scale"))
@@ -83,6 +78,13 @@ class ColliderComponent : public Component{
                 scaleX = scale[0];
                 scaleY = scale[1];
                 scaleZ = scale[2];
+            }
+            if (data.contains("shifted"))
+            {
+                auto shiftAmount = data["shifted"];
+                shifted[0] = shiftAmount[0];
+                shifted[1] = shiftAmount[1];
+                shifted[2] = shiftAmount[2];
             }
             
             // get collider radius (in case it's sphere)
@@ -93,12 +95,9 @@ class ColliderComponent : public Component{
 
         glm::vec3 collisionDepth(ColliderComponent* other)
         {
-            // 3ayzeen ngeeb al position
-            x = colliderEntity->localTransform.position[0];
-            y = colliderEntity->localTransform.position[1];
-            z = colliderEntity->localTransform.position[2];
-
-            std::cout<<glm::distance(glm::vec3(x,y,z), other->colliderEntity->localTransform.position)<<std::endl;
+            x = colliderEntity->localTransform.position[0]+shifted[0];
+            y = colliderEntity->localTransform.position[1]+shifted[1];
+            z = colliderEntity->localTransform.position[2]+shifted[2];
 
             if (shape == ColliderShape::SPHERE && other->shape == ColliderShape::SPHERE)
             {

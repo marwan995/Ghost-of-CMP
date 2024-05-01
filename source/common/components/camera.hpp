@@ -34,6 +34,14 @@ namespace our {
         // Creates and returns the camera projection matrix
         // "viewportSize" is used to compute the aspect ratio
         glm::mat4 getProjectionMatrix(glm::ivec2 viewportSize) const;
+
+        glm::vec3 getFrontVector() const {
+            // Extract rotation part of the view matrix
+            glm::mat3 rotationMatrix = glm::mat3(glm::inverse(getViewMatrix()));
+            // Camera front is typically the negative z-axis of the camera's local coordinate system
+            glm::vec3 frontVector = -glm::normalize(rotationMatrix[2]);
+            return frontVector;
+        }
     };
 
 }
