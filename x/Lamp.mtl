@@ -1,0 +1,15 @@
+newmtl Lamp - Base material_a5eadb4d-80e3-4f22-a18a-d122ea2947b1
+Kd 0.329 0.024 0.024
+d 1.000
+newmtl Lamp - Element Case material_0821520f-5409-4686-a857-f14a1fd01551
+Kd 0.282 0.286 0.290
+d 1.000
+newmtl Lamp - Element Core material_41e466b4-31cb-44c0-a693-691657b14ab8
+Kd 1.000 0.984 0.031
+d 1.000
+newmtl Lamp - Glass material_a523ef05-b4c6-491e-ae39-ccb0f39faa37
+Kd 0.376 0.376 0.376
+d 1.000
+newmtl Lamp - Socket material_3a2a4490-2ed2-471e-8d48-bba42e25b62a
+Kd 0.000 0.000 0.000
+d 1.000
