@@ -57,7 +57,7 @@ namespace our
         shader->set("alphaThreshold", alphaThreshold);
         texture->bind();
         sampler->bind(textureUnit);
-        shader->set("tex", textureUnit);        
+        shader->set("material.tex", textureUnit);        
     }
 
     // This function read the material data from a json object

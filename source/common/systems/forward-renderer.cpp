@@ -214,6 +214,14 @@ namespace our
             command.material->setup(); //  u called the set before the setup what an idiot
             command.material->shader->set("transform", VP * command.localToWorld);
             command.material->shader->set("model", command.localToWorld);
+
+
+            command.material->shader->set("material.shininess", 8.0f);
+
+            command.material->shader->set("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            command.material->shader->set("light.diffuse",  glm::vec3(0.5f, 0.5f, 0.5f));
+            command.material->shader->set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
             command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
             // Draw the mesh using the material's shader
             command.mesh->draw();
