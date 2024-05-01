@@ -59,7 +59,8 @@
         "plane": "assets/models/plane.obj",
         "sphere": "assets/models/sphere.obj",
         "groundObstacles": "assets/models/ground_obstacles.obj",
-        "cube":"assets/models/cube.obj"
+        "cube":"assets/models/cube.obj",
+        "cross":"assets/models/cross.obj"
 
       },
       "samplers": {
@@ -339,13 +340,26 @@
                 "material": "metal"
               }
             ]
+          },
+          {
+            "position": [0, 0, -0.1],
+            "rotation": [0, 90, 0],
+            "scale": [0.0088, 0.0088, 0.0088],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cross",
+                "material": "laser"
+              }
+    
+            ]
           }
         ]
       },
       {
         "position": [0.1, -0.1, 9.71],
         "rotation": [0, 0, 0],
-        "scale": [1, 1, 1],
+        "scale": [0, 0, 0],
         "components": [
           {
             "type": "Mesh Renderer",
@@ -358,6 +372,7 @@
           }
         ]
       },
+    
 
       {
         "position": [0, 30, 1],

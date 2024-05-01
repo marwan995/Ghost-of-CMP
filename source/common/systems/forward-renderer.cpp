@@ -218,9 +218,18 @@ namespace our
 
             command.material->shader->set("material.shininess", 8.0f);
 
-            command.material->shader->set("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            command.material->shader->set("light.diffuse",  glm::vec3(0.5f, 0.5f, 0.5f));
+            command.material->shader->set("light.direction", glm::vec3(0.0f, 1.0f, 0.0f));
+            command.material->shader->set("light.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
+            command.material->shader->set("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));
             command.material->shader->set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+            command.material->shader->set("light.constant",  1.0f);
+            command.material->shader->set("light.linear",    0.09f);
+            command.material->shader->set("light.quadratic", 0.032f);	
+
+            command.material->shader->set("light.position",  camera->getOwner()->localTransform.position);
+            command.material->shader->set("light.direction", camera->getFrontVector());
+            command.material->shader->set("light.cutOff",   glm::cos(glm::radians(12.5f)));
 
             command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
             // Draw the mesh using the material's shader

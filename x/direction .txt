@@ -1,3 +1,4 @@
+
 #version 330 core
 
 in Varyings {
@@ -13,20 +14,10 @@ struct Material {
     float shininess;
 }; 
 struct Light {
-    vec3  position;
-    vec3  direction;
-    float cutOff;
-    float outerCutOff;
-
+    vec3 direction;  
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
- 
-
-    // for attenuation and point light 
-    float constant;
-    float linear;
-    float quadratic;
     
 };
 
@@ -45,9 +36,10 @@ void main(){
     // ambient lighting
     vec3 ambient = light.ambient * texture(material.tex, fs_in.tex_coord).rgb;
 
+    vec3 lightPos = vec3(1.0, 2.0, 2.0);
 	// diffuse lighting
 	vec3 normalized = normalize(fs_in.normal);
-	vec3 lightDirection = normalize(light.position - fs_in.fragPosition);
+	vec3 lightDirection =normalize(-light.direction);
 	float diff = max(dot(normalized, lightDirection), 0.0f);
     vec3 diffuse = light.diffuse * (diff *  texture(material.tex, fs_in.tex_coord).rgb);
 
@@ -58,19 +50,6 @@ void main(){
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininess);
     vec3 specular = light.specular * (specAmount *  texture(material.tex,fs_in.tex_coord).rgb);  
 
-    float theta = dot(lightDirection, normalize(-light.direction)); 
-    float epsilon = (light.cutOff - light.outerCutOff);
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    diffuse  *= intensity;
-    specular *= intensity;
-
-    // attenuation
-    float distance   = length(light.position - fs_in.fragPosition);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
-
-    ambient  *= attenuation;  
-    diffuse   *= attenuation;
-    specular *= attenuation;   
-
+//    vec4 texture_color = texture(tex, fs_in.tex_coord);
     frag_color = tint * (vec4(specular+diffuse+ambient,1.0));
 }
