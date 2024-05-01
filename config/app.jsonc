@@ -93,7 +93,8 @@
           },
           "tint": [1, 1, 1, 1],
           "texture": "grass",
-          "sampler": "grassSampler"
+          "sampler": "grassSampler",
+          "shininess":2.0
         },
         "glass": {
           "type": "lighted",
@@ -115,7 +116,8 @@
           "transparent": true,
           "tint": [1, 1, 1, 1],
           "texture": "Image_16",
-          "sampler": "pixelated"
+          "sampler": "pixelated",
+          "shininess":6.0
         },
         "grass": {
           "type": "textured",
@@ -130,7 +132,8 @@
           },
           "tint": [1, 1, 1, 1],
           "texture": "grass",
-          "sampler": "grassSampler"
+          "sampler": "grassSampler",
+          "shininess":10.0
         },
         "groundObstacles": {
           "type": "tinted",
@@ -171,7 +174,8 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "texture1",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":8.0
         },
         "M_Screen_Emissive": {
           "type": "textured",
@@ -186,7 +190,8 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "M_Screen_Emissive",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":6.0
         },
         "Image_5": {
           "type": "textured",
@@ -201,7 +206,8 @@
           },
           "tint": [0.5, 0, 0.8, 0.7],
           "texture": "Image_5",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":6.0
         },
         "Image_2": {
           "type": "textured",
@@ -216,7 +222,8 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "Image_2",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":5.0
         },
         "Image_7": {
           "type": "textured",
@@ -231,7 +238,8 @@
           },
           "tint": [0.5, 0, 0.5, 0.1],
           "texture": "Image_7",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":10.0
         },
         "Image_19": {
           "type": "textured",
@@ -246,7 +254,8 @@
           },
           "tint": [0.8, 0, 0.8, 0.8],
           "texture": "Image_19",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":4.0
         },
         "keyboard": {
           "type": "textured",
@@ -261,7 +270,8 @@
           },
           "tint": [0.6, 0, 0.8, 0.8],
           "texture": "Image_1",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":8.0
         },
         "vase": {
           "type": "textured",
@@ -276,7 +286,8 @@
           },
           "tint": [0.6, 0, 0.8, 0.8],
           "texture": "vase",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":4.0
         },
         "ground-box": {
           "type": "textured",
@@ -291,7 +302,8 @@
           },
           "tint": [0.6, 0, 0.8, 0.8],
           "texture": "ground-box",
-          "sampler": "groundObstaclesSampler"
+          "sampler": "groundObstaclesSampler",
+          "shininess":7.0
         },
 
         "moon": {
@@ -307,7 +319,8 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "moon",
-          "sampler": "default"
+          "sampler": "default",
+          "shininess":10.0
         }
       }
     },
@@ -357,18 +370,16 @@
         ]
       },
       {
-        "position": [0.1, -0.1, 9.71],
+        "position": [0, 10, 0],
         "rotation": [0, 0, 0],
         "scale": [0, 0, 0],
         "components": [
           {
-            "type": "Mesh Renderer",
-            "mesh": "laser",
-            "material": "laser"
-          },
-          {
-            "type": "Movement",
-            "linearVelocity": [0.0, 0.0, -0.93]
+            "type": "Lighting",
+            "direction" : [0, -1, 0], 
+            "ambient" : [0.2, 0.2, 0.2],
+            "diffuse" : [0.5, 0.5, 0.5],
+            "specular" : [1.0, 1.0, 1.0]
           }
         ]
       },

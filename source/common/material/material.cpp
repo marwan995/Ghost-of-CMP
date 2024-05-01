@@ -57,7 +57,8 @@ namespace our
         shader->set("alphaThreshold", alphaThreshold);
         texture->bind();
         sampler->bind(textureUnit);
-        shader->set("material.tex", textureUnit);        
+        shader->set("material.tex", textureUnit);     
+        shader->set("material.shininess", shininess);     
     }
 
     // This function read the material data from a json object
@@ -67,6 +68,7 @@ namespace our
         if (!data.is_object())
             return;
         alphaThreshold = data.value("alphaThreshold", 0.0f);
+        shininess = data.value("shininess",100.0);
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }

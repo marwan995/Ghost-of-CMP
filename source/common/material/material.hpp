@@ -56,6 +56,7 @@ namespace our
         Texture2D *texture;
         Sampler *sampler = new Sampler();
         float alphaThreshold;
+        float shininess;
 
         void setup() const override;
         void deserialize(const nlohmann::json &data) override;

@@ -132,6 +132,8 @@ namespace our
         // RenderCommand bulletCommand;
         opaqueCommands.clear();
         transparentCommands.clear();
+        lightSourceEntities.clear();
+
         for (auto entity : world->getEntities())
         {
             // If we hadn't found a camera yet, we look for a camera in this entity
@@ -165,6 +167,12 @@ namespace our
             //     bulletCommand.mesh = bullet->mesh;
             //     bulletCommand.material = bullet->material;
             // }
+
+            auto lightComp = entity->getComponent<LightingComponent>();
+            if (lightComp)
+            {
+                lightSourceEntities.push_back(entity);
+            }
         }
         // If there is no camera, we return (we cannot render without a camera)
         if (camera == nullptr)
@@ -214,24 +222,35 @@ namespace our
             command.material->setup(); //  u called the set before the setup what an idiot
             command.material->shader->set("transform", VP * command.localToWorld);
             command.material->shader->set("model", command.localToWorld);
+            for (const auto &lightEntity : lightSourceEntities)
+            {
+                LightingComponent *lightCom = lightEntity->getComponent<LightingComponent>();
+                if (lightCom)
+                {
+                    if (lightCom->type == lightingType::DIRECTIONAL)
+                    {
+                        command.material->shader->set("dirLight.direction", lightCom->direction);
+                        command.material->shader->set("dirLight.ambient", lightCom->ambient);
+                        command.material->shader->set("dirLight.diffuse",  lightCom->diffuse);
+                        command.material->shader->set("dirLight.specular", lightCom->specular);
+                    }
 
+                    // command.material->shader->set("light.direction", glm::vec3(0.0f, 1.0f, 0.0f));
+                    // command.material->shader->set("light.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
+                    // command.material->shader->set("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));
+                    // command.material->shader->set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-            command.material->shader->set("material.shininess", 8.0f);
+                    // command.material->shader->set("light.constant",  1.0f);
+                    // command.material->shader->set("light.linear",    0.09f);
+                    // command.material->shader->set("light.quadratic", 0.032f);
 
-            command.material->shader->set("light.direction", glm::vec3(0.0f, 1.0f, 0.0f));
-            command.material->shader->set("light.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
-            command.material->shader->set("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));
-            command.material->shader->set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+                    // command.material->shader->set("light.position",  camera->getOwner()->localTransform.position);
+                    // command.material->shader->set("light.direction", camera->getFrontVector());
+                    // command.material->shader->set("light.cutOff",   glm::cos(glm::radians(12.5f)));
 
-            command.material->shader->set("light.constant",  1.0f);
-            command.material->shader->set("light.linear",    0.09f);
-            command.material->shader->set("light.quadratic", 0.032f);	
-
-            command.material->shader->set("light.position",  camera->getOwner()->localTransform.position);
-            command.material->shader->set("light.direction", camera->getFrontVector());
-            command.material->shader->set("light.cutOff",   glm::cos(glm::radians(12.5f)));
-
-            command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
+                    command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
+                }
+            }
             // Draw the mesh using the material's shader
             command.mesh->draw();
         }
