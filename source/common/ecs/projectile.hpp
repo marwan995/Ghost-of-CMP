@@ -34,6 +34,14 @@ namespace our {
         // ProjectileType type;
         bool isFriendly;
 
+        // projectile entity attributes
+        std::string mesh;
+        std::string material;
+        float scale[3];
+        float position[3];
+        float rotation[3];
+        float linearVelocity[3];
+
         static std::string getID() { return "Projectile"; }
 
         // utility to copy values from another array
@@ -43,14 +51,15 @@ namespace our {
             }
         }
 
-
+        // only overriden to be able to make projectile a component
+        // can be changed later if the structure of bullet/grenade creation is changed (probably not)
         void deserialize(const nlohmann::json& data) override{};
 
         // function to spawn a bullet
-        virtual void shoot(){};
+        virtual void shoot()=0;
 
         // function to remove the bullet when it hits another collider
-        virtual bool hit(const Entity* hitEntity) = 0;
+        virtual bool hit(World* world,Entity* projectile,Entity* hitEntity) = 0;
     };
     
 }

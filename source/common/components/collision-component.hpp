@@ -71,17 +71,6 @@ class ColliderComponent : public Component{
                 type = ColliderType::STATIC;
             }
 
-            // if (data.contains("position"))
-            // {
-            //     auto position = data["position"];
-            //     x = position[0];
-            //     y = position[1];
-            //     z = position[2];
-            // }
-            // x = getOwner()->localTransform.position[0];
-            // y = getOwner()->localTransform.position[1];
-            // z = getOwner()->localTransform.position[2];
-
             // get the collider scale (in case it's rect)
             if (data.contains("scale"))
             {
@@ -109,8 +98,6 @@ class ColliderComponent : public Component{
             x = colliderEntity->localTransform.position[0]+shifted[0];
             y = colliderEntity->localTransform.position[1]+shifted[1];
             z = colliderEntity->localTransform.position[2]+shifted[2];
-
-            // std::cout<<glm::distance(glm::vec3(x,y,z), other->colliderEntity->localTransform.position)<<std::endl;
 
             if (shape == ColliderShape::SPHERE && other->shape == ColliderShape::SPHERE)
             {

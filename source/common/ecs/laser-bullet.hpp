@@ -6,24 +6,23 @@ namespace our{
     class LaserBullet : public Projectile
     {
     private:
-        std::string mesh = "laser";
-        std::string material = "laser";
-        float scale[3] = {0.2, 0.2, 0.01};
-        float position[3];
-        float rotation[3];
-        float linearVelocity[3];
         World* world;
 
     public:
-        LaserBullet() = default;
-
         // initialize the bullet attributes
         LaserBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld)
         {
+            mesh = "laser";
+            material = "laser";
+            scale[0] = 0.2;
+            scale[1] = 0.2;
+            scale[2] = 0.01;
+            
             world = currentWorld;
             speed = 10;
             radius = 0.2;
             damage = 30;
+            isFriendly = true;
 
             Projectile::copyArr(position, cameraPosition);
             Projectile::copyArr(rotation, cameraRotation);
@@ -75,18 +74,22 @@ namespace our{
             world->addDynamicEntity(laserBulletEntity);
 
             // add the laser bullet component to the entity to use the hit function later
-            laserBulletEntity->addComponent<LaserBullet>();
+            laserBulletEntity->appendComponent<LaserBullet>(this);
         };
 
         // returns true of the hit entity's health is depleted
-        bool hit(const Entity* hitEntity) override
+        bool hit(World* world, Entity* projectile, Entity* hitEntity) override
         {
-            // TODO: access the hitEntity
-            // decrease it's health
-            // if the new health is negative or zero return true
-            // else return false
-            std::cout<<"hit\n";
-            return true;
+            if (hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
+            {    
+                hitEntity->health -= damage;            // decrease enemy's health
+                if (hitEntity->health <= 0)             // if no remaining health remove the enemy
+                {
+                    world->markForRemoval(hitEntity);
+                    return true;
+                }
+            }
+            return false;
         };
     };    
 }

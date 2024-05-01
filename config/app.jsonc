@@ -1,7 +1,7 @@
 {
   "start-scene": "play",
   "window": {
-    "title": "Default Game Window",
+    "title": "Ghost of CMP",
     "size": {
       "width": 1280,
       "height": 720
@@ -494,6 +494,7 @@
         "scale": [1, 1, 1],
         "position": [0, -1.1, 0],
         "rotation": [0, 0, 0],
+        "health": 360,
         "components": [
           {
             "type": "Mesh Renderer",
