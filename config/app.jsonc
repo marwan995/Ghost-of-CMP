@@ -1,5 +1,5 @@
 {
-  "start-scene": "play",
+  "start-scene": "menu",
   "window": {
     "title": "Ghost of CMP",
     "size": {
@@ -59,10 +59,11 @@
         "laser": "assets/models/Laser.obj",
         "plane": "assets/models/plane.obj",
         "sphere": "assets/models/sphere.obj",
-        "groundObstacles": "assets/models/ground_obstacles.obj",
         "cube":"assets/models/cube.obj",
         "cross":"assets/models/cross.obj",
-        "lamp":"assets/models/Lamp.obj"
+        "lamp":"assets/models/Lamp.obj",
+        "healthContainer":"assets/models/healthContainer.obj",
+        "healthBar":"assets/models/healthBar.obj"
 
       },
       "samplers": {
@@ -137,7 +138,7 @@
           "sampler": "grassSampler",
           "shininess":10.0
         },
-        "groundObstacles": {
+        "healthBar": {
           "type": "tinted",
           "shader": "tinted",
           "pipelineState": {
@@ -148,7 +149,20 @@
               "enabled": true
             }
           },
-          "tint": [0.5, 0, 0.5, 0.7]
+          "tint": [0.0, 0.8, 0.5, 0.7]
+        },
+        "healthContainer": {
+          "type": "tinted",
+          "shader": "tinted",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.7529, 0.7529, 0.7529, 1.0]
         },
         "laser": {
           "type": "tinted",
@@ -372,6 +386,34 @@
               }
             ]
           },
+          {
+            "position": [0.09, 0.08, -0.1],
+            "rotation": [0, 0, 0],
+            "scale": [0.012,0.012, 0.012],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "healthContainer",
+                "material": "healthContainer"
+              }
+            ],
+            "children": [
+              
+                {
+                  "position": [-0.4, -0.4, 0.5],
+                  "rotation": [0, 0, 0],
+                  "scale": [0.95,1,1],
+                  "components": [
+                    {
+                      "type": "Mesh Renderer",
+                      "mesh": "healthBar",
+                      "material": "healthBar"
+                    }
+                  ]
+                  }
+            ]
+          },
+
           {
             "position": [-0.2, 0.1, -0.05],
             // "rotation": [-120, -45, 60],
