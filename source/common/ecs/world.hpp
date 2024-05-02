@@ -29,7 +29,7 @@ namespace our
         // If parent pointer is not null, the new entities will be have their parent set to that given pointer
         // If any of the entities has children, this function will be called recursively for these children
         void deserialize(const nlohmann::json &data, Entity *parent = nullptr);
-
+        void deserializeObjects(nlohmann::json &obstacle, std::vector<nlohmann::json>& repeatedObstacles, std::string fileName);
         // This adds an entity to the entities set and returns a pointer to that entity
         // WARNING The entity is owned by this world so don't use "delete" to delete it, instead, call "markForRemoval"
         // to put it in the "markedForRemoval" set. The elements in the "markedForRemoval" set will be removed and

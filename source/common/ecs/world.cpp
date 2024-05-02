@@ -1,6 +1,9 @@
 #include "world.hpp"
 #include <unordered_set>
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+
 
 namespace our
 {
@@ -36,23 +39,13 @@ namespace our
         for(auto &obstacle : obstacles)
         {
             if(obstacle.contains("position")) {
-                auto positionArray = obstacle["position"];
-                glm::vec3 position(positionArray[0].get<float>(), positionArray[1].get<float>(), positionArray[2].get<float>());
-                int repeatCount = 0;//rand() % 100 + 1;
-                for(int i = 0; i < repeatCount; i++) {
-
-                    float randX = position.x + rand() % 101 - 55;
-                    float randY = position.y + rand() % 6;
-                    float randZ = position.z + rand() % 81 - 40;
-                    
-                    obstacle["position"] = { randX, randY, randZ};
-                    
-                    // if (obstacle.contains("children"))
-                    // {
-                    //     deserialize(obstacle["children"], entity);
-                    // }
-
-                    repeatedObstacles.push_back(obstacle);
+                if(obstacle.contains("objectType")){
+                    std::string objectType = obstacle["objectType"];
+                    if(objectType == "wall")
+                        deserializeObjects(obstacle, repeatedObstacles, "wall.jsonc");
+                    else if(objectType == "cube"){
+                        deserializeObjects(obstacle, repeatedObstacles, "cube.jsonc");
+                    }
                 }
             }
         }
@@ -64,5 +57,30 @@ namespace our
         }
         
     }
+    void World::deserializeObjects(nlohmann::json &obstacle, std::vector<nlohmann::json>& repeatedObstacles, std::string fileName) {
+        //TODO: this should be changed to the path of the json file containing the wall
+        // print the current directory path
+        std::filesystem::path currentPath = std::filesystem::current_path();
+        currentPath.append("config");
+        currentPath.append(fileName);
+        std::ifstream inputFile(currentPath);
+        if (inputFile)
+        {
+            nlohmann::json jsonData = nlohmann::json::parse(inputFile, nullptr, true, true);
 
+            if (jsonData.contains("nodes"))
+            {
+                auto nodes = jsonData["nodes"];
+                for(auto &node : nodes) {
+                    nlohmann::json newObstacle = obstacle;
+                    newObstacle["position"] = node["position"];
+                    newObstacle["rotation"] = node["rotation"];
+                    repeatedObstacles.push_back(newObstacle);
+                }
+            }
+            inputFile.close();
+        }else{
+            std::cerr << "Error opening file: " << strerror(errno) << std::endl;
+        }
+    }
 }
