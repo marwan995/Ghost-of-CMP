@@ -12,12 +12,6 @@
 
 namespace our {
     
-    // enum class ProjectileType {
-    //     LASER,
-    //     GRENADE,
-    //     ROCKET
-    // };
-    
     // TODO: make projectile a component and resolve the connection with the collision
     class Projectile : public Component
     {   
@@ -38,9 +32,9 @@ namespace our {
         std::string mesh;
         std::string material;
         float scale[3];
-        float position[3];
-        float rotation[3];
-        float linearVelocity[3];
+        float position[3] = {0,0,0};
+        float rotation[3] = {0,0,0};
+        float linearVelocity[3] = {0,0,0};
 
         static std::string getID() { return "Projectile"; }
 
@@ -90,6 +84,8 @@ namespace our {
 
         // function to remove the bullet when it hits another collider
         virtual bool hit(World* world,Entity* projectile,Entity* hitEntity) = 0;
+
+        virtual ~Projectile(){};
     };
     
 }

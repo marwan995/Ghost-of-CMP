@@ -17,7 +17,8 @@
 
 // Guns
 #include "../ecs/laser-bullet.hpp"
-#include "../ecs/shotgun.hpp"
+#include "../ecs/shotgun-bullet.hpp"
+#include "../ecs/rocket-bullet.hpp"
 
 #include <iostream>
 
@@ -119,13 +120,15 @@ namespace our
                     else if(activeWeapon == 1)
                     {
                         // shotgun
-                        Shotgun* shotgunBullet = new Shotgun(bulletPosition, bulletRotation, bulletMovementDirections, world, true, &deltaTime);
+                        ShotgunBullet* shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         shotgunBullet->isFriendly = true;
                         shotgunBullet->shoot();
                     }
                     else if(activeWeapon == 2)
                     {
-                        std::cout<<"weapon3\n";
+                        RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
+                        rocketBullet->isFriendly = true;
+                        rocketBullet->shoot();
                     }
                 }
             }
