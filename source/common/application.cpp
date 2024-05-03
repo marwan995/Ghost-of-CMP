@@ -248,7 +248,19 @@ int our::Application::run(int run_for_frames) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        if(currentState==states["play"])
+        {
+            {
+               ImGui::Begin("text",nullptr,ImGuiWindowFlags_NoMove);
+               ImGui::SetWindowPos("text", ImVec2(10,10));
+               ImGuiStyle *style=&ImGui::GetStyle();
+               ImVec4 *colors= style->Colors;
+               std::string str="Marwan";
+               ImGui::Text(str.c_str());
+               ImGui::End();
 
+            }
+        }
         if(currentState) currentState->onImmediateGui(); // Call to run any required Immediate GUI.
 
         // If ImGui is using the mouse or keyboard, then we don't want the captured events to affect our keyboard and mouse objects.

@@ -71,10 +71,7 @@ namespace our
             // As soon as we find one, we break
             CameraComponent *camera = nullptr;
             FreeCameraControllerComponent *controller = nullptr;
-            static float verticalVelocity = 0.0f;
-            static bool isJumping = false;
-            const float gravity = 3.0 * 9.81f; 
-            const float max_y = 1.5f;
+          
             for (auto entity : world->getEntities())
             {
                 camera = entity->getComponent<CameraComponent>();
@@ -141,7 +138,7 @@ namespace our
             // This is not necessary, but whenever the rotation goes outside the 0 to 2*PI range, we wrap it back inside.
             // This could prevent floating point error if the player rotates in single direction for an extremely long time.
             rotation.y = glm::wrapAngle(rotation.y);
-            position.y = glm::clamp(position.y, 0.0f, max_y);
+            position.y = glm::clamp(position.y, 0.0f,controller-> max_y);
 
             // We update the camera fov based on the mouse wheel scrolling amount
             // TODO: change fov on right mouse click
@@ -186,23 +183,23 @@ namespace our
             // Check if jump key is pressed
             if (app->getKeyboard().isPressed(GLFW_KEY_SPACE) || app->getKeyboard().isPressed(GLFW_KEY_LEFT_ALT))
             {
-                if (!isJumping)
+                if (!controller->isJumping)
                 {
-                    verticalVelocity = 8.0f; // Initial jump velocity
-                    isJumping = true;
+                    controller->verticalVelocity = 8.0f; // Initial jump velocity
+                    controller->isJumping = true;
                 }
             }
 
             // Apply gravity
-            verticalVelocity -= gravity * deltaTime;
-            position.y += verticalVelocity * deltaTime;
+            controller->verticalVelocity -= controller->gravity * deltaTime;
+            position.y += controller->verticalVelocity * deltaTime;
 
             // Check if camera is on the ground level
             if (position.y <= 0.0f)
             {
                 position.y = 0.0f;       // Clamp camera position to ground level
-                verticalVelocity = 0.0f; // Reset vertical velocity
-                isJumping = false;       // Reset jump flag
+                 controller->verticalVelocity = 0.0f; // Reset vertical velocity
+                controller->isJumping = false;       // Reset jump flag
             }
 
             // Check for weapon change

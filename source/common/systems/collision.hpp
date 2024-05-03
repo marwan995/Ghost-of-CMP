@@ -15,51 +15,58 @@ namespace our
 {
     // class LaserBullet;
 
-    // The collision system is responsible for checking collisions between colliders. 
-    class CollisionSystem {
-        std::vector<Entity*>* staticEntities;    // to contain the static objects that don't move
-        std::vector<Entity*>* dynamicEntities;   // to contain the dynamic objects (camera and bullets)
-        CameraComponent* camera;
-        
-        ColliderComponent* getCollider(Entity* entity){
-            ColliderComponent* collider = entity->getComponent<ColliderComponent>();
-            return collider? collider : NULL;
+    // The collision system is responsible for checking collisions between colliders.
+    class CollisionSystem
+    {
+        std::vector<Entity *> *staticEntities;  // to contain the static objects that don't move
+        std::vector<Entity *> *dynamicEntities; // to contain the dynamic objects (camera and bullets)
+        CameraComponent *camera;
+        FreeCameraControllerComponent *cameraController;
+
+        ColliderComponent *getCollider(Entity *entity)
+        {
+            ColliderComponent *collider = entity->getComponent<ColliderComponent>();
+            return collider ? collider : NULL;
         }
 
     public:
-
         // mainly used to add bullets
         // static void addDynamicEntity(Entity* newEntity){
         //     dynamicEntities->push_back(newEntity);
         // }
 
-        // Only called when the play state starts to add the colliders in an array 
-        void enter(World* world) {
+        // Only called when the play state starts to add the colliders in an array
+        void enter(World *world)
+        {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
 
             // For each entity in the world
-            for(auto entity : world->getEntities()){
+            for (auto entity : world->getEntities())
+            {
                 // Get the movement component if it exists
-                ColliderComponent* collider = entity->getComponent<ColliderComponent>();
+                ColliderComponent *collider = entity->getComponent<ColliderComponent>();
 
-                CameraComponent* worldCamera = entity->getComponent<CameraComponent>();
+                CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
                 if (worldCamera)
                 {
                     camera = worldCamera;
+                    cameraController = entity->getComponent<FreeCameraControllerComponent>();
                 }
 
                 // If the movement component exists
-                if(collider){
+                if (collider)
+                {
                     collider->setEntity(entity);
 
                     // Change the position and rotation based on the linear & angular velocity and delta time.
-                    if(collider->type == ColliderType::STATIC)
+                    if (collider->type == ColliderType::STATIC)
                     {
                         staticEntities->push_back(entity);
                     }
-                    else{
+                    else
+                    {
                         dynamicEntities->push_back(entity);
                     }
                 }
@@ -67,35 +74,44 @@ namespace our
         }
 
         // runs in each frame
-        void update(World* world, float deltaTime) {
+        void update(World *world, float deltaTime)
+        {
             // For each dynamic entity in the world
             // TODO: make the loop use iterators
-            for(auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
+            for (auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
             {
                 for (auto staticIt = staticEntities->begin(); staticIt != staticEntities->end(); staticIt++)
                 {
-                    glm::vec3 collisionDepth = (*dynamicIt)->getComponent<ColliderComponent>()->collisionDepth((*staticIt)->getComponent<ColliderComponent>());
-                    
-                    if (ColliderComponent::isColliding(collisionDepth))     // if there's a collision
+                    auto staticComponent = (*staticIt)->getComponent<ColliderComponent>();
+                    glm::vec3 collisionDepth = (*dynamicIt)->getComponent<ColliderComponent>()->collisionDepth(staticComponent);
+
+                    if (ColliderComponent::isColliding(collisionDepth)) // if there's a collision
                     {
-                        if ((*dynamicIt)->getComponent<CameraComponent>())      // camera collided with static object (wall)
+                        if ((*dynamicIt)->getComponent<CameraComponent>()) // camera collided with static object (wall)
                         {
-                            // keep the camera position
-                            camera->getOwner()->localTransform.position = camera->lastPosition;
-                            break;      // check for other collisions
+                            auto staticComponentPostion = glm::vec3(staticComponent->x, staticComponent->y, staticComponent->z);
+
+                            if (fabs(collisionDepth[1]) > fabs(staticComponentPostion[1]))
+                            {
+                                camera->getOwner()->localTransform.position[1] = camera->lastPosition[1];
+                                cameraController->verticalVelocity = 0.0f;
+                            }
+                            else
+                                camera->getOwner()->localTransform.position = camera->lastPosition;
+                            break; // check for other collisions
                         }
 
-                        ColliderComponent* possibleBullet = (*dynamicIt)->getComponent<ColliderComponent>();
-                        if (possibleBullet->type == ColliderType::BULLET)           // check if it's a bullet
+                        ColliderComponent *possibleBullet = (*dynamicIt)->getComponent<ColliderComponent>();
+                        if (possibleBullet->type == ColliderType::BULLET) // check if it's a bullet
                         {
                             bool isKilled = false;
 
-                            our::LaserBullet* laser = (*dynamicIt)->getComponent<our::LaserBullet>();   // if the bullet is a laser
+                            our::LaserBullet *laser = (*dynamicIt)->getComponent<our::LaserBullet>(); // if the bullet is a laser
                             if (laser)
                             {
                                 // if (laser->isFriendly)                                                  // player's bullet
-                                    isKilled = laser->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
-                                //else                                                                  // enemy's bullet
+                                isKilled = laser->hit(world, (*dynamicIt), (*staticIt)); // apply damage & check if enemy is killed
+                                // else                                                                  // enemy's bullet
                             }
                             // TODO: other types of bullets
                             // else if ()
