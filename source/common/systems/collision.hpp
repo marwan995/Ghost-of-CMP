@@ -72,9 +72,15 @@ namespace our
 
         // function that runs in each frame to check for collisions
         void update(World* world, float deltaTime) {
+            // used to get the new iterator of the rocket bullet when an explosion is generated
+            int counter = 0;
+
             // For each dynamic entity in the world
             for(auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
             {   
+                // flag to know if the bullet should be removed
+                bool bulletVanished = false;
+
                 // For each static entity in the world
                 for (auto staticIt = staticEntities->begin(); staticIt != staticEntities->end(); staticIt++)
                 {
@@ -98,8 +104,6 @@ namespace our
                         {
                             // flag to know if the enemy is killed
                             bool isKilled = false;
-                            // flag to know if the bullet should be removed
-                            bool bulletVanished = false;
 
                             // get component for bullet type
                             our::LaserBullet* laser = (*dynamicIt)->getComponent<our::LaserBullet>();   // possible laser bullet component
@@ -112,31 +116,32 @@ namespace our
                                 bulletVanished = true;
 
                                 if (laser->isFriendly)                                                  // player's bullet
-                                    isKilled = laser->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
+                                    isKilled = laser->hit(world, (*staticIt));             // apply damage & check if enemy is killed
                                 //else                                                                  // enemy's bullet
                             }
                             else if (shotgun)
                             {
                                 // shotgun bullets don't vanish on collision they vanish after a certain time
                                 if (shotgun->isFriendly)                                                  // player's bullet
-                                    isKilled = shotgun->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
+                                    isKilled = shotgun->hit(world, (*staticIt));             // apply damage & check if enemy is killed
                                 
                                 //else                                                                  // enemy's bullet
                             }
                             else if (rocket)
                             {
                                 bulletVanished = true;
-                                
+
                                 if (rocket->isFriendly)                                                  // player's bullet
-                                    isKilled = rocket->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
-        
+                                    isKilled = rocket->hit(world, (*staticIt));             // apply damage & check if enemy is killed
+    
                                 //else                                                                  // enemy's bullet
 
+                                dynamicIt = dynamicEntities->begin() + counter;
                             }
                             else if (explosion)
                             {
                                 if (explosion->isFriendly)                                                  // player's bullet
-                                    isKilled = explosion->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
+                                    isKilled = explosion->hit(world, (*staticIt));             // apply damage & check if enemy is killed
         
                                 //else                                                                  // enemy's bullet
                             }
@@ -154,9 +159,24 @@ namespace our
                                 removeBullet(world, &dynamicIt);
                                 break; // the bullet vanished so check next dynamic collider
                             }
+
                         }
                     }
+                    
+                    if (staticEntities->size() == 0)
+                    {
+                        break;
+                    }
                 }
+
+
+
+                if (dynamicEntities->size() == 1)
+                {
+                    break;
+                }
+
+                counter++;
             }
         }
 
@@ -181,6 +201,12 @@ namespace our
                         removeBullet(world, &dynamicIt);
                     }
                 }
+
+                if (dynamicEntities->size() == 1)
+                {
+                    return;
+                }
+
             }
         }
     };

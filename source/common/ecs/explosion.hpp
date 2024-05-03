@@ -8,8 +8,8 @@ namespace our{
     {
     private:
         World* world;
-        double lifeTime;                       // the time at which the bullet is shot
-        double bulletLifeTime = 0.2f;          // the duration the bullet should stay for
+        double spawnTime;                       // the time at which the bullet is shot
+        double lifeTime = 0.35f;          // the duration the bullet should stay for
 
     public:
         // initialize the bullet attributes
@@ -17,14 +17,14 @@ namespace our{
         {
             mesh = "sphere";
             material = "moon";
-            scale[0] = 1;
-            scale[1] = 1;
-            scale[2] = 1;
-            lifeTime = glfwGetTime();
+            scale[0] = 2;
+            scale[1] = 2;
+            scale[2] = 2;
+            spawnTime = glfwGetTime();
             
             world = currentWorld;
             speed = 0;
-            radius = 1;
+            radius = 2;
             damage = 400;
             isFriendly = friendlyFire;
 
@@ -58,9 +58,8 @@ namespace our{
         };
 
         // returns true of the hit entity's health is depleted
-        bool hit(World* world, Entity* projectile, Entity* hitEntity) override
+        bool hit(World* world, Entity* hitEntity) override
         {
-            std::cout << "explosion hit\n";
             if (hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
             {    
                 hitEntity->health -= damage;            // decrease enemy's health
@@ -70,13 +69,12 @@ namespace our{
                     return true;
                 }
             }
-            std::cout << "explosion exit hit\n";
             return false;
         };
 
         bool checkBulletRemoval()
         {
-            return glfwGetTime() - lifeTime >= bulletLifeTime;
+            return glfwGetTime() - spawnTime >= lifeTime;
         }
     };    
 }

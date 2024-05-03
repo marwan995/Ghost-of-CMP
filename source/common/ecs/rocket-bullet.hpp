@@ -55,7 +55,7 @@ namespace our{
         };
 
         // returns true of the hit entity's health is depleted
-        bool hit(World* world, Entity* projectile, Entity* hitEntity) override
+        bool hit(World* world, Entity* hitEntity) override
         {
             // copy the rocket's position
             glm::vec3 bulletPosition = getOwner()->localTransform.position;

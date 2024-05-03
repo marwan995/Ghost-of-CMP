@@ -83,7 +83,7 @@ namespace our {
         virtual void shoot()=0;
 
         // function to remove the bullet when it hits another collider
-        virtual bool hit(World* world,Entity* projectile,Entity* hitEntity) = 0;
+        virtual bool hit(World* world, Entity* hitEntity) = 0;
 
         virtual ~Projectile(){};
     };

@@ -54,7 +54,7 @@ namespace our{
         };
 
         // returns true of the hit entity's health is depleted
-        bool hit(World* world, Entity* projectile, Entity* hitEntity) override
+        bool hit(World* world, Entity* hitEntity) override
         {
             if (hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
             {    
