@@ -221,11 +221,14 @@ namespace our
             command.material->setup(); //  u called the set before the setup what an idiot
             command.material->shader->set("transform", VP * command.localToWorld);
             command.material->shader->set("model", command.localToWorld);
+            int i = 0;
             for (const auto &lightEntity : lightSourceEntities)
             {
                 LightingComponent *lightCom = lightEntity->getComponent<LightingComponent>();
                 if (lightCom)
                 {
+                    Entity* lightOwner = lightCom->getOwner();
+
                     if (lightCom->type == lightingType::DIRECTIONAL)
                     {
                         command.material->shader->set("dirLight.direction", lightCom->direction);
@@ -240,8 +243,6 @@ namespace our
                         command.material->shader->set("spotLight.cutOff", glm::cos(glm::radians(25.0f)));
                         command.material->shader->set("spotLight.outerCutOff", glm::cos(glm::radians(35.0f)));
                         
-                        Entity* lightOwner = lightCom->getOwner();
-
 
                         command.material->shader->set("spotLight.position", camera->getOwner()->localTransform.position);
                         command.material->shader->set("spotLight.direction", camera->getFrontVector());
@@ -251,19 +252,16 @@ namespace our
                         command.material->shader->set("spotLight.specular", lightCom->specular);
 
                     }
-
-                    // command.material->shader->set("light.direction", glm::vec3(0.0f, 1.0f, 0.0f));
-                    // command.material->shader->set("light.ambient", glm::vec3(0.5f, 0.5f, 0.5f));
-                    // command.material->shader->set("light.diffuse",  glm::vec3(0.8f, 0.8f, 0.8f));
-                    // command.material->shader->set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-                    // command.material->shader->set("light.constant",  1.0f);
-                    // command.material->shader->set("light.linear",    0.09f);
-                    // command.material->shader->set("light.quadratic", 0.032f);
-
-                    // command.material->shader->set("light.position",  camera->getOwner()->localTransform.position);
-                    // command.material->shader->set("light.direction", camera->getFrontVector());
-                    // command.material->shader->set("light.cutOff",   glm::cos(glm::radians(12.5f)));
+                    else if (lightCom->type == lightingType::POINT){
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].constant", lightCom->constant);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].linear",  lightCom->linear);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].quadratic", lightCom->quadratic);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].position", lightOwner->localTransform.position);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].ambient", lightCom->ambient);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].diffuse",  lightCom->diffuse);
+                        command.material->shader->set("pointLights["+std::to_string(i)+"].specular", lightCom->specular);
+                        i++;
+                    }
 
                     command.material->shader->set("camPos", camera->getOwner()->localTransform.position);
                 }

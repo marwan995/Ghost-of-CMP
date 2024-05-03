@@ -60,15 +60,17 @@ out vec4 frag_color;
 uniform vec4 tint;
 uniform vec3 camPos;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);  
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection);  
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir);
 
 
 void main(){
-    // ambient lighting
     vec3 normalized = normalize(fs_in.normal);
     vec3 viewDirection = normalize(camPos - fs_in.fragPosition);
     vec3 combination = CalcDirLight(dirLight, normalized, viewDirection);
+        // do the same for all point lights
+    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+        combination += CalcPointLight(pointLights[i],normalized,viewDirection);
     combination += CalcSpotLight(spotLight, normalized, viewDirection);
     frag_color = tint * vec4(combination,1.0);
 }
@@ -89,7 +91,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 specular = light.specular * (specAmount *  texColor); 
     return (ambient + diffuse + specular);
 }  
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection)
 {
     vec3 lightDirection =normalize(light.position - fs_in.fragPosition);
     float diff = max(dot(normal, lightDirection), 0.0f);

@@ -523,6 +523,17 @@
             "type": "Mesh Renderer",
             "mesh": "cube",
             "material": "texture1"
+          },
+          {
+            "type": "Lighting",
+            "lightType":"POINT",
+            "ambient" : [0.1, 0.1, 0.1],
+            "diffuse" : [0.5, 0.5, 0.5],
+            "specular" : [8.0, 8.0, 8.0],
+            "constant":1.0,
+            "linear":0.22,
+            "quadratic":0.20
+            
           }
         ]
       },
