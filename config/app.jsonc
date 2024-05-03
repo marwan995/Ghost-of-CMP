@@ -438,6 +438,7 @@
               }
             ]
           },
+          // always last element
           {
             "position": [0, 0, -0.1],
             "rotation": [0, 90, 0],

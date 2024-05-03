@@ -22,6 +22,9 @@ namespace our
             // TODO: (Req 8) Create an entity, make its parent "parent" and call its deserialize with "entityData".
             Entity *entity = add();
             entity->parent = parent;
+            if(parent){
+                parent->children.push_back(entity);
+            }
             entity->deserialize(entityData);
             if( i > 3 )
                 obstacles.push_back(entityData);
