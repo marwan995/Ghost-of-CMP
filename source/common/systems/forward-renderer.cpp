@@ -2,6 +2,7 @@
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 using namespace std;
 
@@ -314,8 +315,11 @@ namespace our
             // TODO: (Req 11) Return to the default framebuffer
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
-            postprocessMaterial->setup();
+            postprocessMaterial->setup();            
             glBindVertexArray(postProcessVertexArray);
+            iTime = glfwGetTime();
+            postprocessMaterial->shader->set("iTime", iTime);
+            postprocessMaterial->shader->set("iResolution", iResolution);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
