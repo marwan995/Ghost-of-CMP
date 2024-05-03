@@ -43,6 +43,9 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
+        // Uniforms for the postprocessing shader (film grain)
+        float iTime = 0;
+        glm::vec2 iResolution = glm::vec2(1280, 720);
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
