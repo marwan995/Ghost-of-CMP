@@ -7,6 +7,8 @@ uniform vec2 iResolution;
 in vec2 tex_coord;
 out vec4 frag_color;
 
+const vec4 color = vec4(1.0, 0.3, 0.5, 1.0); 
+
 void main()
 {
     vec2 uv = tex_coord;
@@ -17,5 +19,5 @@ void main()
     
     mdf *= sin(iTime) + 1.0; // animate the effect's strength
 
-    frag_color = texColor - noise * mdf;
+    frag_color = (texColor - noise * mdf) * color;
 }
