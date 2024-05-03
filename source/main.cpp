@@ -16,9 +16,9 @@
 #include "states/material-test-state.hpp"
 #include "states/entity-test-state.hpp"
 #include "states/renderer-test-state.hpp"
-
+#include "states/gameover-state.hpp"
 int main(int argc, char** argv) {
-    
+
     flags::args args(argc, argv); // Parse the command line arguments
     // config_path is the path to the json file containing the application configuration
     // Default: "config/app.json"
@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
     
     // Register all the states of the project in the application
     app.registerState<Menustate>("menu");
+    app.registerState<Gameoverstate>("gameover");
     app.registerState<Playstate>("play");
     app.registerState<ShaderTestState>("shader-test");
     app.registerState<MeshTestState>("mesh-test");

@@ -89,6 +89,9 @@ set(COMMON_SOURCES
         source/common/systems/free-camera-controller.hpp
         source/common/systems/movement.hpp
         source/common/systems/collision.hpp
+
+        source/audio/audio.hpp
+        source/audio/audio.cpp
 )
 
 # Define the directories in which to search for the included headers
@@ -118,6 +121,7 @@ set(STATES_SOURCES
         source/states/material-test-state.hpp
         source/states/entity-test-state.hpp
         source/states/renderer-test-state.hpp
+        source/states/gameover-state.hpp
 )
 
 # For each example, we add an executable target
