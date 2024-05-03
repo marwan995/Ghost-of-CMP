@@ -34,7 +34,7 @@ class Playstate: public our::State {
 
         // Initialize the collision system
         collisionSystem.enter(&world);
-
+            
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);

@@ -142,11 +142,25 @@ namespace our
 
             // We update the camera fov based on the mouse wheel scrolling amount
             // TODO: change fov on right mouse click
-            float fov = camera->fovY + app->getMouse().getScrollOffset().y * controller->fovSensitivity;
-            fov = glm::clamp(fov, glm::pi<float>() * 0.01f, glm::pi<float>() * 0.99f); // We keep the fov in the range 0.01*PI to 0.99*PI
-            camera->fovY = fov;
+            // float fov = camera->fovY + app->getMouse().getScrollOffset().y * controller->fovSensitivity;
+            // fov = glm::clamp(fov, glm::pi<float>() * 0.01f, glm::pi<float>() * 0.99f); // We keep the fov in the range 0.01*PI to 0.99*PI
+            
+            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_2)){
+                camera->fovY = glm::pi<float>() * 0.1f;
+                entity->children[entity->children.size()-1]->localTransform.scale = glm::vec3(0.07, 0.07, 0.07) ;
+                entity->children[0]->localTransform.position = glm::vec3(0, -1.05, -1.1) ;
+                entity->children[0]->localTransform.rotation = glm::vec3(0, 0, 0) ;
+                
+            }
+            else 
+            {
+                camera->fovY = .49* glm::pi<float>();
+                entity->children[entity->children.size()-1]->localTransform.scale = glm::vec3(0.0088, 0.0088, 0.0088) ;
+                entity->children[0]->localTransform.position = glm::vec3(1, -1, -1) ;
+                entity->children[0]->localTransform.rotation = glm::radians( glm::vec3(0,30,0));
 
-            // We get the camera model matrix (relative to its parent) to compute the front, up and right directions
+
+            }            // We get the camera model matrix (relative to its parent) to compute the front, up and right directions
             glm::mat4 matrix = entity->localTransform.toMat4();
 
             glm::vec3 front = glm::vec3(matrix * glm::vec4(0, 0, -1, 0)),
