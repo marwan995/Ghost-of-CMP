@@ -102,13 +102,13 @@ namespace our
                     float bulletSpeedZ = -cos(-rotation.x)*cos(rotation.y);
                     float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
                     float bulletPosition[3] = {position.x + bulletSpeedX/4, position.y + bulletSpeedY/4, position.z + bulletSpeedZ/4};
-
                     if(activeWeapon == 0)
                     {
                         // laser rifle
                         LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world);
                         laserBullet->isFriendly = true;
                         laserBullet->shoot();
+                        world->audioPlayer.play("Laser.wav");
                     }
                     else if(activeWeapon == 1)
                     {

@@ -3,7 +3,7 @@
 #include <unordered_set>
 #include "entity.hpp"
 #include "../components/collision-component.hpp"
-
+#include "../../audio/audio.hpp"
 namespace our
 {
     // forward delcaration for the collision system
@@ -23,6 +23,7 @@ namespace our
         friend CollisionSystem;
 
     public:
+        Audio audioPlayer;
         World() = default;
 
         // This will deserialize a json array of entities and add the new entities to the current world
