@@ -51,6 +51,36 @@ namespace our {
             }
         }
 
+        // create a json object to have the bullet entity data
+        nlohmann::json spawn()
+        {
+            return {
+                    {"position", position},
+                    {"rotation", rotation},
+                    {"scale", scale},
+                    {"components", nlohmann::json::array({
+                        {
+                            // bullet model
+                            {"type", "Mesh Renderer"},
+                            {"mesh", mesh},
+                            {"material", material}
+                        },
+                        {
+                            // bullet motion
+                            {"type", "Movement"},
+                            {"linearVelocity", linearVelocity} 
+                        },
+                        {
+                            // collider attributes
+                            {"type", "Collider"},
+                            {"colliderShape", "sphere"},
+                            {"colliderType", "bullet"},
+                            {"radius", radius}
+                        }
+                    })}
+                };
+        }
+
         // only overriden to be able to make projectile a component
         // can be changed later if the structure of bullet/grenade creation is changed (probably not)
         void deserialize(const nlohmann::json& data) override{};

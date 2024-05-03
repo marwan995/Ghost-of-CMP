@@ -11,10 +11,13 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
+// Collision System
 #include "collision.hpp"
 #include "../components/collision-component.hpp"
 
+// Guns
 #include "../ecs/laser-bullet.hpp"
+#include "../ecs/shotgun.hpp"
 
 #include <iostream>
 
@@ -34,7 +37,7 @@ namespace our
         
         int activeWeapon = 0;
         int deltasCounter=0;
-        const float weapons_BPS[3] = {10, 1, 1};   // holds weapons bullets per seconds
+        const float weapons_BPS[3] = {10, 2, 1};   // holds weapons bullets per seconds
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire() {
@@ -109,13 +112,16 @@ namespace our
                     if(activeWeapon == 0)
                     {
                         // laser rifle
-                        LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world);
+                        LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         laserBullet->isFriendly = true;
                         laserBullet->shoot();
                     }
                     else if(activeWeapon == 1)
                     {
-                        std::cout<<"weapon2\n";
+                        // shotgun
+                        Shotgun* shotgunBullet = new Shotgun(bulletPosition, bulletRotation, bulletMovementDirections, world, true, &deltaTime);
+                        shotgunBullet->isFriendly = true;
+                        shotgunBullet->shoot();
                     }
                     else if(activeWeapon == 2)
                     {

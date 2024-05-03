@@ -9,7 +9,10 @@
 #include <glm/gtx/fast_trigonometry.hpp>
 
 #include "../components/camera.hpp"
+
+// bullet types
 #include "../ecs/laser-bullet.hpp"
+#include "../ecs/shotgun.hpp"
 
 namespace our
 {
@@ -90,22 +93,25 @@ namespace our
                         {
                             bool isKilled = false;
 
-                            our::LaserBullet* laser = (*dynamicIt)->getComponent<our::LaserBullet>();   // if the bullet is a laser
+                            our::LaserBullet* laser = (*dynamicIt)->getComponent<our::LaserBullet>();   // possible laser bullet component
+                            our::Shotgun* shotgun = (*dynamicIt)->getComponent<our::Shotgun>();         // possible shotgun bullet component
                             if (laser)
                             {
-                                // if (laser->isFriendly)                                                  // player's bullet
+                                if (laser->isFriendly)                                                  // player's bullet
                                     isKilled = laser->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
                                 //else                                                                  // enemy's bullet
                             }
+                            else if (shotgun)
+                            {
+                                // if (laser->isFriendly)                                                  // player's bullet
+                                    isKilled = shotgun->hit(world, (*dynamicIt),(*staticIt));             // apply damage & check if enemy is killed
+                                //else                                                                  // enemy's bullet
+                            }
                             // TODO: other types of bullets
-                            // else if ()
-                            // {
 
-                            // }
-
+                            // hit entity is killed so remove it
                             if (isKilled)
                             {
-                                // hit entity is killed so remove it
                                 staticEntities->erase(staticIt);
                             }
                         }

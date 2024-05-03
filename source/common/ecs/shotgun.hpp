@@ -3,25 +3,27 @@
 #include "projectile.hpp"
 
 namespace our{
-    class LaserBullet : public Projectile
+    class Shotgun : public Projectile
     {
     private:
         World* world;
+        float* localTime;
 
     public:
         // initialize the bullet attributes
-        LaserBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld, bool friendlyFire)
+        Shotgun(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld, bool friendlyFire, float* deltaTime)
         {
             mesh = "laser";
             material = "laser";
-            scale[0] = 0.2;
-            scale[1] = 0.2;
-            scale[2] = 0.01;
-            
+            scale[0] = 2;
+            scale[1] = 2;
+            scale[2] = 0.3;
+            localTime = deltaTime;
+
             world = currentWorld;
-            speed = 10;
-            radius = 0.2;
-            damage = 30;
+            speed = 2;
+            radius = 0.65;
+            damage = 600;
             isFriendly = friendlyFire;
 
             Projectile::copyArr(position, cameraPosition);
@@ -34,7 +36,7 @@ namespace our{
             // create the bullet entity in the world
             Entity* laserBulletEntity = world->add();
 
-            // get the json object representing bullet entity
+            // create a json object to have the bullet data
             nlohmann::json bulletData = Projectile::spawn();
 
             // deserialize the entity data to render it and add bullet data
@@ -50,7 +52,7 @@ namespace our{
             world->addDynamicEntity(laserBulletEntity);
 
             // add the laser bullet component to the entity to use the hit function later
-            laserBulletEntity->appendComponent<LaserBullet>(this);
+            laserBulletEntity->appendComponent<Shotgun>(this);
         };
 
         // returns true of the hit entity's health is depleted
