@@ -291,7 +291,7 @@ int our::Application::run(int run_for_frames)
         if (currentState == states["play"] && alpha > 0&&lastRoam!=currentRoam)
         {
             // Calculate fading alpha value based on time or other conditions
-            alpha -= (.35 * (current_frame_time - last_frame_time));
+            alpha -= (.25 * (current_frame_time - last_frame_time));
 
             // Set image color with alpha value for fading effect
             ImVec4 imageColor = ImVec4(1.0f, 1.0f, 1.0f, alpha);
