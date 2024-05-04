@@ -8,6 +8,7 @@
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
 #include <systems/collision.hpp>
+#include <systems/enemy.hpp>
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -17,6 +18,7 @@ class Playstate: public our::State {
     our::FreeCameraControllerSystem cameraController;
     our::MovementSystem movementSystem;
     our::CollisionSystem collisionSystem; 
+    our::EnemySystem enemySystem; 
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -38,6 +40,8 @@ class Playstate: public our::State {
 
         // Initialize the collision system
         collisionSystem.enter(&world);
+        // Initialize the enemy system
+        enemySystem.enter(&world);
             
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
@@ -48,7 +52,7 @@ class Playstate: public our::State {
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
-
+        enemySystem.update(&world, (float)deltaTime);
         collisionSystem.update(&world, (float)deltaTime);
         collisionSystem.updateBullets(&world);
         // And finally we use the renderer system to draw the scene

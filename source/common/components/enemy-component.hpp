@@ -12,48 +12,50 @@
 
 #include <iostream>
 
-namespace our{
-    enum class EnemyType {
+namespace our
+{
+    enum class EnemyType
+    {
         SHOOTER,
         MELEE,
         BOSS1,
         BOSS2
     };
 
-// Abstract class for all enemies
-class EnemyComponent : public Component{
-    our::EnemyType type;
-    float range;
-    float health;
-    int weapon;
-    float rateOfFire = 30;
-    int deltasCounter = 0;
-    World* world;
-
-    void createEnemyRange(float range)
+    // Abstract class for all enemies
+    class EnemyComponent : public Component
     {
-        // get the json object representing bullet entity
-        nlohmann::json rangeCollider = {
-            // collider attributes
-            {"type", "Collider"},
-            {"colliderShape", "sphere"},
-            {"colliderType", "bullet"},         // TODO: change
-            {"radius", range}
-        };
+        our::EnemyType type;
+        float range;
+        float health;
+        int weapon;
+        float rateOfFire = 30;
+        int deltasCounter = 0;
+        World *world;
 
-        ColliderComponent* enemyRangeCollider = getOwner()->addComponent<ColliderComponent>();
+        void createEnemyRange(float range)
+        {
+            // get the json object representing bullet entity
+            nlohmann::json rangeCollider = {
+                // collider attributes
+                {"type", "Collider"},
+                {"colliderShape", "sphere"},
+                {"colliderType", "bullet"}, // TODO: change
+                {"radius", range}};
 
-        // deserialize the entity data to render it and add bullet data
-        enemyRangeCollider->deserialize(rangeCollider);
-        
-        // set collider attributes
-        enemyRangeCollider->setEntity(getOwner());
+            ColliderComponent *enemyRangeCollider = getOwner()->addComponent<ColliderComponent>();
 
-        // push the entity to the colliders array
-        world->addDynamicEntity(getOwner());        // TODO: may cause error
-    }
+            // deserialize the entity data to render it and add bullet data
+            enemyRangeCollider->deserialize(rangeCollider);
 
-    bool checkRateOfFire()
+            // set collider attributes
+            enemyRangeCollider->setEntity(getOwner());
+
+            // push the entity to the colliders array
+            world->addDynamicEntity(getOwner()); // TODO: may cause error
+        }
+
+        bool checkRateOfFire()
         {
             // get current weapon BPS
             // check for it's cooldown
@@ -62,7 +64,7 @@ class EnemyComponent : public Component{
                 deltasCounter++;
                 return true;
             }
-            else if ((deltasCounter)* 0.008335638028169f >= (1 / rateOfFire))
+            else if ((deltasCounter) * 0.008335638028169f >= (1 / rateOfFire))
             {
                 deltasCounter = 0;
             }
@@ -78,31 +80,35 @@ class EnemyComponent : public Component{
 
         EnemyComponent() = default;
 
-        EnemyComponent(World* ownerWorld)
+        EnemyComponent(World *ownerWorld)
         {
             world = ownerWorld;
         }
 
-        void deserialize(const nlohmann::json& data) override
+        void deserialize(const nlohmann::json &data) override
         {
             if (!data.is_object())
                 return;
 
             // get the enemy type
             std::string enemyTypeStr = data.value("enemyType", "shooter");
-            if(enemyTypeStr == "shooter"){
+            if (enemyTypeStr == "shooter")
+            {
                 type = EnemyType::SHOOTER;
                 range = 20;
             }
-            else if(enemyTypeStr == "melee"){
+            else if (enemyTypeStr == "melee")
+            {
                 type = EnemyType::MELEE;
                 range = 40;
             }
-            else if(enemyTypeStr == "boss1"){
+            else if (enemyTypeStr == "boss1")
+            {
                 type = EnemyType::BOSS1;
                 range = 30;
             }
-            else if(enemyTypeStr == "boss2"){
+            else if (enemyTypeStr == "boss2")
+            {
                 type = EnemyType::BOSS2;
                 range = 30;
             }
@@ -110,21 +116,25 @@ class EnemyComponent : public Component{
             createEnemyRange(range);
         }
 
-        void aimAt(CameraComponent* camera)
+        void aimAt(CameraComponent *camera)
         {
             auto M = getOwner()->getLocalToWorldMatrix();
             glm::vec3 eye = glm::vec3(M * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
             glm::vec3 up = glm::vec3(M * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
             glm::mat4 matrix = glm::lookAt(eye, camera->getOwner()->localTransform.position, up);
-            
+
             glm::quat newRotation;
-            glm::decompose(matrix, glm::vec3(), newRotation, glm::vec3(), glm::vec3(), glm::vec4());
+            glm::vec3 temp;
+            glm::vec4 temp4;
+
+
+            glm::decompose(matrix, temp, newRotation,temp,temp, temp4);
             glm::vec3 rotationDegrees = glm::degrees(glm::eulerAngles(newRotation));
 
             getOwner()->localTransform.rotation = glm::radians(rotationDegrees);
         }
 
-        bool isPlayerInRange(CameraComponent* player)
+        bool isPlayerInRange(CameraComponent *player)
         {
             glm::vec3 playerPosition = player->getOwner()->localTransform.position;
             // TODO: check player collision
