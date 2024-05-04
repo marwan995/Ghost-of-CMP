@@ -46,9 +46,10 @@ namespace our
                     std::string objectType = obstacle["objectType"];
                     if(objectType == "wall")
                         deserializeObjects(obstacle, repeatedObstacles, "wall.jsonc");
-                    else if(objectType == "cube"){
+                    else if(objectType == "cube")
                         deserializeObjects(obstacle, repeatedObstacles, "cube.jsonc");
-                    }
+                    else if(objectType == "column-1")
+                        deserializeObjects(obstacle, repeatedObstacles, "column1.jsonc");
                 }
             }
         }
@@ -67,6 +68,7 @@ namespace our
         currentPath.append("config");
         currentPath.append(fileName);
         std::ifstream inputFile(currentPath);
+        std::cout << "using current file " << fileName << std::endl;
         if (inputFile)
         {
             nlohmann::json jsonData = nlohmann::json::parse(inputFile, nullptr, true, true);
