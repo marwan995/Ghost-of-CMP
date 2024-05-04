@@ -38,7 +38,7 @@ namespace our
 
         int activeWeapon = 0;
         int deltasCounter=0;
-        const float weapons_BPS[3] = {10, 2, 15};   // holds weapons bullets per seconds
+        const float weapons_BPS[3] = {20, 5, 15};   // holds weapons bullets per seconds
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -124,7 +124,6 @@ namespace our
                     {
                         // laser rifle
                         LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        laserBullet->isFriendly = true;
                         laserBullet->shoot();
                         world->audioPlayer.play("Laser.wav");
                     }
@@ -132,13 +131,11 @@ namespace our
                     {
                         // shotgun
                         ShotgunBullet* shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        shotgunBullet->isFriendly = true;
                         shotgunBullet->shoot();
                     }
                     else if (activeWeapon == 2)
                     {
                         RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        rocketBullet->isFriendly = true;
                         rocketBullet->shoot();
                     }
                 }

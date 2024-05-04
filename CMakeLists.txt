@@ -80,6 +80,7 @@ set(COMMON_SOURCES
         source/common/components/mesh-renderer.cpp
         source/common/components/collision-component.hpp
         source/common/components/lighting-component.hpp
+        source/common/components/enemy-component.hpp
 
         source/common/components/free-camera-controller.hpp
         source/common/components/free-camera-controller.cpp
@@ -92,6 +93,7 @@ set(COMMON_SOURCES
         source/common/systems/free-camera-controller.hpp
         source/common/systems/movement.hpp
         source/common/systems/collision.hpp
+        source/common/systems/enemy.hpp
 
         source/audio/audio.hpp
         source/audio/audio.cpp
