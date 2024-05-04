@@ -75,7 +75,6 @@ namespace our{
                     return true;
                 }
             }
-            std::cout << "exit hit\n";
             return false;
         };
     };    
