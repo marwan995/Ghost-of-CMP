@@ -15,11 +15,11 @@ namespace our{
         // initialize the bullet attributes
         Explosion(const float (&cameraPosition)[3], World* currentWorld, bool friendlyFire)
         {
-            mesh = "sphere";
-            material = "moon";
-            scale[0] = 2;
-            scale[1] = 2;
-            scale[2] = 2;
+            mesh = "Explosion";
+            material = "Image_26";
+            scale[0] = 0.3;
+            scale[1] = 0.3;
+            scale[2] = 0.3;
             spawnTime = glfwGetTime();
             
             world = currentWorld;

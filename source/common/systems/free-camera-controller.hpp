@@ -38,7 +38,7 @@ namespace our
 
         int activeWeapon = 0;
         int deltasCounter=0;
-        const float weapons_BPS[3] = {10, 2, 1};   // holds weapons bullets per seconds
+        const float weapons_BPS[3] = {10, 2, 15};   // holds weapons bullets per seconds
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -68,6 +68,17 @@ namespace our
         {
             this->app = app;
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
+        }
+        
+        void reduceHealth(CameraComponent *camera,float dmg =.01 ){
+            auto healthBar = camera->getOwner()->children[1]->children[0];
+            float decreasedBy = (dmg * 9.6) / 2.0;
+
+            healthBar->localTransform.scale[0] -= dmg;
+            healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
+            if (healthBar->localTransform.scale[0] ==.00 )
+                app->changeState("gameover");
+            healthBar->localTransform.position[0] -= (decreasedBy) ;
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
@@ -99,6 +110,7 @@ namespace our
             // Mouse left click (shoot fire)
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
             {
+                reduceHealth(camera);
                 if (checkRateOfFire()) // if it's time to spawn a bullet or not
                 {
                     // calculate bullet direction & speed in all 3 directions
@@ -243,6 +255,7 @@ namespace our
                 deltasCounter = 0;
             }
             locationInMap(camera);
+        
         }
         void locationInMap(CameraComponent *camera)
         {

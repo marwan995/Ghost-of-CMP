@@ -13,7 +13,7 @@ void main()
 {
     vec2 uv = tex_coord;
 
-    float mdf = 0.1; // effect strength to be changed
+    float mdf = 0.01; // effect strength to be changed
     float noise = (fract(sin(dot(uv, vec2(12.9898,78.233)*2.0)) * 43758.5453));
     vec4 texColor = texture(tex, uv);
     

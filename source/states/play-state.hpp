@@ -29,6 +29,10 @@ class Playstate: public our::State {
         if(config.contains("world")){
             world.deserialize(config["world"]);
         }
+        // rest map Rooms
+        getApp()->currentRoam = "";
+        getApp()-> lastRoam = "";
+        getApp()-> alpha = 0.5f;
         // We initialize the camera controller system since it needs a pointer to the app
         cameraController.enter(getApp());
 

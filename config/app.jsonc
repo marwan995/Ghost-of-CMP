@@ -1,5 +1,5 @@
 {
-  "start-scene": "gameover",
+  "start-scene": "menu",
   "window": {
     "title": "Ghost of CMP",
     "size": {
@@ -11,7 +11,7 @@
   "scene": {
     "renderer": {
       "sky": "assets/textures/sky.jpg",
-      "postprocess": "assets/shaders/postprocess/film-grain.frag"
+      "postprocess": "assets/shaders/postprocess/vignette.frag"
     },
     "assets": {
       "shaders": {
@@ -39,10 +39,13 @@
         "Image_16": "assets/textures/Image_16.png",
         "Image_19": "assets/textures/Image_19.png",
         "Image_7": "assets/textures/Image_7.png",
+        "Image_26": "assets/textures/Image_26.png",
         "Image_1": "assets/textures/Image_1.png",
         "vase": "assets/textures/Image_14.png",
         "ground-box": "assets/textures/Image_17.png",
-        "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png"
+        "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png",
+        "Explosion": "assets/textures/Explosion.png"
+
       },
       "meshes": {
         "sniper": "assets/models/sniper.obj",
@@ -63,7 +66,8 @@
         "cross":"assets/models/cross.obj",
         "lamp":"assets/models/Lamp.obj",
         "healthContainer":"assets/models/healthContainer.obj",
-        "healthBar":"assets/models/healthBar.obj"
+        "healthBar":"assets/models/healthBar.obj",
+        "Explosion":"assets/models/explosion.obj"
 
       },
       "samplers": {
@@ -209,6 +213,22 @@
           "sampler": "groundObstaclesSampler",
           "shininess":6.0
         },
+        "Explosion": {
+          "type": "textured",
+          "shader": "texturedWithoutLight",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.5, 0.0, 0.5, 7.0],
+          "texture": "Explosion",
+          "sampler": "default",
+          "shininess":10.0
+        },
         "Image_5": {
           "type": "textured",
           "shader": "textured",
@@ -238,6 +258,22 @@
           },
           "tint": [0.5, 0, 0.8, 0.7],
           "texture": "Image_3",
+          "sampler": "groundObstaclesSampler",
+          "shininess":6.0
+        },
+        "Image_26": {
+          "type": "textured",
+          "shader": "texturedWithoutLight",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.5, 0, 0.8, 0.7],
+          "texture": "Image_26",
           "sampler": "groundObstaclesSampler",
           "shininess":6.0
         },
@@ -500,7 +536,6 @@
           }
         ]
       },
-
       {
         "scale": [2, 2, 1],
         "position": [-4, -3.3, 0],
@@ -511,6 +546,13 @@
             "type": "Mesh Renderer",
             "mesh": "obstacle1",
             "material": "texture1"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "rect",
+            "colliderType": "static",
+            "scale": [3.3, 10, 0.1],
+            "shifted": [35, 5.5, -8.21827]
           }
         ]
       },
@@ -646,14 +688,6 @@
             "type": "Mesh Renderer",
             "mesh": "column-3",
             "material": "Image_5"
-          },
-          {
-            "type": "Collider",
-            "colliderShape": "sphere",
-            "colliderType": "static",
-            "radius": 1,
-            "shifted" : [2, 0, 2]
-
           }
         ]
     

@@ -28,15 +28,24 @@ class ColliderComponent : public Component{
         ColliderType type;
         Entity* colliderEntity;
         float x,y,z;
-        float scaleX, scaleY, scaleZ;
+        float scaleX=0, scaleY=0, scaleZ=0;
         glm::vec3 shifted = glm::vec3(0,0,0);
         float radius;
 
         void setEntity(Entity* entity){
             colliderEntity = entity;
-            x = entity->localTransform.position[0]+shifted[0];
+            if (getOwner()->localTransform.rotation.y == glm::radians(90.0f))
+            {
+                x = entity->localTransform.position[0]+shifted[2];
+                z = entity->localTransform.position[2]-shifted[0];
+            }
+            else{
+                x = entity->localTransform.position[0]+shifted[0];
+                z = entity->localTransform.position[2]+shifted[2];
+            }
             y = entity->localTransform.position[1]+shifted[1];
-            z = entity->localTransform.position[2]+shifted[2];
+
+
         }
 
         static std::string getID() { return "Collider"; }
@@ -89,6 +98,11 @@ class ColliderComponent : public Component{
             
             // get collider radius (in case it's sphere)
             radius = data.value("radius", 0.0f);
+
+            if (getOwner()->localTransform.rotation.y == glm::radians(90.0f))
+            {
+                std::swap(scaleX, scaleZ);
+            }
         };
 
 
@@ -132,19 +146,25 @@ class ColliderComponent : public Component{
         }
 
         glm::vec3 collisionDepthBetweenSphereAndRect(ColliderComponent* other){
-            float x = glm::clamp(this->x, other->x, other->x + other->scaleX);
-            float y = glm::clamp(this->y, other->y, other->y + other->scaleY);
-            float z = glm::clamp(this->z, other->z, other->z + other->scaleZ);
-            float distance = glm::distance(glm::vec3(x,y,z), glm::vec3(this->x, this->y, this->z));
-            if (distance < radius)
-            {
-                return {
-                    this->x - x,
-                    this->y - y,
-                    this->z - z
-                };
+            float closestX = glm::clamp(x, other->x - other->scaleX / 2.0f, other->x + other->scaleX / 2.0f);
+            float closestY = glm::clamp(y, other->y - other->scaleY / 2.0f, other->y + other->scaleY / 2.0f);
+            float closestZ = glm::clamp(z, other->z - other->scaleZ / 2.0f, other->z + other->scaleZ / 2.0f);
+
+            // Calculate the distance between the closest point and the sphere center
+            glm::vec3 closestPoint(closestX, closestY, closestZ);
+            glm::vec3 sphereCenter(x, y, z);
+            glm::vec3 direction = sphereCenter - closestPoint;
+            float distance = glm::length(direction);
+
+            // If the distance is less than or equal to the sphere radius, they are colliding
+            if (distance <= radius) {
+                // Calculate the penetration depth along each axis
+                glm::vec3 penetrationDepth = direction * (radius - distance) / distance;
+                return penetrationDepth;
             }
-            return {0,0,0};
+
+            // No collision, return zero vector
+            return glm::vec3(0.0f);
         }
 
         glm::vec3 collisionDepthRectAndRect(ColliderComponent* other){
