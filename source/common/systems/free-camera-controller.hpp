@@ -238,12 +238,21 @@ namespace our
         void locationInMap(CameraComponent *camera)
         {
             auto position = camera->getOwner()->localTransform.position;
-            if(position[1] == 0.0 &&  (position[0] > -8.5  && position[0] < 7.5) &&(position[2] > 1  && position[1] < 12.45)&&app->alpha==1.0f)//&&app->alpha<=0)
-                { 
+            if( (position[0] > -8.5  && position[0] < 7.5) && (position[2] > 1  && position[1] < 12.45) && app->alpha==0.5f)
+                    app->currentRoam = "START";
+            else if( (position[0] > -28.45  && position[0] < -17.42) &&(position[2] > -14.95  && position[2] < -3.57) && app->alpha==0.5f)
                     app->currentRoam = "GPU BOOSTER";
-                    std::cout<<  app->currentRoam<<"\n";
-                    
-                } 
+            else if( (position[0] > -41 && position[0] < 19.88) && (position[2] > -32 && position[2] < -19.9) && app->alpha==0.5f)
+                app->currentRoam = "JUSTICE CPU";
+            else if( (position[0] > 24.58 && position[0] < 57.05) && (position[2] > -38.8 && position[2] < -19.5) && app->alpha==0.5f)
+                app->currentRoam = "RAM ROOM";
+            else if( (position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha==0.5f)
+                app->currentRoam = "DARK SSD";
+            else if( (position[0] > -81.1 && position[0] < -49.1) && (position[2] > -34.88 && position[2] < -19.45) && app->alpha==0.5f)
+                app->currentRoam = "DATA HALL";
+            else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
+                app->currentRoam = "MOTHER OF BOARDS";
+
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked

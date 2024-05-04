@@ -291,39 +291,40 @@ int our::Application::run(int run_for_frames)
         if (currentState == states["play"] && alpha > 0&&lastRoam!=currentRoam)
         {
             // Calculate fading alpha value based on time or other conditions
-            alpha -= (.2 * (current_frame_time - last_frame_time));
+            alpha -= (.35 * (current_frame_time - last_frame_time));
 
             // Set image color with alpha value for fading effect
             ImVec4 imageColor = ImVec4(1.0f, 1.0f, 1.0f, alpha);
 
             // Center the image window
             ImVec2 screenCenter = ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
-            ImVec2 imageSize = ImVec2(800, 900); // Adjust the size as needed
+            ImVec2 imageSize = ImVec2(600, 675); // Adjust the size as needed
             ImVec2 imagePos = ImVec2(screenCenter.x - imageSize.x * 0.5f, screenCenter.y - imageSize.y * 0.5f);
 
             // Begin ImGui window for displaying image
             ImGui::SetNextWindowPos(imagePos);
             ImGui::SetNextWindowSize(imageSize);
             ImGui::Begin("ImageWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
-
+        
+            std::filesystem::path roomPath = std::filesystem::current_path().append("x").append("source").append(currentRoam+".png").string();
             // Display image
-            ImGui::Image((ImTextureID)our::texture_utils::loadImage("D:/3rd-cmp/Second semster/Graphics/Project/Graphics_Project-/x/source/"+currentRoam+".png", true)->getOpenGLName(),
+            ImGui::Image((ImTextureID)our::texture_utils::loadImage(roomPath.string(), true)->getOpenGLName(),
             imageSize,ImVec2(0, 0), ImVec2(1, 1),imageColor);
 
             // End ImGui window
             ImGui::End();
             if(alpha<=0){
                 lastRoam = currentRoam;
-                alpha=1.0f;
+                alpha=0.5f;
             }
         }
         if (currentState)
             currentState->onImmediateGui(); // Call to run any required Immediate GUI.
-
+        //! look here MARWAAANNNN
         // If ImGui is using the mouse or keyboard, then we don't want the captured events to affect our keyboard and mouse objects.
         // For example, if you're focusing on an input and writing "W", the keyboard object shouldn't record this event.
-        keyboard.setEnabled(!io.WantCaptureKeyboard, window);
-        mouse.setEnabled(!io.WantCaptureMouse, window);
+        // keyboard.setEnabled(!io.WantCaptureKeyboard, window);
+        // mouse.setEnabled(!io.WantCaptureMouse, window);
 
         // Render the ImGui commands we called (this doesn't actually draw to the screen yet.
         ImGui::Render();

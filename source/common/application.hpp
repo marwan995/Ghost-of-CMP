@@ -71,9 +71,9 @@ namespace our {
         virtual void setupCallbacks();                              // Sets-up the window callback functions from GLFW to our (Mouse/Keyboard) classes.
 
     public:
-        std::string currentRoam = "start";
+        std::string currentRoam = "";
         std::string lastRoam = "";
-        float alpha = 0.99f;
+        float alpha = 0.5f;
         // Create an application with following configuration
         Application(const nlohmann::json& app_config) : app_config(app_config) {}
         // On destruction, delete all the states
