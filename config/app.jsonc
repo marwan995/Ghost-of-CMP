@@ -1,5 +1,5 @@
 {
-  "start-scene": "gameover",
+  "start-scene": "menu",
   "window": {
     "title": "Ghost of CMP",
     "size": {
