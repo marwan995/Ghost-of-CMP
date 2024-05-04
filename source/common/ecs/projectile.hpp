@@ -12,12 +12,6 @@
 
 namespace our {
     
-    // enum class ProjectileType {
-    //     LASER,
-    //     GRENADE,
-    //     ROCKET
-    // };
-    
     // TODO: make projectile a component and resolve the connection with the collision
     class Projectile : public Component
     {   
@@ -38,9 +32,9 @@ namespace our {
         std::string mesh;
         std::string material;
         float scale[3];
-        float position[3];
-        float rotation[3];
-        float linearVelocity[3];
+        float position[3] = {0,0,0};
+        float rotation[3] = {0,0,0};
+        float linearVelocity[3] = {0,0,0};
 
         static std::string getID() { return "Projectile"; }
 
@@ -51,6 +45,36 @@ namespace our {
             }
         }
 
+        // create a json object to have the bullet entity data
+        nlohmann::json spawn()
+        {
+            return {
+                    {"position", position},
+                    {"rotation", rotation},
+                    {"scale", scale},
+                    {"components", nlohmann::json::array({
+                        {
+                            // bullet model
+                            {"type", "Mesh Renderer"},
+                            {"mesh", mesh},
+                            {"material", material}
+                        },
+                        {
+                            // bullet motion
+                            {"type", "Movement"},
+                            {"linearVelocity", linearVelocity} 
+                        },
+                        {
+                            // collider attributes
+                            {"type", "Collider"},
+                            {"colliderShape", "sphere"},
+                            {"colliderType", "bullet"},
+                            {"radius", radius}
+                        }
+                    })}
+                };
+        }
+
         // only overriden to be able to make projectile a component
         // can be changed later if the structure of bullet/grenade creation is changed (probably not)
         void deserialize(const nlohmann::json& data) override{};
@@ -59,7 +83,9 @@ namespace our {
         virtual void shoot()=0;
 
         // function to remove the bullet when it hits another collider
-        virtual bool hit(World* world,Entity* projectile,Entity* hitEntity) = 0;
+        virtual bool hit(World* world, Entity* hitEntity) = 0;
+
+        virtual ~Projectile(){};
     };
     
 }
