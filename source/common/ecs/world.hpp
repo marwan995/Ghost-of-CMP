@@ -85,6 +85,9 @@ namespace our
                 delete entity;
             }
             entities.clear();
+            // remove static/dynamic entities
+            dynamicEntities.clear();
+            staticEntities.clear();
         }
 
         // Since the world owns all of its entities, they should be deleted alongside it.
