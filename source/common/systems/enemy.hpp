@@ -23,6 +23,7 @@ namespace our
     {
         CameraComponent *camera;
         std::vector<Entity *> *enemiesEntities;
+
     public:
         void enter(World *world)
         {
@@ -62,7 +63,7 @@ namespace our
                 // If the movement component exists
                 if (enemy)
                 {
-                    ColliderComponent* enemyCollider = entity->getComponents<ColliderComponent>()[1];
+                    ColliderComponent *enemyCollider = entity->getComponents<ColliderComponent>()[1];
                     if (!enemyCollider)
                     {
                         break;
@@ -71,29 +72,38 @@ namespace our
 
                     if (ColliderComponent::isColliding(collisionDepth))
                     {
-
-                        enemy->aimAt(camera);
-                        if (enemy->checkRateOfFire())
+                        
+                        if (enemy->type == EnemyType::MELEE)
                         {
-                            glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
-                            glm::vec3 position = enemy->getOwner()->localTransform.position;
+                            enemy->aimAt(camera,true);
+                            enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime);
+                        }
+                        else if (enemy->type == EnemyType::SHOOTER)
+                        {
+                        enemy->aimAt(camera);
+                            if (enemy->checkRateOfFire())
+                            {
+                                glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
+                                glm::vec3 position = enemy->getOwner()->localTransform.position;
 
-                            float bulletRotation[3] = {180 - glm::degrees(rotation.x), glm::degrees(rotation.y) - 180, glm::degrees(rotation.z)};
-                            float bulletSpeedX = -cos(-rotation.x) * sin(rotation.y);
-                            float bulletSpeedY = -sin(-rotation.x);
-                            float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
-                            float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
-                            float bulletPosition[3] = {position.x + bulletSpeedX * 2, position.y + bulletSpeedY * 2, position.z + bulletSpeedZ * 2};
+                                float bulletRotation[3] = {180 - glm::degrees(rotation.x), glm::degrees(rotation.y) - 180, glm::degrees(rotation.z)};
+                                float bulletSpeedX = -cos(-rotation.x) * sin(rotation.y);
+                                float bulletSpeedY = -sin(-rotation.x);
+                                float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
+                                float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
+                                float bulletPosition[3] = {position.x + bulletSpeedX * 2, position.y + bulletSpeedY * 2, position.z + bulletSpeedZ * 2};
 
-                            LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
-                            laserBullet->shoot();
+                                LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
+                                laserBullet->shoot();
+                            }
                         }
                     }
                 }
             }
         }
 
-        void enemyKilled(Entity* killedEntity){
+        void enemyKilled(Entity *killedEntity)
+        {
             auto it = std::find(enemiesEntities->begin(), enemiesEntities->end(), killedEntity);
             enemiesEntities->erase(it);
         }

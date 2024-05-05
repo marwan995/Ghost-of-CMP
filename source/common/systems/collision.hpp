@@ -28,9 +28,19 @@ namespace our
     {
         std::vector<Entity *> *staticEntities;  // to contain the static objects that don't move
         std::vector<Entity *> *dynamicEntities; // to contain the dynamic objects (camera and bullets)
-        EnemySystem* enemySys;
+        std::vector<Entity *> *enemiesEntities; // to contain the dynamic objects (camera and bullets)
+        EnemySystem *enemySys;
         CameraComponent *camera;
         FreeCameraControllerComponent *cameraController;
+        void removeEntityFromVector(Entity *entityToRemove, std::vector<Entity *> &entitiesVector)
+        {
+            entitiesVector.erase(std::remove_if(entitiesVector.begin(), entitiesVector.end(),
+                                                [entityToRemove](Entity *entity)
+                                                {
+                                                    return entity == entityToRemove;
+                                                }),
+                                 entitiesVector.end());
+        }
 
         // Utility to remove a bullet
         void removeBullet(World *world, std::vector<Entity *>::iterator *dynamicIt)
@@ -40,14 +50,22 @@ namespace our
             (*dynamicIt) = (*dynamicIt) - 1;
             dynamicEntities->erase(dynamicIt2Delete);
         }
+        void removeEnemy(World *world, Entity *enemy)
+        {
+            world->markForRemoval(enemy);
+            removeEntityFromVector(enemy,*dynamicEntities);
+            removeEntityFromVector(enemy,*staticEntities);
+            removeEntityFromVector(enemy,* (enemiesEntities));
+        }
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem* enemySystem)
+        void enter(World *world, EnemySystem *enemySystem)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
+            enemiesEntities = &world->enemiesEntities;
 
             enemySys = enemySystem;
 
@@ -55,7 +73,7 @@ namespace our
             for (auto entity : world->getEntities())
             {
                 // Get the movement component if it exists
-                std::vector<ColliderComponent*> colliders = entity->getComponents<ColliderComponent>();
+                std::vector<ColliderComponent *> colliders = entity->getComponents<ColliderComponent>();
 
                 CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
                 if (worldCamera)
@@ -65,7 +83,7 @@ namespace our
                 }
 
                 // If the movement component exists
-                if (colliders.size()>0)
+                if (colliders.size() > 0)
                 {
                     for (auto collider : colliders)
                     {
@@ -73,14 +91,14 @@ namespace our
 
                         // Change the position and rotation based on the linear & angular velocity and delta time.
                     }
-                        if (colliders[0]->type == ColliderType::STATIC)
-                        {
-                            staticEntities->push_back(entity);
-                        }
-                        else
-                        {
-                            dynamicEntities->push_back(entity);
-                        }
+                    if (colliders[0]->type == ColliderType::STATIC)
+                    {
+                        staticEntities->push_back(entity);
+                    }
+                    else
+                    {
+                        dynamicEntities->push_back(entity);
+                    }
                 }
             }
         }
@@ -109,7 +127,15 @@ namespace our
                         if ((*dynamicIt)->getComponent<CameraComponent>()) // camera collided with static object (wall)
                         {
                             auto staticComponentPostion = glm::vec3(staticComponent->x, staticComponent->y, staticComponent->z);
-
+                            auto enemy = (*staticIt)->getComponent<EnemyComponent>();
+                            if (enemy)
+                            {
+                                if (enemy->type == EnemyType::MELEE)
+                                {
+                                playerReducedHealth = 60;
+                                removeEnemy(world, enemy->getOwner());
+                                }
+                            }
                             if (fabs(collisionDepth[1]) > fabs(staticComponentPostion[1]))
                             {
                                 camera->getOwner()->localTransform.position[1] = camera->lastPosition[1];
@@ -117,6 +143,7 @@ namespace our
                             }
                             else
                                 camera->getOwner()->localTransform.position = camera->lastPosition;
+
                             break; // check for other collisions
                         }
 
@@ -148,7 +175,7 @@ namespace our
                                 // shotgun bullets don't vanish on collision they vanish after a certain time
                                 if (shotgun->isFriendly)                         // player's bullet
                                     isKilled = shotgun->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                                                  // enemy's bullet
+                                else                                             // enemy's bullet
                                     playerReducedHealth = 50;
                             }
                             else if (rocket)
@@ -157,7 +184,7 @@ namespace our
 
                                 if (rocket->isFriendly)                         // player's bullet
                                     isKilled = rocket->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                                                  // enemy's bullet
+                                else                                            // enemy's bullet
                                     playerReducedHealth = 200;
                                 dynamicIt = dynamicEntities->begin() + counter;
                             }
@@ -165,7 +192,7 @@ namespace our
                             {
                                 if (explosion->isFriendly)                         // player's bullet
                                     isKilled = explosion->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                                                  // enemy's bullet
+                                else                                               // enemy's bullet
                                     playerReducedHealth = 100;
                             }
 
