@@ -687,12 +687,25 @@
         "scale": [1, 1, 1],
         "position": [0, -1, -5],
         "rotation": [0, 0, 0],
-        "health": 360,
         "components": [
           {
             "type": "Mesh Renderer",
             "mesh": "column-3",
             "material": "Image_5"
+          }
+        
+        ]
+      },
+      {
+        "scale": [1, 1, 1],
+        "position": [-1, 0.0, 3],
+        "rotation": [0, 0, 0],
+        "health": 5000000,
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "texture1"
           },
           {
             "type": "Enemy",
@@ -702,7 +715,14 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 1.5
+            "radius": 10
+          
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "rect",
+            "colliderType": "static",
+            "scale": [10, 10, 10]
           }
         ]
       }

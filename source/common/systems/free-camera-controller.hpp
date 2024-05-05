@@ -271,7 +271,6 @@ namespace our
                 app->currentRoam = "DATA HALL";
             else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
                 app->currentRoam = "MOTHER OF BOARDS";
-
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked

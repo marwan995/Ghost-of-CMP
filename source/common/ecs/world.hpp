@@ -88,6 +88,7 @@ namespace our
                 delete entity;
             }
             entities.clear();
+            enemiesEntities.clear();
             // remove static/dynamic entities
             dynamicEntities.clear();
             staticEntities.clear();

@@ -124,6 +124,8 @@ namespace our
                 components.erase(it);
             }
         }
+        // This method returns a list of all the components of the entity
+        std::list<Component *> getComponents() const { return components; }
 
         // Since the entity owns its components, they should be deleted alongside the entity
         ~Entity()

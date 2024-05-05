@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../ecs/world.hpp"
-#include "../components/collision-component.hpp"
+#include "../components/enemy-component.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
@@ -18,54 +18,74 @@
 
 namespace our
 {
-    // The collision system is responsible for checking collisions between colliders.
+    CameraComponent *camera;
+
+    std::vector<Entity *> *enemiesEntities;
+    // The Enemy system is responsible for attacking the player.
     class EnemySystem
     {
-
-        public:
+    public:
         void enter(World *world)
         {
-            // TODO: initialize the enemies vector
-               // get access to the needed entities
+            // get access to the needed entities
             enemiesEntities = &world->enemiesEntities;
 
             // For each entity in the world
             for (auto entity : world->getEntities())
             {
                 // Get the movement component if it exists
-                EnemyComponent *collider = entity->getComponent<ColliderComponent>();
+                EnemyComponent *enemy = entity->getComponent<EnemyComponent>();
 
                 CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
                 if (worldCamera)
                 {
                     camera = worldCamera;
-                    cameraController = entity->getComponent<FreeCameraControllerComponent>();
                 }
 
                 // If the movement component exists
-                if (collider)
+                if (enemy)
                 {
-                    collider->setEntity(entity);
+                    enemiesEntities->push_back(entity);
+                }
+            }
+        }
 
-                    // Change the position and rotation based on the linear & angular velocity and delta time.
-                    if (collider->type == ColliderType::STATIC)
+        void update(World *world, double deltaTime)
+        {
+            // get the camera collider
+            ColliderComponent *cameraCollider = camera->getOwner()->getComponent<ColliderComponent>();
+            // For each entity in the world
+            for (auto entity : *enemiesEntities)
+            {
+                // Get the movement component if it exists
+                EnemyComponent *enemy = entity->getComponent<EnemyComponent>();
+
+                // If the movement component exists
+                if (enemy)
+                {
+                    ColliderComponent *enemyCollider = entity->getComponent<ColliderComponent>();
+                    glm::vec3 collisionDepth = enemyCollider->collisionDepth(cameraCollider);
+                    if (ColliderComponent::isColliding(collisionDepth))
                     {
-                        staticEntities->push_back(entity);
-                    }
-                    else
-                    {
-                        dynamicEntities->push_back(entity);
+                        enemy->aimAt(camera);
+                        if (enemy->checkRateOfFire())
+                        {
+                            glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
+                            glm::vec3 position = enemy->getOwner()->localTransform.position;
+
+                            float bulletRotation[3] = {180 - glm::degrees(rotation.x), glm::degrees(rotation.y) - 180, glm::degrees(rotation.z)};
+                            float bulletSpeedX = -cos(-rotation.x) * sin(rotation.y);
+                            float bulletSpeedY = -sin(-rotation.x);
+                            float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
+                            float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
+                            float bulletPosition[3] = {position.x + bulletSpeedX / 4, position.y + bulletSpeedY / 4, position.z + bulletSpeedZ / 4};
+
+                            LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
+                            laserBullet->shoot();
+                        }
                     }
                 }
             }
-
         }
-
-        void update(World* world ,double deltaTime)
-        {
-            // TODO: loop through enemies and check if player is in collision then attack
-
-        }
-
     };
 }

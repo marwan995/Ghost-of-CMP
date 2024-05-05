@@ -130,7 +130,8 @@ namespace our
 
                                 if (laser->isFriendly)                                                  // player's bullet
                                     isKilled = laser->hit(world, (*staticIt));             // apply damage & check if enemy is killed
-                                //else                                                                  // enemy's bullet
+                                // else    
+                                // std::cout<<"FUCK U U KILLED ME \n";                                                              // enemy's bullet
                             }
                             else if (shotgun)
                             {
