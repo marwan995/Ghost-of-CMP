@@ -545,7 +545,7 @@
             "type": "Collider",
             "colliderShape": "rect",
             "colliderType": "static",
-            "scale": [3.3, 10, 0.1],
+            "scale": [4, 10, 0.5],
             "shifted": [35, 5.5, -8.21827]
           }
         ]

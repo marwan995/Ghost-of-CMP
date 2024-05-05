@@ -71,13 +71,12 @@ namespace our
         }
         
         static void reduceHealth(CameraComponent *camera,float dmg =.01 ){
-            // TODO: map the health bar to the player's health
             auto healthBar = camera->getOwner()->children[1]->children[0];
 
-            float decreasedBy = (dmg * 9.6) / 2.0;
+            float decreasedBy = (dmg * 9.6) / (2.0 * 500.0);
             camera->getOwner()->health -= dmg;
 
-            healthBar->localTransform.scale[0] -= dmg;
+            healthBar->localTransform.scale[0] -= decreasedBy * 2/ 9.6;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
             healthBar->localTransform.position[0] -= (decreasedBy) ;
         }

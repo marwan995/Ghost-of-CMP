@@ -67,13 +67,10 @@ namespace our
                     {
                         break;
                     }
-                    std::cout<<enemyCollider->radius<<"\n";
                     glm::vec3 collisionDepth = enemyCollider->collisionDepth(cameraCollider);
-                    std::cout<<enemyCollider->radius<<"\n";
 
                     if (ColliderComponent::isColliding(collisionDepth))
                     {
-                    std::cout<<enemyCollider->radius<<"\n";
 
                         enemy->aimAt(camera);
                         if (enemy->checkRateOfFire())

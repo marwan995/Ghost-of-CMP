@@ -141,16 +141,15 @@ namespace our
                                 if (laser->isFriendly)                         // player's bullet
                                     isKilled = laser->hit(world, (*staticIt)); // apply damage & check if enemy is killed
                                 else
-                                {
-                                    playerReducedHealth = 1;
-                                }
+                                    playerReducedHealth = 5;
                             }
                             else if (shotgun)
                             {
                                 // shotgun bullets don't vanish on collision they vanish after a certain time
                                 if (shotgun->isFriendly)                         // player's bullet
                                     isKilled = shotgun->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                // else                                                                  // enemy's bullet
+                                else                                                                  // enemy's bullet
+                                    playerReducedHealth = 50;
                             }
                             else if (rocket)
                             {
@@ -158,17 +157,16 @@ namespace our
 
                                 if (rocket->isFriendly)                         // player's bullet
                                     isKilled = rocket->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-
-                                // else                                                                  // enemy's bullet
-
+                                else                                                                  // enemy's bullet
+                                    playerReducedHealth = 200;
                                 dynamicIt = dynamicEntities->begin() + counter;
                             }
                             else if (explosion)
                             {
                                 if (explosion->isFriendly)                         // player's bullet
                                     isKilled = explosion->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-
-                                // else                                                                  // enemy's bullet
+                                else                                                                  // enemy's bullet
+                                    playerReducedHealth = 100;
                             }
 
                             // hit entity is killed so remove it

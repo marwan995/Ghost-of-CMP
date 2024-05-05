@@ -29,7 +29,7 @@ namespace our
         float range;
         float health;
         int weapon;
-        float rateOfFire = 30;
+        float rateOfFire = 25;
         int deltasCounter = 0;
 
 
