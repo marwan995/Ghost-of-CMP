@@ -9,6 +9,7 @@ namespace our
     // forward delcaration for the collision system
     // as the world stores static & dynamic entities
     class CollisionSystem;
+    class EnemySystem;
 
     // This class holds a set of entities
     class World
@@ -18,9 +19,10 @@ namespace our
                                                        // when deleteMarkedEntities is called
         std::vector<Entity*> staticEntities;
         std::vector<Entity*> dynamicEntities;
-        
+        std::vector<Entity*> enemiesEntities;
         // to make the collision system able to access static/dynamic entities
         friend CollisionSystem;
+        friend EnemySystem;
 
     public:
         Audio audioPlayer;
@@ -86,6 +88,7 @@ namespace our
                 delete entity;
             }
             entities.clear();
+            enemiesEntities.clear();
             // remove static/dynamic entities
             dynamicEntities.clear();
             staticEntities.clear();

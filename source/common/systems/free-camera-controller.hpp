@@ -38,7 +38,7 @@ namespace our
 
         int activeWeapon = 0;
         int deltasCounter=0;
-        const float weapons_BPS[3] = {10, 2, 15};   // holds weapons bullets per seconds
+        const float weapons_BPS[3] = {20, 5, 15};   // holds weapons bullets per seconds
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -70,14 +70,14 @@ namespace our
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
         }
         
-        void reduceHealth(CameraComponent *camera,float dmg =.01 ){
+        static void reduceHealth(CameraComponent *camera,float dmg =.01 ){
             auto healthBar = camera->getOwner()->children[1]->children[0];
-            float decreasedBy = (dmg * 9.6) / 2.0;
 
-            healthBar->localTransform.scale[0] -= dmg;
+            float decreasedBy = (dmg * 9.6) / (2.0 * 500.0);
+            camera->getOwner()->health -= dmg;
+
+            healthBar->localTransform.scale[0] -= decreasedBy * 2/ 9.6;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
-            if (healthBar->localTransform.scale[0] ==.00 )
-                app->changeState("gameover");
             healthBar->localTransform.position[0] -= (decreasedBy) ;
         }
 
@@ -110,7 +110,6 @@ namespace our
             // Mouse left click (shoot fire)
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
             {
-                reduceHealth(camera);
                 if (checkRateOfFire()) // if it's time to spawn a bullet or not
                 {
                     // calculate bullet direction & speed in all 3 directions
@@ -124,7 +123,6 @@ namespace our
                     {
                         // laser rifle
                         LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        laserBullet->isFriendly = true;
                         laserBullet->shoot();
                         world->audioPlayer.play("Laser.wav");
                     }
@@ -132,13 +130,11 @@ namespace our
                     {
                         // shotgun
                         ShotgunBullet* shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        shotgunBullet->isFriendly = true;
                         shotgunBullet->shoot();
                     }
                     else if (activeWeapon == 2)
                     {
                         RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
-                        rocketBullet->isFriendly = true;
                         rocketBullet->shoot();
                     }
                 }
@@ -274,7 +270,6 @@ namespace our
                 app->currentRoam = "DATA HALL";
             else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
                 app->currentRoam = "MOTHER OF BOARDS";
-
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked

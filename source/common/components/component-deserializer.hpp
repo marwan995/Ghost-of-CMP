@@ -7,6 +7,7 @@
 #include "movement.hpp"
 #include "collision-component.hpp"
 #include "lighting-component.hpp"
+#include "enemy-component.hpp"
 namespace our
 {
 
@@ -40,6 +41,10 @@ namespace our
         else if (type == LightingComponent::getID())
         {
             component = entity->addComponent<LightingComponent>();
+        }
+        else if (type == EnemyComponent::getID())
+        {
+            component = entity->addComponent<EnemyComponent>();
         }
         if (component)
             component->deserialize(data);

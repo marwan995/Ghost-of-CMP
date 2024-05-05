@@ -8,6 +8,8 @@
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
 #include <systems/collision.hpp>
+#include <systems/enemy.hpp>
+#include <components/camera.hpp>
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -17,6 +19,8 @@ class Playstate: public our::State {
     our::FreeCameraControllerSystem cameraController;
     our::MovementSystem movementSystem;
     our::CollisionSystem collisionSystem; 
+    our::EnemySystem enemySystem;
+    our::CameraComponent* camera; 
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -37,19 +41,39 @@ class Playstate: public our::State {
         cameraController.enter(getApp());
 
         // Initialize the collision system
-        collisionSystem.enter(&world);
+        collisionSystem.enter(&world, &enemySystem);
+        // Initialize the enemy system
+        enemySystem.enter(&world);
             
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+
+        // get the camera that represents the player
+        for (auto entity: world.getEntities())
+        {
+            our::CameraComponent *worldCamera = entity->getComponent<our::CameraComponent>();
+            if (worldCamera)
+            {
+                camera = worldCamera;
+                break;
+            }
+        }
     }
 
     void onDraw(double deltaTime) override {
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
-        cameraController.update(&world, (float)deltaTime);
 
-        collisionSystem.update(&world, (float)deltaTime);
+        // update player position and enemy's fire state
+        cameraController.update(&world, (float)deltaTime);
+        enemySystem.update(&world, (float)deltaTime);
+
+        // calculate player new health
+        float damage = collisionSystem.update(&world, (float)deltaTime);
+        our::FreeCameraControllerSystem::reduceHealth(camera, damage);
+
+        // check shotguns and explosions
         collisionSystem.updateBullets(&world);
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
@@ -61,6 +85,12 @@ class Playstate: public our::State {
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
+        }
+
+        // player died
+        if (camera->getOwner()->health <= 0)
+        {
+            getApp()->changeState("gameover");
         }
     }
 
