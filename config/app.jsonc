@@ -67,7 +67,8 @@
         "healthContainer":"assets/models/healthContainer.obj",
         "healthBar":"assets/models/healthBar.obj",
         "Explosion":"assets/models/explosion.obj",
-        "spider": "assets/models/spider.obj"
+        "spider": "assets/models/spider.obj",
+        "cannon": "assets/models/cannon.obj"
       },
       "samplers": {
         "default": {},
@@ -740,6 +741,19 @@
             "type": "Mesh Renderer",
             "mesh": "spider",
             "material": "Image_7"
+          }
+        ]
+      },
+      {
+        "scale": [1, 1, 1],
+        "position": [0, -1.3, 0],
+        "rotation": [0, 0, 0],
+        "objectType": "cannon",
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cannon",
+            "material": "Image_5"
           }
         ]
       }

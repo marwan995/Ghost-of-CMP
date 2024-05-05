@@ -54,6 +54,8 @@ namespace our
                         deserializeObjects(obstacle, repeatedObstacles, "column2.jsonc");
                     else if(objectType == "spider")
                         deserializeObjects(obstacle, repeatedObstacles, "spider.jsonc");
+                    else if(objectType == "cannon")
+                        deserializeObjects(obstacle, repeatedObstacles, "cannon.jsonc");
                 }
             }
         }
