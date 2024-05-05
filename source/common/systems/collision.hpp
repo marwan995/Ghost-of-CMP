@@ -9,6 +9,9 @@
 #include <glm/gtx/fast_trigonometry.hpp>
 
 #include "../components/camera.hpp"
+#include "../components/free-camera-controller.hpp"
+
+#include "enemy.hpp"
 
 // bullet types
 #include "../ecs/laser-bullet.hpp"
@@ -25,6 +28,7 @@ namespace our
     {
         std::vector<Entity *> *staticEntities;  // to contain the static objects that don't move
         std::vector<Entity *> *dynamicEntities; // to contain the dynamic objects (camera and bullets)
+        EnemySystem* enemySys;
         CameraComponent *camera;
         FreeCameraControllerComponent *cameraController;
 
@@ -39,11 +43,13 @@ namespace our
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world)
+        void enter(World *world, EnemySystem* enemySystem)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
+
+            enemySys = enemySystem;
 
             // For each entity in the world
             for (auto entity : world->getEntities())
@@ -66,7 +72,8 @@ namespace our
                         collider->setEntity(entity);
 
                         // Change the position and rotation based on the linear & angular velocity and delta time.
-                        if (collider->type == ColliderType::STATIC)
+                    }
+                        if (colliders[0]->type == ColliderType::STATIC)
                         {
                             staticEntities->push_back(entity);
                         }
@@ -74,14 +81,14 @@ namespace our
                         {
                             dynamicEntities->push_back(entity);
                         }
-                    }
                 }
             }
         }
 
         // function that runs in each frame to check for collisions
-        void update(World *world, float deltaTime)
+        float update(World *world, float deltaTime)
         {
+            float playerReducedHealth = 0;
             // used to get the new iterator of the rocket bullet when an explosion is generated
             int counter = 0;
 
@@ -133,15 +140,16 @@ namespace our
 
                                 if (laser->isFriendly)                         // player's bullet
                                     isKilled = laser->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                // else
-                                // std::cout<<"FUCK U U KILLED ME \n";                                                              // enemy's bullet
+                                else
+                                {
+                                    playerReducedHealth = 1;
+                                }
                             }
                             else if (shotgun)
                             {
                                 // shotgun bullets don't vanish on collision they vanish after a certain time
                                 if (shotgun->isFriendly)                         // player's bullet
                                     isKilled = shotgun->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-
                                 // else                                                                  // enemy's bullet
                             }
                             else if (rocket)
@@ -166,6 +174,8 @@ namespace our
                             // hit entity is killed so remove it
                             if (isKilled)
                             {
+                                if ((*staticIt)->getComponent<EnemyComponent>())
+                                    enemySys->enemyKilled((*staticIt));
                                 staticEntities->erase(staticIt);
                             }
 
@@ -192,6 +202,8 @@ namespace our
 
                 counter++;
             }
+
+            return playerReducedHealth;
         }
 
         // function to remove shotgun bullets and explosions after a certain time

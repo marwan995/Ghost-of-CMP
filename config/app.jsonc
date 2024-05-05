@@ -393,6 +393,7 @@
     "world": [
       {
         "position": [0, 0, 10],
+        "health": 500,
         "components": [
           {
             "type": "Camera"
@@ -714,10 +715,11 @@
           {
             "type": "Collider",
             "colliderShape": "sphere",
-            "colliderType": "dynamic",
+            "colliderType": "static",
             "radius": 1
           
-          },
+          }
+          ,
           {
             "type": "Collider",
             "colliderShape": "sphere",

@@ -18,12 +18,11 @@
 
 namespace our
 {
-    CameraComponent *camera;
-
-    std::vector<Entity *> *enemiesEntities;
     // The Enemy system is responsible for attacking the player.
     class EnemySystem
     {
+        CameraComponent *camera;
+        std::vector<Entity *> *enemiesEntities;
     public:
         void enter(World *world)
         {
@@ -64,6 +63,10 @@ namespace our
                 if (enemy)
                 {
                     ColliderComponent* enemyCollider = entity->getComponents<ColliderComponent>()[1];
+                    if (!enemyCollider)
+                    {
+                        break;
+                    }
                     std::cout<<enemyCollider->radius<<"\n";
                     glm::vec3 collisionDepth = enemyCollider->collisionDepth(cameraCollider);
                     std::cout<<enemyCollider->radius<<"\n";
@@ -83,7 +86,7 @@ namespace our
                             float bulletSpeedY = -sin(-rotation.x);
                             float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
                             float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
-                            float bulletPosition[3] = {position.x + bulletSpeedX / 4, position.y + bulletSpeedY / 4, position.z + bulletSpeedZ / 4};
+                            float bulletPosition[3] = {position.x + bulletSpeedX * 2, position.y + bulletSpeedY * 2, position.z + bulletSpeedZ * 2};
 
                             LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
                             laserBullet->shoot();
@@ -91,6 +94,11 @@ namespace our
                     }
                 }
             }
+        }
+
+        void enemyKilled(Entity* killedEntity){
+            auto it = std::find(enemiesEntities->begin(), enemiesEntities->end(), killedEntity);
+            enemiesEntities->erase(it);
         }
     };
 }

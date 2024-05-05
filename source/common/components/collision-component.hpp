@@ -34,7 +34,7 @@ class ColliderComponent : public Component{
 
         void setEntity(Entity* entity){
             colliderEntity = entity;
-            if (getOwner()->localTransform.rotation.y == glm::radians(90.0f))
+            if (getOwner()->localTransform.rotation.y != 0)
             {
                 x = entity->localTransform.position[0]+shifted[2];
                 z = entity->localTransform.position[2]-shifted[0];
@@ -99,7 +99,7 @@ class ColliderComponent : public Component{
             // get collider radius (in case it's sphere)
             radius = data.value("radius", 0.0f);
 
-            if (getOwner()->localTransform.rotation.y == glm::radians(90.0f))
+            if (getOwner()->localTransform.rotation.y != 0)
             {
                 std::swap(scaleX, scaleZ);
             }
