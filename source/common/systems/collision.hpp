@@ -53,9 +53,9 @@ namespace our
         void removeEnemy(World *world, Entity *enemy)
         {
             world->markForRemoval(enemy);
-            removeEntityFromVector(enemy,*dynamicEntities);
-            removeEntityFromVector(enemy,*staticEntities);
-            removeEntityFromVector(enemy,* (enemiesEntities));
+            removeEntityFromVector(enemy, *dynamicEntities);
+            removeEntityFromVector(enemy, *staticEntities);
+            removeEntityFromVector(enemy, *(enemiesEntities));
         }
 
     public:
@@ -132,8 +132,8 @@ namespace our
                             {
                                 if (enemy->type == EnemyType::MELEE)
                                 {
-                                playerReducedHealth = 60;
-                                removeEnemy(world, enemy->getOwner());
+                                    playerReducedHealth = 60;
+                                    removeEnemy(world, enemy->getOwner());
                                 }
                             }
                             if (fabs(collisionDepth[1]) > fabs(staticComponentPostion[1]))
