@@ -404,7 +404,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 1
+            "radius": 0.1
           }
         ],
         "children": [
@@ -700,7 +700,7 @@
         "scale": [1, 1, 1],
         "position": [-1, 0.0, 3],
         "rotation": [0, 0, 0],
-        "health": 5000000,
+        "health": 200,
         "components": [
           {
             "type": "Mesh Renderer",
@@ -715,14 +715,14 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 10
+            "radius": 1
           
           },
           {
             "type": "Collider",
-            "colliderShape": "rect",
-            "colliderType": "static",
-            "scale": [10, 10, 10]
+            "colliderShape": "sphere",
+            "colliderType": "dynamic",
+            "radius": 5
           }
         ]
       }

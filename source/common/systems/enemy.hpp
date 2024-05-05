@@ -63,10 +63,15 @@ namespace our
                 // If the movement component exists
                 if (enemy)
                 {
-                    ColliderComponent *enemyCollider = entity->getComponent<ColliderComponent>();
+                    ColliderComponent* enemyCollider = entity->getComponents<ColliderComponent>()[1];
+                    std::cout<<enemyCollider->radius<<"\n";
                     glm::vec3 collisionDepth = enemyCollider->collisionDepth(cameraCollider);
+                    std::cout<<enemyCollider->radius<<"\n";
+
                     if (ColliderComponent::isColliding(collisionDepth))
                     {
+                    std::cout<<enemyCollider->radius<<"\n";
+
                         enemy->aimAt(camera);
                         if (enemy->checkRateOfFire())
                         {

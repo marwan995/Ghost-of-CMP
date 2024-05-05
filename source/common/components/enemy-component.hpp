@@ -115,24 +115,5 @@ namespace our
             return true;
         }
 
-        void attack(World * world)
-        {
-            // if (checkRateOfFire())
-            // {
-
-            // glm::vec3 rotation = getOwner()->localTransform.rotation;
-            // glm::vec3 position = getOwner()->localTransform.position;
-
-            // float bulletRotation[3] = {180 - glm::degrees(rotation.x), glm::degrees(rotation.y) - 180, glm::degrees(rotation.z)};
-            // float bulletSpeedX = -cos(-rotation.x) * sin(rotation.y);
-            // float bulletSpeedY = -sin(-rotation.x);
-            // float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
-            // float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
-            // float bulletPosition[3] = {position.x + bulletSpeedX / 4, position.y + bulletSpeedY / 4, position.z + bulletSpeedZ / 4};
-
-            // LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
-            // laserBullet->shoot();
-            // }
-        }
     };
 };

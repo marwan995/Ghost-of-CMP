@@ -124,8 +124,22 @@ namespace our
                 components.erase(it);
             }
         }
+            template <typename T>
+        std::vector<T *> getComponents()
+        {
+            std::vector<T *> vec;
+            for (Component *component : components)
+            {
+                T *typedComponent = dynamic_cast<T *>(component);
+
+                if (typedComponent != nullptr)
+                    vec.push_back(typedComponent);
+            }
+            return vec;
+        }
+
         // This method returns a list of all the components of the entity
-        std::list<Component *> getComponents() const { return components; }
+        std::list<Component *> getAllComponents() const { return components; }
 
         // Since the entity owns its components, they should be deleted alongside the entity
         ~Entity()

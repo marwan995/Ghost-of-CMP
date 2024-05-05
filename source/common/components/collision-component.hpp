@@ -109,6 +109,7 @@ class ColliderComponent : public Component{
 
         glm::vec3 collisionDepth(ColliderComponent* other)
         {
+
             x = colliderEntity->localTransform.position[0]+shifted[0];
             y = colliderEntity->localTransform.position[1]+shifted[1];
             z = colliderEntity->localTransform.position[2]+shifted[2];

@@ -29,7 +29,7 @@ namespace our
         FreeCameraControllerComponent *cameraController;
 
         // Utility to remove a bullet
-        void removeBullet(World* world, std::vector<Entity*>::iterator* dynamicIt)
+        void removeBullet(World *world, std::vector<Entity *>::iterator *dynamicIt)
         {
             world->markForRemoval((*(*dynamicIt)));
             auto dynamicIt2Delete = (*dynamicIt);
@@ -38,7 +38,6 @@ namespace our
         }
 
     public:
-
         // Only called when the play state starts to add the colliders in an array
         void enter(World *world)
         {
@@ -50,7 +49,7 @@ namespace our
             for (auto entity : world->getEntities())
             {
                 // Get the movement component if it exists
-                ColliderComponent *collider = entity->getComponent<ColliderComponent>();
+                std::vector<ColliderComponent*> colliders = entity->getComponents<ColliderComponent>();
 
                 CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
                 if (worldCamera)
@@ -60,31 +59,35 @@ namespace our
                 }
 
                 // If the movement component exists
-                if (collider)
+                if (colliders.size()>0)
                 {
-                    collider->setEntity(entity);
+                    for (auto collider : colliders)
+                    {
+                        collider->setEntity(entity);
 
-                    // Change the position and rotation based on the linear & angular velocity and delta time.
-                    if (collider->type == ColliderType::STATIC)
-                    {
-                        staticEntities->push_back(entity);
-                    }
-                    else
-                    {
-                        dynamicEntities->push_back(entity);
+                        // Change the position and rotation based on the linear & angular velocity and delta time.
+                        if (collider->type == ColliderType::STATIC)
+                        {
+                            staticEntities->push_back(entity);
+                        }
+                        else
+                        {
+                            dynamicEntities->push_back(entity);
+                        }
                     }
                 }
             }
         }
 
         // function that runs in each frame to check for collisions
-        void update(World* world, float deltaTime) {
+        void update(World *world, float deltaTime)
+        {
             // used to get the new iterator of the rocket bullet when an explosion is generated
             int counter = 0;
 
             // For each dynamic entity in the world
-            for(auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
-            {   
+            for (auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
+            {
                 // flag to know if the bullet should be removed
                 bool bulletVanished = false;
 
@@ -111,7 +114,7 @@ namespace our
                         }
 
                         // if it's not a camera then it's a projectile
-                        ColliderComponent* projectileCollider = (*dynamicIt)->getComponent<ColliderComponent>();
+                        ColliderComponent *projectileCollider = (*dynamicIt)->getComponent<ColliderComponent>();
                         // check if it's a bullet
                         if (projectileCollider->type == ColliderType::BULLET)
                         {
@@ -119,53 +122,53 @@ namespace our
                             bool isKilled = false;
 
                             // get component for bullet type
-                            our::LaserBullet* laser = (*dynamicIt)->getComponent<our::LaserBullet>();   // possible laser bullet component
-                            our::ShotgunBullet* shotgun = (*dynamicIt)->getComponent<our::ShotgunBullet>();         // possible shotgun bullet component
-                            our::RocketBullet* rocket = (*dynamicIt)->getComponent<our::RocketBullet>();         // possible rocket component
-                            our::Explosion* explosion = (*dynamicIt)->getComponent<our::Explosion>();         // possible explosion component
+                            our::LaserBullet *laser = (*dynamicIt)->getComponent<our::LaserBullet>();       // possible laser bullet component
+                            our::ShotgunBullet *shotgun = (*dynamicIt)->getComponent<our::ShotgunBullet>(); // possible shotgun bullet component
+                            our::RocketBullet *rocket = (*dynamicIt)->getComponent<our::RocketBullet>();    // possible rocket component
+                            our::Explosion *explosion = (*dynamicIt)->getComponent<our::Explosion>();       // possible explosion component
                             if (laser)
                             {
                                 // laser is always removed on collision
                                 bulletVanished = true;
 
-                                if (laser->isFriendly)                                                  // player's bullet
-                                    isKilled = laser->hit(world, (*staticIt));             // apply damage & check if enemy is killed
-                                // else    
+                                if (laser->isFriendly)                         // player's bullet
+                                    isKilled = laser->hit(world, (*staticIt)); // apply damage & check if enemy is killed
+                                // else
                                 // std::cout<<"FUCK U U KILLED ME \n";                                                              // enemy's bullet
                             }
                             else if (shotgun)
                             {
                                 // shotgun bullets don't vanish on collision they vanish after a certain time
-                                if (shotgun->isFriendly)                                                  // player's bullet
-                                    isKilled = shotgun->hit(world, (*staticIt));             // apply damage & check if enemy is killed
-                                
-                                //else                                                                  // enemy's bullet
+                                if (shotgun->isFriendly)                         // player's bullet
+                                    isKilled = shotgun->hit(world, (*staticIt)); // apply damage & check if enemy is killed
+
+                                // else                                                                  // enemy's bullet
                             }
                             else if (rocket)
                             {
                                 bulletVanished = true;
 
-                                if (rocket->isFriendly)                                                  // player's bullet
-                                    isKilled = rocket->hit(world, (*staticIt));             // apply damage & check if enemy is killed
-    
-                                //else                                                                  // enemy's bullet
+                                if (rocket->isFriendly)                         // player's bullet
+                                    isKilled = rocket->hit(world, (*staticIt)); // apply damage & check if enemy is killed
+
+                                // else                                                                  // enemy's bullet
 
                                 dynamicIt = dynamicEntities->begin() + counter;
                             }
                             else if (explosion)
                             {
-                                if (explosion->isFriendly)                                                  // player's bullet
-                                    isKilled = explosion->hit(world, (*staticIt));             // apply damage & check if enemy is killed
-        
-                                //else                                                                  // enemy's bullet
+                                if (explosion->isFriendly)                         // player's bullet
+                                    isKilled = explosion->hit(world, (*staticIt)); // apply damage & check if enemy is killed
+
+                                // else                                                                  // enemy's bullet
                             }
-                            
+
                             // hit entity is killed so remove it
                             if (isKilled)
                             {
                                 staticEntities->erase(staticIt);
                             }
-                            
+
                             // bullet isn't removed in case of shotgun & explosion
                             if (bulletVanished)
                             {
@@ -173,17 +176,14 @@ namespace our
                                 removeBullet(world, &dynamicIt);
                                 break; // the bullet vanished so check next dynamic collider
                             }
-
                         }
                     }
-                    
+
                     if (staticEntities->size() == 0)
                     {
                         break;
                     }
                 }
-
-
 
                 if (dynamicEntities->size() == 1)
                 {
@@ -195,12 +195,12 @@ namespace our
         }
 
         // function to remove shotgun bullets and explosions after a certain time
-        void updateBullets(World* world)
+        void updateBullets(World *world)
         {
-            for(auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
+            for (auto dynamicIt = dynamicEntities->begin(); dynamicIt != dynamicEntities->end(); dynamicIt++)
             {
-                ShotgunBullet* shotgun = (*dynamicIt)->getComponent<ShotgunBullet>();
-                Explosion* explosion = (*dynamicIt)->getComponent<Explosion>();
+                ShotgunBullet *shotgun = (*dynamicIt)->getComponent<ShotgunBullet>();
+                Explosion *explosion = (*dynamicIt)->getComponent<Explosion>();
                 if (shotgun)
                 {
                     if (shotgun->checkBulletRemoval())
@@ -220,7 +220,6 @@ namespace our
                 {
                     return;
                 }
-
             }
         }
     };
