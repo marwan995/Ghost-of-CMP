@@ -50,6 +50,8 @@ namespace our
             (*dynamicIt) = (*dynamicIt) - 1;
             dynamicEntities->erase(dynamicIt2Delete);
         }
+        
+        // Utility to remove an enemy
         void removeEnemy(World *world, Entity *enemy)
         {
             world->markForRemoval(enemy);
@@ -57,6 +59,61 @@ namespace our
             removeEntityFromVector(enemy, *staticEntities);
             removeEntityFromVector(enemy, *(enemiesEntities));
         }
+
+        // Utility to check the bullet type and apply damage
+        bool checkBulletType(
+                            World* world,
+                            our::LaserBullet* laser,
+                            our::ShotgunBullet* shotgun,
+                            our::RocketBullet* rocket,
+                            our::Explosion* explosion,
+                            bool* bulletVanished,
+                            float* playerReducedHealth,
+                            std::vector<our::Entity *>::iterator* dynamicIt,
+                            std::vector<our::Entity *>::iterator* staticIt,
+                            int* counter
+                            )
+        {
+            bool isEnemyKilled = false;
+            if (laser)
+            {
+                // laser is always removed on collision
+                (*bulletVanished) = true;
+
+                if (laser->isFriendly)                         // player's bullet
+                    isEnemyKilled = laser->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
+                else
+                    (*playerReducedHealth) = 5;
+            }
+            else if (shotgun)
+            {
+                // shotgun bullets don't vanish on collision they vanish after a certain time
+                if (shotgun->isFriendly)                         // player's bullet
+                    isEnemyKilled = shotgun->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
+                else                                             // enemy's bullet
+                    (*playerReducedHealth) = 50;
+            }
+            else if (rocket)
+            {
+                (*bulletVanished) = true;
+
+                if (rocket->isFriendly)                         // player's bullet
+                    isEnemyKilled = rocket->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
+                else                                            // enemy's bullet
+                    (*playerReducedHealth) = 200;
+                (*dynamicIt) = dynamicEntities->begin() + (*counter);
+            }
+            else if (explosion)
+            {
+                if (explosion->isFriendly)                         // player's bullet
+                    isEnemyKilled = explosion->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
+                else                                               // enemy's bullet
+                    (*playerReducedHealth) = 100;
+            }
+
+            return isEnemyKilled;
+        }
+
 
     public:
         // Only called when the play state starts to add the colliders in an array
@@ -152,52 +209,30 @@ namespace our
                         // check if it's a bullet
                         if (projectileCollider->type == ColliderType::BULLET)
                         {
-                            // flag to know if the enemy is killed
-                            bool isKilled = false;
 
                             // get component for bullet type
                             our::LaserBullet *laser = (*dynamicIt)->getComponent<our::LaserBullet>();       // possible laser bullet component
                             our::ShotgunBullet *shotgun = (*dynamicIt)->getComponent<our::ShotgunBullet>(); // possible shotgun bullet component
                             our::RocketBullet *rocket = (*dynamicIt)->getComponent<our::RocketBullet>();    // possible rocket component
                             our::Explosion *explosion = (*dynamicIt)->getComponent<our::Explosion>();       // possible explosion component
-                            if (laser)
-                            {
-                                // laser is always removed on collision
-                                bulletVanished = true;
-
-                                if (laser->isFriendly)                         // player's bullet
-                                    isKilled = laser->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else
-                                    playerReducedHealth = 5;
-                            }
-                            else if (shotgun)
-                            {
-                                // shotgun bullets don't vanish on collision they vanish after a certain time
-                                if (shotgun->isFriendly)                         // player's bullet
-                                    isKilled = shotgun->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                             // enemy's bullet
-                                    playerReducedHealth = 50;
-                            }
-                            else if (rocket)
-                            {
-                                bulletVanished = true;
-
-                                if (rocket->isFriendly)                         // player's bullet
-                                    isKilled = rocket->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                            // enemy's bullet
-                                    playerReducedHealth = 200;
-                                dynamicIt = dynamicEntities->begin() + counter;
-                            }
-                            else if (explosion)
-                            {
-                                if (explosion->isFriendly)                         // player's bullet
-                                    isKilled = explosion->hit(world, (*staticIt)); // apply damage & check if enemy is killed
-                                else                                               // enemy's bullet
-                                    playerReducedHealth = 100;
-                            }
+                            
+                            // check the bullet type to determine if the enemy is killed
+                            // or if the player health should be reduced
+                            bool isEnemyKilled = checkBulletType(
+                                                    world,
+                                                    laser,
+                                                    shotgun,
+                                                    rocket,
+                                                    explosion,
+                                                    &bulletVanished,
+                                                    &playerReducedHealth,
+                                                    &dynamicIt,
+                                                    &staticIt,
+                                                    &counter
+                                );
 
                             // hit entity is killed so remove it
-                            if (isKilled)
+                            if (isEnemyKilled)
                             {
                                 if ((*staticIt)->getComponent<EnemyComponent>())
                                     enemySys->enemyKilled((*staticIt));
