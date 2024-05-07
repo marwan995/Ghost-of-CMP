@@ -25,6 +25,7 @@ namespace our
         std::vector<Entity *> *enemiesEntities;
 
     public:
+        // get the needed entities
         void enter(World *world)
         {
             // get access to the needed entities
@@ -33,16 +34,16 @@ namespace our
             // For each entity in the world
             for (auto entity : world->getEntities())
             {
-                // Get the movement component if it exists
                 EnemyComponent *enemy = entity->getComponent<EnemyComponent>();
 
+                // Get the camera component if it exists
                 CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
                 if (worldCamera)
                 {
                     camera = worldCamera;
                 }
 
-                // If the movement component exists
+                // If the enemy component exists
                 if (enemy)
                 {
                     enemiesEntities->push_back(entity);
@@ -50,6 +51,7 @@ namespace our
             }
         }
 
+        // check if the player is in range
         void update(World *world, double deltaTime)
         {
             // get the camera collider
@@ -57,12 +59,13 @@ namespace our
             // For each entity in the world
             for (auto entity : *enemiesEntities)
             {
-                // Get the movement component if it exists
+                // Get the enemy component if it exists
                 EnemyComponent *enemy = entity->getComponent<EnemyComponent>();
 
-                // If the movement component exists
+                // If the enemy component exists
                 if (enemy)
                 {
+
                     ColliderComponent *enemyCollider = entity->getComponents<ColliderComponent>()[1];
                     if (!enemyCollider)
                     {
@@ -71,8 +74,12 @@ namespace our
                     glm::vec3 collisionDepth = enemyCollider->collisionDepth(cameraCollider);
 
                     if (ColliderComponent::isColliding(collisionDepth))
-                    {
-                        
+                    { 
+                        Boss1* testBoss = enemy->getChild<Boss1>();
+                        if (testBoss)
+                        {
+                            testBoss->action();
+                        }
                         if (enemy->type == EnemyType::MELEE)
                         {
                             enemy->aimAt(camera,true);
@@ -80,7 +87,7 @@ namespace our
                         }
                         else if (enemy->type == EnemyType::SHOOTER)
                         {
-                        enemy->aimAt(camera);
+                            enemy->aimAt(camera);
                             if (enemy->checkRateOfFire())
                             {
                                 glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;

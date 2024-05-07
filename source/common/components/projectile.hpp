@@ -4,15 +4,14 @@
 // #include "world"
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
-#include "../components/collision-component.hpp"
+#include "collision-component.hpp"
 #include "../systems/collision.hpp"
-#include "component.hpp"
+#include "../ecs/component.hpp"
 
 #include <iostream>
 
 namespace our {
     
-    // TODO: make projectile a component and resolve the connection with the collision
     class Projectile : public Component
     {   
     public:

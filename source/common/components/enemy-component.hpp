@@ -7,6 +7,10 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include "../ecs/component.hpp"
+// #include "../ecs/shooter-enemy.hpp"
+// #include "../ecs/melee-enemy.hpp"
+// #include "../ecs/boss1-enemy.hpp"
+// #include "../ecs/boss2-enemy.hpp"
 // #include "../ecs/laser-bullet.hpp"
 
 #include <iostream>
@@ -21,17 +25,16 @@ namespace our
         BOSS2
     };
 
-    // Abstract class for all enemies
+    // Class for all enemies
     class EnemyComponent : public Component
     {
-        float range;
-        float health;
-        int weapon;
         float rateOfFire = 25;
         int deltasCounter = 0;
         bool zigZag = true;
         float timeSinceLastInversion = 0.0f;
         float inversionInterval = 0.1f;
+
+        Boss1* boss1 = NULL;
 
     public:
         our::EnemyType type;
@@ -50,25 +53,37 @@ namespace our
             if (enemyTypeStr == "shooter")
             {
                 type = EnemyType::SHOOTER;
-                range = 20;
             }
             else if (enemyTypeStr == "melee")
             {
                 type = EnemyType::MELEE;
-                range = 40;
             }
             else if (enemyTypeStr == "boss1")
             {
                 type = EnemyType::BOSS1;
-                range = 30;
+                boss1 = new Boss1(this);
             }
             else if (enemyTypeStr == "boss2")
             {
                 type = EnemyType::BOSS2;
-                range = 30;
             }
         }
 
+        template <typename T>
+        T * getChild()
+        {
+            // if (shooter != NULL)
+            //     return shooter;
+            // if (melee != NULL)
+            //     return melee;
+            if (boss1 != NULL)
+                return boss1;
+            // if (boss2 != NULL)
+            //     return boss2;
+            return NULL;
+        }
+
+        // function to check if a bullet should be fired at the current time
         bool checkRateOfFire()
         {
             // get current weapon BPS
@@ -89,6 +104,27 @@ namespace our
             return false;
         }
 
+        bool checkRateOfFire(float rateOfFire1, int* deltasCounter1)
+        {
+            // get current weapon BPS
+            // check for it's cooldown
+            if ((*deltasCounter1) == 0)
+            {
+                (*deltasCounter1)++;
+                return true;
+            }
+            else if ((*deltasCounter1) * 0.008335638028169f >= (1 / rateOfFire1))
+            {
+                (*deltasCounter1) = 0;
+            }
+            else
+            {
+                (*deltasCounter1)++;
+            }
+            return false;
+        }
+
+        // function to make the model aim at the player
         void aimAt(CameraComponent *camera, bool isMelee = false)
         {
             auto M = getOwner()->getLocalToWorldMatrix();
@@ -112,6 +148,8 @@ namespace our
             else
                 getOwner()->localTransform.rotation = glm::radians(rotationDegrees);
         }
+
+        // function to move 
         void moveTowardsTarget(Entity *camera, float speed, float deltaTime)
         {
             // Calculate direction vector from moving object to target object
@@ -167,12 +205,20 @@ namespace our
             this->getOwner()->localTransform.position[1] += direction[1] + offset[1];
             this->getOwner()->localTransform.position[2] += direction[2] + offset[2];
         }
-        bool isPlayerInRange(CameraComponent *player)
-        {
-            glm::vec3 playerPosition = player->getOwner()->localTransform.position;
-            // TODO: check player collision
+        // bool isPlayerInRange(CameraComponent *player)
+        // {
+        //     glm::vec3 playerPosition = player->getOwner()->localTransform.position;
+        //     // TODO: check player collision
 
-            return true;
+        //     return true;
+        // }
+        ~EnemyComponent()
+        {
+            // delete shooter;
+            // delete melee;
+            delete boss1;
+            // delete boss2;
         }
+
     };
 };

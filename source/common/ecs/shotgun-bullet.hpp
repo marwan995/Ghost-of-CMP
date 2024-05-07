@@ -1,6 +1,6 @@
 #pragma once
 
-#include "projectile.hpp"
+#include "../components/projectile.hpp"
 #include <GLFW/glfw3.h>         // to get the time
 
 namespace our{

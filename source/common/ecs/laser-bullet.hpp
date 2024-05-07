@@ -1,6 +1,6 @@
 #pragma once
 
-#include "projectile.hpp"
+#include "../components/projectile.hpp"
 
 namespace our{
     class LaserBullet : public Projectile

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "projectile.hpp"
+#include "../components/projectile.hpp"
 #include "explosion.hpp"
 
 namespace our{
