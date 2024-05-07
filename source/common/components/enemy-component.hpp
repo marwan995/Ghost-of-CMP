@@ -69,6 +69,7 @@ namespace our
             }
         }
 
+        // function to check if a bullet should be spawned
         bool checkRateOfFire()
         {
             // get current weapon BPS
@@ -89,6 +90,7 @@ namespace our
             return false;
         }
 
+        // function to rotate the enemy to point to the player
         void aimAt(CameraComponent *camera, bool isMelee = false)
         {
             auto M = getOwner()->getLocalToWorldMatrix();
@@ -101,7 +103,22 @@ namespace our
             glm::vec4 temp4;
 
             glm::decompose(matrix, temp, newRotation, temp, temp, temp4);
+
             glm::vec3 rotationDegrees = glm::degrees(glm::eulerAngles(newRotation));
+            
+            // if player is behind the enemy
+            if (cos(glm::radians(rotationDegrees.x)) > 0)
+            {
+                // as the result is ranging from -PI/2 to PI/2 (strange)
+                rotationDegrees.y *= -1;
+                // z axis to prevent wiggling
+                rotationDegrees.z = 0;
+            }
+            else
+            {
+                rotationDegrees.z = -180;
+            }
+
             rotationDegrees.x *= -1;
             if (isMelee)
             {
@@ -112,11 +129,12 @@ namespace our
             else
                 getOwner()->localTransform.rotation = glm::radians(rotationDegrees);
         }
+
+
         void moveTowardsTarget(Entity *camera, float speed, float deltaTime)
         {
             // Calculate direction vector from moving object to target object
             glm::vec3 direction = -normalize(this->getOwner()->localTransform.position - camera->localTransform.position);
-            std::cout << direction[0] << " " << direction[1] << " " << direction[2] << "\n";
             float zigzagSpeed = (rand() % 5 + 5) * deltaTime; // Adjust speed for the current frame
 
             if (zigZag)

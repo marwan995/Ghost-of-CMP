@@ -19,6 +19,9 @@
 #include "../ecs/rocket-bullet.hpp"
 #include "../ecs/explosion.hpp"
 
+// declaration for the function pointer type 
+typedef void (*CallbackFunction)(our::CameraComponent *, float);
+
 namespace our
 {
     // class LaserBullet;
@@ -32,6 +35,8 @@ namespace our
         EnemySystem *enemySys;
         CameraComponent *camera;
         FreeCameraControllerComponent *cameraController;
+        CallbackFunction reducePlayerHealthCallBack;
+
         void removeEntityFromVector(Entity *entityToRemove, std::vector<Entity *> &entitiesVector)
         {
             entitiesVector.erase(std::remove_if(entitiesVector.begin(), entitiesVector.end(),
@@ -68,7 +73,6 @@ namespace our
                             our::RocketBullet* rocket,
                             our::Explosion* explosion,
                             bool* bulletVanished,
-                            float* playerReducedHealth,
                             std::vector<our::Entity *>::iterator* dynamicIt,
                             std::vector<our::Entity *>::iterator* staticIt,
                             int* counter
@@ -83,7 +87,7 @@ namespace our
                 if (laser->isFriendly)                         // player's bullet
                     isEnemyKilled = laser->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else
-                    (*playerReducedHealth) = 5;
+                    reducePlayerHealthCallBack(camera, 5);
             }
             else if (shotgun)
             {
@@ -91,7 +95,7 @@ namespace our
                 if (shotgun->isFriendly)                         // player's bullet
                     isEnemyKilled = shotgun->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else                                             // enemy's bullet
-                    (*playerReducedHealth) = 50;
+                    reducePlayerHealthCallBack(camera, 50);
             }
             else if (rocket)
             {
@@ -100,7 +104,7 @@ namespace our
                 if (rocket->isFriendly)                         // player's bullet
                     isEnemyKilled = rocket->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else                                            // enemy's bullet
-                    (*playerReducedHealth) = 200;
+                    reducePlayerHealthCallBack(camera, 200);
                 (*dynamicIt) = dynamicEntities->begin() + (*counter);
             }
             else if (explosion)
@@ -108,7 +112,7 @@ namespace our
                 if (explosion->isFriendly)                         // player's bullet
                     isEnemyKilled = explosion->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else                                               // enemy's bullet
-                    (*playerReducedHealth) = 100;
+                    reducePlayerHealthCallBack(camera, 100);
             }
 
             return isEnemyKilled;
@@ -117,12 +121,13 @@ namespace our
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem *enemySystem)
+        void enter(World *world, EnemySystem *enemySystem, CallbackFunction reduceHealth)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
             enemiesEntities = &world->enemiesEntities;
+            reducePlayerHealthCallBack = reduceHealth;
 
             enemySys = enemySystem;
 
@@ -145,8 +150,6 @@ namespace our
                     for (auto collider : colliders)
                     {
                         collider->setEntity(entity);
-
-                        // Change the position and rotation based on the linear & angular velocity and delta time.
                     }
                     if (colliders[0]->type == ColliderType::STATIC)
                     {
@@ -161,9 +164,8 @@ namespace our
         }
 
         // function that runs in each frame to check for collisions
-        float update(World *world, float deltaTime)
+        void update(World *world)
         {
-            float playerReducedHealth = 0;
             // used to get the new iterator of the rocket bullet when an explosion is generated
             int counter = 0;
 
@@ -189,7 +191,7 @@ namespace our
                             {
                                 if (enemy->type == EnemyType::MELEE)
                                 {
-                                    playerReducedHealth = 60;
+                                    reducePlayerHealthCallBack(camera, 60);
                                     removeEnemy(world, enemy->getOwner());
                                 }
                             }
@@ -225,7 +227,6 @@ namespace our
                                                     rocket,
                                                     explosion,
                                                     &bulletVanished,
-                                                    &playerReducedHealth,
                                                     &dynamicIt,
                                                     &staticIt,
                                                     &counter
@@ -249,12 +250,14 @@ namespace our
                         }
                     }
 
+                    // no more static colliders
                     if (staticEntities->size() == 0)
                     {
                         break;
                     }
                 }
 
+                // only the camera collider is remaining
                 if (dynamicEntities->size() == 1)
                 {
                     break;
@@ -262,8 +265,6 @@ namespace our
 
                 counter++;
             }
-
-            return playerReducedHealth;
         }
 
         // function to remove shotgun bullets and explosions after a certain time
