@@ -41,7 +41,8 @@ class Playstate: public our::State {
         cameraController.enter(getApp());
 
         // Initialize the collision system
-        collisionSystem.enter(&world, &enemySystem);
+        // a pointer function is used to give the collision system the access to the reduceHealth function
+        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::reduceHealth);
         // Initialize the enemy system
         enemySystem.enter(&world);
             
@@ -69,9 +70,8 @@ class Playstate: public our::State {
         cameraController.update(&world, (float)deltaTime);
         enemySystem.update(&world, (float)deltaTime);
 
-        // calculate player new health
-        float damage = collisionSystem.update(&world, (float)deltaTime);
-        our::FreeCameraControllerSystem::reduceHealth(camera, damage);
+        // check for collisions and bullet collisions
+        collisionSystem.update(&world);
 
         // check shotguns and explosions
         collisionSystem.updateBullets(&world);
@@ -92,6 +92,7 @@ class Playstate: public our::State {
         {
             getApp()->changeState("gameover");
         }
+        // TODO: another check here for the player win
     }
 
     void onDestroy() override {
