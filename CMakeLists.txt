@@ -94,6 +94,7 @@ set(COMMON_SOURCES
         source/common/systems/movement.hpp
         source/common/systems/collision.hpp
         source/common/systems/enemy.hpp
+        source/common/systems/unlock.hpp
 
         source/audio/audio.hpp
         source/audio/audio.cpp

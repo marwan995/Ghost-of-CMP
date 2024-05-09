@@ -36,15 +36,15 @@ namespace our
     {
         Application *app; // The application in which the state runs
 
-        int activeWeapon = 0;
+        std::string activeWeapon = "laser";
         int deltasCounter=0;
-        const float weapons_BPS[3] = {20, 5, 15};   // holds weapons bullets per seconds
+        std::map<std::string, float> weapons_BPS = {{"laser", 25}};   // map that hold the weapons and their rate of fire
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
         {
             // get current weapon BPS
-            float bulletsPerSecond = weapons_BPS[activeWeapon];
+            float bulletsPerSecond = weapons_BPS.find(activeWeapon)->second;
             // check for it's cooldown
             if (deltasCounter == 0)
             {
@@ -63,6 +63,23 @@ namespace our
         }
 
     public:
+        std::map<std::string, float>* getPlayerWeaponsMap()
+        {
+            return &weapons_BPS;
+        }
+
+        // it's public as when a weapon is unlocked unlock system will switch to it
+        void changeWeapon(std::string newWeapon)
+        {
+            // new weapon is in the weapons_BPS & isn't the current weapon
+            if ((newWeapon != activeWeapon) && (weapons_BPS.find(newWeapon) != weapons_BPS.end()))
+            {
+                activeWeapon = newWeapon;   // switch weapons
+                deltasCounter = 0;          // reset fire rate counter
+                // TODO: change weapon's mesh and maybe add an animation
+            }
+        }
+
         // When a state enters, it should call this function and give it the pointer to the application
         void enter(Application *app)
         {
@@ -71,6 +88,7 @@ namespace our
         }
         
         static void reduceHealth(CameraComponent *camera,float dmg =.01 ){
+            // TODO: add red health effect
             auto healthBar = camera->getOwner()->children[1]->children[0];
 
             float decreasedBy = (dmg * 9.6) / (2.0 * 500.0);
@@ -119,21 +137,22 @@ namespace our
                     float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
                     float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
                     float bulletPosition[3] = {position.x + bulletSpeedX / 4, position.y + bulletSpeedY / 4, position.z + bulletSpeedZ / 4};
-                    if (activeWeapon == 0)
+                    if (activeWeapon == "laser")
                     {
-                        // laser rifle
+                        // LASER RIFLE
                         LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         laserBullet->shoot();
-                        world->audioPlayer.play("Laser.wav");
+                        world->audioPlayer.play("Laser.wav");       // added here so there isn't a lot of noise
                     }
-                    else if (activeWeapon == 1)
+                    else if (activeWeapon == "shotgun")
                     {
-                        // shotgun
+                        // SHOTGUN
                         ShotgunBullet* shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         shotgunBullet->shoot();
                     }
-                    else if (activeWeapon == 2)
+                    else if (activeWeapon == "rocket")
                     {
+                        // ROCKET LAUNCHER
                         RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         rocketBullet->shoot();
                     }
@@ -160,10 +179,10 @@ namespace our
             position.y = glm::clamp(position.y, 0.0f, controller->max_y);
 
             // We update the camera fov based on the mouse wheel scrolling amount
-            // TODO: change fov on right mouse click
             // float fov = camera->fovY + app->getMouse().getScrollOffset().y * controller->fovSensitivity;
             // fov = glm::clamp(fov, glm::pi<float>() * 0.01f, glm::pi<float>() * 0.99f); // We keep the fov in the range 0.01*PI to 0.99*PI
 
+            // open scope when right click is pressed
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_2))
             {
                 camera->fovY = glm::pi<float>() * 0.1f;
@@ -177,7 +196,6 @@ namespace our
                 entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.0088, 0.0088, 0.0088);
                 entity->children[0]->localTransform.position = glm::vec3(1, -1, -1);
                 entity->children[0]->localTransform.rotation = glm::radians(glm::vec3(0, 30, 0));
-
             } // We get the camera model matrix (relative to its parent) to compute the front, up and right directions
             glm::mat4 matrix = entity->localTransform.toMat4();
 
@@ -235,23 +253,22 @@ namespace our
             }
 
             // Check for weapon change
-            if (app->getKeyboard().isPressed(GLFW_KEY_1) && activeWeapon != 0)
+            if (app->getKeyboard().isPressed(GLFW_KEY_1))
             {
-                activeWeapon = 0;
-                deltasCounter = 0;
+                changeWeapon("laser");
             }
-            else if (app->getKeyboard().isPressed(GLFW_KEY_2) && activeWeapon != 1)
+            else if (app->getKeyboard().isPressed(GLFW_KEY_2))
             {
-                activeWeapon = 1;
-                deltasCounter = 0;
+                changeWeapon("shotgun");
             }
-            else if (app->getKeyboard().isPressed(GLFW_KEY_3) && activeWeapon != 2)
+            else if (app->getKeyboard().isPressed(GLFW_KEY_3))
             {
-                activeWeapon = 2;
-                deltasCounter = 0;
+                changeWeapon("rocket");
             }
+            
             locationInMap(camera);
-        
+
+            // std::cout<<position.x<<' '<<position.y<<' '<<position.z<<'\n';
         }
         void locationInMap(CameraComponent *camera)
         {
