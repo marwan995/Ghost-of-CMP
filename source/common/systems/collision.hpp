@@ -8,9 +8,11 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
+// camera that represents player
 #include "../components/camera.hpp"
 #include "../components/free-camera-controller.hpp"
 
+// enemy system to make them attack player
 #include "enemy.hpp"
 
 // bullet types
@@ -36,6 +38,9 @@ namespace our
         CameraComponent *camera;
         FreeCameraControllerComponent *cameraController;
         CallbackFunction reducePlayerHealthCallBack;
+
+        bool isBoss1Killed = false;               // flag to control the navigation to boss 2 using unlock system
+        bool isBoss2Killed = false;               // flag to know the player has won
 
         void removeEntityFromVector(Entity *entityToRemove, std::vector<Entity *> &entitiesVector)
         {
@@ -178,6 +183,17 @@ namespace our
                 // For each static entity in the world
                 for (auto staticIt = staticEntities->begin(); staticIt != staticEntities->end(); staticIt++)
                 {
+                    EnemyComponent* enemy = (*staticIt)->getComponent<EnemyComponent>();
+                    bool isBoss1 = false;
+                    bool isBoss2 = false;
+                    if (enemy)
+                    {
+                        if (enemy->type == EnemyType::BOSS1)
+                            isBoss1 = true;
+                        else if (enemy->type == EnemyType::BOSS2)
+                            isBoss2 = true;
+                    }
+
                     auto staticComponent = (*staticIt)->getComponent<ColliderComponent>();
                     glm::vec3 collisionDepth = (*dynamicIt)->getComponent<ColliderComponent>()->collisionDepth(staticComponent);
 
@@ -186,7 +202,6 @@ namespace our
                         if ((*dynamicIt)->getComponent<CameraComponent>()) // camera collided with static object (wall)
                         {
                             auto staticComponentPostion = glm::vec3(staticComponent->x, staticComponent->y, staticComponent->z);
-                            auto enemy = (*staticIt)->getComponent<EnemyComponent>();
                             if (enemy)
                             {
                                 if (enemy->type == EnemyType::MELEE)
@@ -238,6 +253,12 @@ namespace our
                                 if ((*staticIt)->getComponent<EnemyComponent>())
                                     enemySys->enemyKilled((*staticIt));
                                 staticEntities->erase(staticIt);
+                                
+                                // if the enemy was a boss handle its logic (end game or unlock boss2)
+                                if (isBoss1)
+                                    isBoss1Killed = true;
+                                else if (isBoss2)
+                                    isBoss2Killed = true;
                             }
 
                             // bullet isn't removed in case of shotgun & explosion
@@ -294,6 +315,16 @@ namespace our
                     return;
                 }
             }
+        }
+
+        bool checkBoss1Killed()
+        {
+            return isBoss1Killed;
+        }
+
+        bool checkBoss2Killed()
+        {
+            return isBoss2Killed;
         }
     };
 }

@@ -54,7 +54,7 @@ class Playstate: public our::State {
         }
         
         // Initialize the unlock system
-        unlockSystem.enter(cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
+        unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
 
         // Initialize the collision system
         // a pointer function is used to give the collision system the access to the reduceHealth function

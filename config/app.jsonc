@@ -61,12 +61,12 @@
         "laser": "assets/models/Laser.obj",
         "plane": "assets/models/plane.obj",
         "sphere": "assets/models/sphere.obj",
-        "cube":"assets/models/cube.obj",
-        "cross":"assets/models/cross.obj",
-        "lamp":"assets/models/Lamp.obj",
-        "healthContainer":"assets/models/healthContainer.obj",
-        "healthBar":"assets/models/healthBar.obj",
-        "Explosion":"assets/models/explosion.obj",
+        "cube": "assets/models/cube.obj",
+        "cross": "assets/models/cross.obj",
+        "lamp": "assets/models/Lamp.obj",
+        "healthContainer": "assets/models/healthContainer.obj",
+        "healthBar": "assets/models/healthBar.obj",
+        "Explosion": "assets/models/explosion.obj",
         "spider": "assets/models/spider.obj",
         "cannon": "assets/models/cannon.obj"
       },
@@ -505,6 +505,40 @@
         ]
       },
       {
+        "position": [-27, -0.5, -9],
+        "rotation": [0, 0, 0],
+        "scale": [0.03, 0.03, 0.02],
+        "name": "world shotgun",
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "sniper",
+            "material": "metal"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 45, 0]
+          }
+        ]
+      },
+      {
+        "position": [-62, -0.5, -49.3],
+        "rotation": [0, 0, 0],
+        "name": "world rocket",
+        "scale": [0.03, 0.03, 0.02],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "sniper",
+            "material": "metal"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 45, 0]
+          }
+        ]
+      },
+      {
         "position": [0, 10, 0],
         "rotation": [0, 0, 0],
         "scale": [0, 0, 0],
@@ -713,7 +747,6 @@
             "mesh": "column-3",
             "material": "Image_5"
           }
-        
         ]
       },
       {
@@ -737,9 +770,7 @@
             "colliderShape": "sphere",
             "colliderType": "static",
             "radius": 1
-          
-          }
-          ,
+          },
           {
             "type": "Collider",
             "colliderShape": "sphere",
@@ -759,7 +790,8 @@
             "type": "Mesh Renderer",
             "mesh": "spider",
             "material": "Image_7"
-          },{
+          },
+          {
             "type": "Enemy",
             "enemyType": "melee"
           },
@@ -769,8 +801,7 @@
             "colliderType": "static",
             "shifted": [0, 0.5, 0],
             "radius": 1.5
-          
-          } ,
+          },
           {
             "type": "Collider",
             "colliderShape": "sphere",
@@ -780,7 +811,6 @@
           }
         ]
       }
-    
     ]
   }
 }

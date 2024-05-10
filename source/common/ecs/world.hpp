@@ -47,6 +47,7 @@ namespace our
             return entity;
         }
 
+        // used by projectiles to add new bullets
         void addDynamicEntity(Entity* newEntity){
             dynamicEntities.push_back(newEntity);
         }
