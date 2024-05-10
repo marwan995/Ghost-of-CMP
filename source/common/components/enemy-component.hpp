@@ -18,7 +18,8 @@ namespace our
         SHOOTER,
         MELEE,
         BOSS1,
-        BOSS2
+        BOSS2,
+        HEAL
     };
 
     // Abstract class for all enemies
@@ -65,6 +66,11 @@ namespace our
             else if (enemyTypeStr == "boss2")
             {
                 type = EnemyType::BOSS2;
+                range = 30;
+            }
+            else if (enemyTypeStr == "heal")
+            {
+                type = EnemyType::HEAL;
                 range = 30;
             }
         }

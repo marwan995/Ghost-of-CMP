@@ -57,8 +57,8 @@ class Playstate: public our::State {
         bool * isBoss1KilledRef = unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
 
         // Initialize the collision system
-        // a pointer function is used to give the collision system the access to the reduceHealth function
-        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::reduceHealth, isBoss1KilledRef);
+        // a pointer function is used to give the collision system the access to the updateHealth function
+        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef);
         // Initialize the enemy system
         enemySystem.enter(&world);
             

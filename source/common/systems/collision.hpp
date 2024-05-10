@@ -126,13 +126,13 @@ namespace our
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem *enemySystem, CallbackFunction reduceHealth, bool* isBoss1KilledRef)
+        void enter(World *world, EnemySystem *enemySystem, CallbackFunction updateHealth, bool* isBoss1KilledRef)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
             enemiesEntities = &world->enemiesEntities;
-            reducePlayerHealthCallBack = reduceHealth;
+            reducePlayerHealthCallBack = updateHealth;
             isBoss1Killed = isBoss1KilledRef;
 
             enemySys = enemySystem;
@@ -209,6 +209,12 @@ namespace our
                                 if (enemy->type == EnemyType::MELEE)
                                 {
                                     reducePlayerHealthCallBack(camera, 60);
+                                    removeEnemy(world, enemy->getOwner());
+                                }
+                                if (enemy->type == EnemyType::HEAL)
+                                {
+                                    std::cout<<"copllider\n";
+                                    reducePlayerHealthCallBack(camera, -60);
                                     removeEnemy(world, enemy->getOwner());
                                 }
                             }

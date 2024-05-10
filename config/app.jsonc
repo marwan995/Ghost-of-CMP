@@ -44,7 +44,9 @@
         "vase": "assets/textures/Image_14.png",
         "ground-box": "assets/textures/Image_17.png",
         "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png",
-        "Explosion": "assets/textures/Explosion.png"
+        "heal": "assets/textures/heal.png",
+        "Explosion": "assets/textures/Explosion.png",
+        "shotgun": "assets/textures/shotgun.png"
       },
       "meshes": {
         "sniper": "assets/models/sniper.obj",
@@ -56,6 +58,7 @@
         "atef": "assets/models/Atef.obj",
         "bed": "assets/models/bed.obj",
         "keyboard": "assets/models/keyboard.obj",
+        "heal": "assets/models/heal.obj",
         "ground-box": "assets/models/ground-box.obj",
         "vase": "assets/models/vase.obj",
         "laser": "assets/models/Laser.obj",
@@ -68,7 +71,8 @@
         "healthBar": "assets/models/healthBar.obj",
         "Explosion": "assets/models/explosion.obj",
         "spider": "assets/models/spider.obj",
-        "cannon": "assets/models/cannon.obj"
+        "cannon": "assets/models/cannon.obj",
+        "shotgun": "assets/models/shotgun.obj"
       },
       "samplers": {
         "default": {},
@@ -100,6 +104,22 @@
           },
           "tint": [1, 1, 1, 1],
           "texture": "grass",
+          "sampler": "grassSampler",
+          "shininess": 2.0
+        },
+        "shotgun": {
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "shotgun",
           "sampler": "grassSampler",
           "shininess": 2.0
         },
@@ -194,6 +214,22 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "texture1",
+          "sampler": "groundObstaclesSampler",
+          "shininess": 8.0
+        },
+        "heal": {
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [1.5, 1.6, 1.5, 1.0],
+          "texture": "heal",
           "sampler": "groundObstaclesSampler",
           "shininess": 8.0
         },
@@ -440,6 +476,19 @@
             ]
           },
           {
+            "position": [0.9, -0.5, 1],
+            "rotation": [0, 180, 0],
+            "scale": [0.9, 0.9, 0.5],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "shotgun",
+                "material": "metal"
+              }
+            ]
+          },
+        
+          {
             "position": [0.09, 0.08, -0.1],
             "rotation": [0, 0, 0],
             "scale": [0.012, 0.012, 0.012],
@@ -465,7 +514,7 @@
               }
             ]
           },
-
+        
           {
             "position": [-0.2, 0.1, -0.05],
             // "rotation": [-120, -45, 60],
@@ -505,14 +554,14 @@
         ]
       },
       {
-        "position": [-27, -0.5, -9],
+        "position": [-27, -0.3, -9],
         "rotation": [0, 0, 0],
-        "scale": [0.03, 0.03, 0.02],
+        "scale": [0.5, 0.5, 0.5],
         "name": "world shotgun",
         "components": [
           {
             "type": "Mesh Renderer",
-            "mesh": "sniper",
+            "mesh": "shotgun",
             "material": "metal"
           },
           {
@@ -734,6 +783,36 @@
             "type": "Mesh Renderer",
             "mesh": "column-3",
             "material": "Image_5"
+          }
+        ]
+      },
+      {
+        "scale": [0.5, 0.5, 0.5],
+        "position": [0, -0.8, 6],
+        "rotation": [0, 0, 0],
+        "objectType":"heal",
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "heal",
+            "material": "heal"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "static",
+            "radius": 0.9
+          },
+          
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "dynamic",
+            "radius": 0.9
+          },
+          {
+            "type": "Enemy",
+            "enemyType": "heal"
           }
         ]
       },

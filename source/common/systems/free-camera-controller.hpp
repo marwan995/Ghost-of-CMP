@@ -69,7 +69,7 @@ namespace our
         }
 
         // it's public as when a weapon is unlocked unlock system will switch to it
-        void changeWeapon(std::string newWeapon)
+        void changeWeapon(std::string newWeapon,Entity* weapons)
         {
             // new weapon is in the weapons_BPS & isn't the current weapon
             if ((newWeapon != activeWeapon) && (weapons_BPS.find(newWeapon) != weapons_BPS.end()))
@@ -77,6 +77,17 @@ namespace our
                 activeWeapon = newWeapon;   // switch weapons
                 deltasCounter = 0;          // reset fire rate counter
                 // TODO: change weapon's mesh and maybe add an animation
+                if(newWeapon=="shotgun"){
+                    weapons->children[1]->localTransform.position =glm::vec3(0.9, -0.5, -0.55);
+                    weapons->children[0]->localTransform.position = glm::vec3(1, -1, 1);
+                }
+                else if(newWeapon=="laser")
+                {
+                    weapons->children[1]->localTransform.position =glm::vec3(0.9, -0.5, 1);
+                    weapons->children[0]->localTransform.position = glm::vec3(1, -1, -1);
+                }
+
+
             }
         }
 
@@ -87,16 +98,18 @@ namespace our
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
         }
         
-        static void reduceHealth(CameraComponent *camera,float dmg =.01 ){
+        static void updateHealth(CameraComponent *camera,float changeBy =.01 ){
             // TODO: add red health effect
-            auto healthBar = camera->getOwner()->children[1]->children[0];
+            if(camera->getOwner()->health == 500 && changeBy < 0) return;
+            auto healthBar = camera->getOwner()->children[2]->children[0];
 
-            float decreasedBy = (dmg * 9.6) / (2.0 * 500.0);
-            camera->getOwner()->health -= dmg;
+            float decreasedBy = (changeBy * 0.95) / (500.0);
+            camera->getOwner()->health -= changeBy;
+            camera->getOwner()->health = glm::clamp(camera->getOwner()->health, 0.0f, 500.0f);
 
-            healthBar->localTransform.scale[0] -= decreasedBy * 2/ 9.6;
+            healthBar->localTransform.scale[0] -= decreasedBy ;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
-            healthBar->localTransform.position[0] -= (decreasedBy) ;
+            healthBar->localTransform.position[0] -= ((decreasedBy/2.0)*9.6) ;
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
@@ -185,17 +198,21 @@ namespace our
             // open scope when right click is pressed
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_2))
             {
+                if(activeWeapon=="laser"){
                 camera->fovY = glm::pi<float>() * 0.1f;
                 entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.07, 0.07, 0.07);
                 entity->children[0]->localTransform.position = glm::vec3(0, -1.05, -1.1);
                 entity->children[0]->localTransform.rotation = glm::vec3(0, 0, 0);
+                }
             }
-            else
+            if(app->getMouse().justReleased(GLFW_MOUSE_BUTTON_2))
             {
+                if(activeWeapon=="laser"){
                 camera->fovY = .49 * glm::pi<float>();
                 entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.0088, 0.0088, 0.0088);
                 entity->children[0]->localTransform.position = glm::vec3(1, -1, -1);
                 entity->children[0]->localTransform.rotation = glm::radians(glm::vec3(0, 30, 0));
+                }
             } // We get the camera model matrix (relative to its parent) to compute the front, up and right directions
             glm::mat4 matrix = entity->localTransform.toMat4();
 
@@ -207,7 +224,7 @@ namespace our
 
             // If the LEFT SHIFT key is pressed, we multiply the position sensitivity by the speed up factor
             if (app->getKeyboard().isPressed(GLFW_KEY_LEFT_SHIFT))
-                current_sensitivity *= controller->speedupFactor;
+                current_sensitivity *= (controller->speedupFactor * 5);
 
             // We change the camera position based on the keys WASD
             // S & W moves the player back and forth
@@ -255,15 +272,15 @@ namespace our
             // Check for weapon change
             if (app->getKeyboard().isPressed(GLFW_KEY_1))
             {
-                changeWeapon("laser");
+                changeWeapon("laser",entity);
             }
             else if (app->getKeyboard().isPressed(GLFW_KEY_2))
             {
-                changeWeapon("shotgun");
+                changeWeapon("shotgun",entity);
             }
             else if (app->getKeyboard().isPressed(GLFW_KEY_3))
             {
-                changeWeapon("rocket");
+                changeWeapon("rocket",entity);
             }
             
             locationInMap(camera);
@@ -287,6 +304,7 @@ namespace our
                 app->currentRoam = "DATA HALL";
             else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
                 app->currentRoam = "MOTHER OF BOARDS";
+            std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked
