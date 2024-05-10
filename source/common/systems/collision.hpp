@@ -258,24 +258,35 @@ namespace our
                             // hit entity is killed so remove it
                             if (isEnemyKilled)
                             {
+                                removeEnemy(world, (*staticIt));
+                                
+                                // if the enemy was a boss handle its logic (end game or unlock boss2)
                                 if (isBoss1 )
                                 {
                                     (*isBoss1Killed) = true;
-                                    removeEnemy(world, (*staticIt));
+                                    for (auto it = staticEntities->begin(); it != staticEntities->end(); it++ )
+                                    {
+                                        if ((*it)->name == "boss 2 wall")
+                                        {
+                                            staticEntities->erase(it);
+                                            break;
+                                        }
+                                    }
                                 }
                                 else if (isBoss2)
                                 {
                                     isBoss2Killed = true;
-                                    removeEnemy(world, (*staticIt));
+                                    // removeEnemy(world, (*staticIt));
+
+                                    for (auto it = staticEntities->begin(); it != staticEntities->end(); it++ )
+                                    {
+                                        if ((*it)->name == "boss 2")
+                                        {
+                                            staticEntities->erase(it);
+                                            break;
+                                        }
+                                    }
                                 }
-                                else
-                                {
-                                    if ((*staticIt)->getComponent<EnemyComponent>())
-                                    enemySys->enemyKilled((*staticIt));
-                                staticEntities->erase(staticIt);
-                                }
-                                
-                                // if the enemy was a boss handle its logic (end game or unlock boss2)
                             }
 
                             // bullet isn't removed in case of shotgun & explosion
