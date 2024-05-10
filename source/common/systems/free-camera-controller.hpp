@@ -268,7 +268,7 @@ namespace our
             
             locationInMap(camera);
 
-            // std::cout<<position.x<<' '<<position.y<<' '<<position.z<<'\n';
+            // std::cout<<position.x<<' '<<position.z<<'\n';
         }
         void locationInMap(CameraComponent *camera)
         {

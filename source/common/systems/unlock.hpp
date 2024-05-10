@@ -18,6 +18,7 @@ namespace our{
         World* world;                               // reference to the world to mark entities for removal
         Entity* shotgunEntity = NULL;               // reference to the shotgun entity
         Entity* rocketEntity = NULL;                // reference to the rocket launcher entity
+        Entity* boss2WallEntity = NULL;                // reference to boss 2 wall's entity
 
         // UTILITY to check if the player gained the shotgun
         void checkShotgunUnlock()
@@ -46,6 +47,16 @@ namespace our{
                 world->markForRemoval(rocketEntity);
             }
         }
+
+        // UTILITY to remove boss 2 wall when boss 1 is killed
+        void checkBoss2Wall()
+        {
+            // if the wall exists and boss 1 is killed
+            if (boss2WallEntity != NULL && isBoss1Killed)
+            {
+                world->markForRemoval(boss2WallEntity);
+            }
+        }
         
         public:
 
@@ -64,21 +75,23 @@ namespace our{
                     shotgunEntity = entity;
                 else if (entity->name == "world rocket")
                     rocketEntity = entity;
+                else if (entity->name == "boss 2 wall")
+                    boss2WallEntity = entity;
                 
                 // so it doesn't loop over the whole world
-                if (shotgunEntity != NULL && rocketEntity != NULL)
+                if (shotgunEntity != NULL && rocketEntity != NULL && boss2WallEntity != NULL)
                     break;
             }
-
 
             return & isBoss1Killed;
         }
 
+        // called every frame to check for player/world changes
         void update()
         {
             checkShotgunUnlock();
             checkRocketUnlock();
-            // TODO: check if boss1 is killed
+            checkBoss2Wall();
         }
 
     };

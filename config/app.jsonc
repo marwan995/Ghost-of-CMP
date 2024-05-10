@@ -810,6 +810,52 @@
             "radius": 6
           }
         ]
+      },
+      {
+        "position": [-83, 0, -27.2],
+        "scale": [0.5, 0, 5],
+        "rotation": [0, 0, 0],
+        "name": "boss 2 wall",
+        "components": [
+          {
+            "type": "Collider",
+            "colliderShape": "rect",
+            "colliderType": "static",
+            "scale": [2, 10, 10]
+          }
+        ]
+      },
+      {
+        "position": [45, 0, -23],
+        "scale": [1, 1, 1],
+        "rotation": [0, 0, 0],
+        "name": "boss 1",
+        "health": 500,
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "column-1",
+            "material": "Image_5"
+          },
+          {
+            "type": "Enemy",
+            "enemyType": "boss1"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "static",
+            "shifted": [0, 0.5, 0],
+            "radius": 1.5
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "dynamic",
+            "shifted": [0, 0.5, 0],
+            "radius": 6
+          }
+        ]
       }
     ]
   }

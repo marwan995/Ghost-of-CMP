@@ -39,7 +39,7 @@ namespace our
         FreeCameraControllerComponent *cameraController;
         CallbackFunction reducePlayerHealthCallBack;
 
-        bool isBoss1Killed = false;               // flag to control the navigation to boss 2 using unlock system
+        bool* isBoss1Killed = NULL;               // reference to the flag to control the navigation to boss 2 in unlock system
         bool isBoss2Killed = false;               // flag to know the player has won
 
         void removeEntityFromVector(Entity *entityToRemove, std::vector<Entity *> &entitiesVector)
@@ -126,13 +126,14 @@ namespace our
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem *enemySystem, CallbackFunction reduceHealth)
+        void enter(World *world, EnemySystem *enemySystem, CallbackFunction reduceHealth, bool* isBoss1KilledRef)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
             dynamicEntities = &world->dynamicEntities;
             enemiesEntities = &world->enemiesEntities;
             reducePlayerHealthCallBack = reduceHealth;
+            isBoss1Killed = isBoss1KilledRef;
 
             enemySys = enemySystem;
 
@@ -169,7 +170,8 @@ namespace our
         }
 
         // function that runs in each frame to check for collisions
-        void update(World *world)
+        // returns true if boss 2 is killed
+        bool update(World *world)
         {
             // used to get the new iterator of the rocket bullet when an explosion is generated
             int counter = 0;
@@ -250,15 +252,24 @@ namespace our
                             // hit entity is killed so remove it
                             if (isEnemyKilled)
                             {
-                                if ((*staticIt)->getComponent<EnemyComponent>())
+                                if (isBoss1 )
+                                {
+                                    (*isBoss1Killed) = true;
+                                    removeEnemy(world, (*staticIt));
+                                }
+                                else if (isBoss2)
+                                {
+                                    isBoss2Killed = true;
+                                    removeEnemy(world, (*staticIt));
+                                }
+                                else
+                                {
+                                    if ((*staticIt)->getComponent<EnemyComponent>())
                                     enemySys->enemyKilled((*staticIt));
                                 staticEntities->erase(staticIt);
+                                }
                                 
                                 // if the enemy was a boss handle its logic (end game or unlock boss2)
-                                if (isBoss1)
-                                    isBoss1Killed = true;
-                                else if (isBoss2)
-                                    isBoss2Killed = true;
                             }
 
                             // bullet isn't removed in case of shotgun & explosion
@@ -286,6 +297,7 @@ namespace our
 
                 counter++;
             }
+            return isBoss2Killed;
         }
 
         // function to remove shotgun bullets and explosions after a certain time

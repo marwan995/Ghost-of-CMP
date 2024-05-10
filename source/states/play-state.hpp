@@ -54,11 +54,11 @@ class Playstate: public our::State {
         }
         
         // Initialize the unlock system
-        unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
+        bool * isBoss1KilledRef = unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
 
         // Initialize the collision system
         // a pointer function is used to give the collision system the access to the reduceHealth function
-        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::reduceHealth);
+        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::reduceHealth, isBoss1KilledRef);
         // Initialize the enemy system
         enemySystem.enter(&world);
             
@@ -79,7 +79,7 @@ class Playstate: public our::State {
         unlockSystem.update();
 
         // check for collisions and bullet collisions
-        collisionSystem.update(&world);
+        bool isBoss2Killed = collisionSystem.update(&world);
 
         // check shotguns and explosions
         collisionSystem.updateBullets(&world);
@@ -100,7 +100,12 @@ class Playstate: public our::State {
         {
             getApp()->changeState("gameover");
         }
-        // TODO: another check here for the player win
+
+        // last boss is killed so player won
+        if (isBoss2Killed)
+        {
+            // change state to win
+        }
     }
 
     void onDestroy() override {
