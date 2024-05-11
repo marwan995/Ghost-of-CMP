@@ -36,9 +36,9 @@ namespace our
     {
         Application *app; // The application in which the state runs
 
-        std::string activeWeapon = "laser";
-        int deltasCounter = 0;
-        std::map<std::string, float> weapons_BPS = {{"laser", 25}}; // map that hold the weapons and their rate of fire
+        std::string activeWeapon;
+        int deltasCounter;
+        std::map<std::string, float> weapons_BPS; // map that hold the weapons and their rate of fire
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -101,6 +101,11 @@ namespace our
         // When a state enters, it should call this function and give it the pointer to the application
         void enter(Application *app)
         {
+            // initialize attributes
+            weapons_BPS = {{"laser", 25}};
+            activeWeapon = "laser";
+            deltasCounter = 0;
+
             this->app = app;
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
         }

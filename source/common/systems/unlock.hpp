@@ -14,11 +14,11 @@ namespace our{
     {
         std::map<std::string, float>* weapons;      // reference to the player's weapons map
         glm::vec3* position;                        // reference to the player position
-        bool isBoss1Killed = false;                 // the state of the first boss (to unlock the second)
+        bool isBoss1Killed;                 // the state of the first boss (to unlock the second)
         World* world;                               // reference to the world to mark entities for removal
-        Entity* shotgunEntity = NULL;               // reference to the shotgun entity
-        Entity* rocketEntity = NULL;                // reference to the rocket launcher entity
-        Entity* boss2WallEntity = NULL;                // reference to boss 2 wall's entity
+        Entity* shotgunEntity;               // reference to the shotgun entity
+        Entity* rocketEntity;                // reference to the rocket launcher entity
+        Entity* boss2WallEntity;                // reference to boss 2 wall's entity
 
         // UTILITY to check if the player gained the shotgun
         void checkShotgunUnlock()
@@ -64,6 +64,11 @@ namespace our{
         // returns a reference to the state of the first boss (killed or alive)
         bool* enter(World* currentWorld, std::map<std::string, float>* playerWeapons, glm::vec3* playerPosition)
         {
+            isBoss1Killed = false;
+            shotgunEntity = NULL;
+            rocketEntity = NULL;
+            boss2WallEntity = NULL;
+
             weapons = playerWeapons;
             position = playerPosition;
             world = currentWorld;

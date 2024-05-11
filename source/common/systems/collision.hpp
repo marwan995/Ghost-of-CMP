@@ -52,7 +52,7 @@ namespace our
                                  entitiesVector.end());
         }
 
-        // Utility to remove a bullet
+        // UTILITY to remove a bullet
         void removeBullet(World *world, std::vector<Entity *>::iterator *dynamicIt)
         {
             world->markForRemoval((*(*dynamicIt)));
@@ -61,7 +61,7 @@ namespace our
             dynamicEntities->erase(dynamicIt2Delete);
         }
         
-        // Utility to remove an enemy
+        // UTILITY to remove an enemy
         void removeEnemy(World *world, Entity *enemy)
         {
             world->markForRemoval(enemy);
@@ -70,7 +70,7 @@ namespace our
             removeEntityFromVector(enemy, *(enemiesEntities));
         }
 
-        // Utility to check the bullet type and apply damage
+        // UTILITY to check the bullet type and apply damage
         bool checkBulletType(
                             World* world,
                             our::LaserBullet* laser,
@@ -91,16 +91,12 @@ namespace our
 
                 if (laser->isFriendly)                         // player's bullet
                     isEnemyKilled = laser->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
-                else
-                    reducePlayerHealthCallBack(camera, 5);
             }
             else if (shotgun)
             {
                 // shotgun bullets don't vanish on collision they vanish after a certain time
                 if (shotgun->isFriendly)                         // player's bullet
                     isEnemyKilled = shotgun->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
-                else                                             // enemy's bullet
-                    reducePlayerHealthCallBack(camera, 50);
             }
             else if (rocket)
             {
@@ -110,8 +106,7 @@ namespace our
                     isEnemyKilled = rocket->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else                                            // enemy's bullet
                 {
-                    rocket->hit(world, (*(*staticIt)));
-                    reducePlayerHealthCallBack(camera, 200);
+                    rocket->rocketExplode(world);
                     (*dynamicIt) = dynamicEntities->begin() + (*counter);
                 }
             }
@@ -119,62 +114,14 @@ namespace our
             {
                 if (explosion->isFriendly)                         // player's bullet
                     isEnemyKilled = explosion->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
-                else                                               // enemy's bullet
-                    reducePlayerHealthCallBack(camera, 100);
             }
 
             return isEnemyKilled;
         }
 
-
-    public:
-        // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem *enemySystem, CallbackFunction updateHealth, bool* isBoss1KilledRef)
-        {
-            // get access to the needed entities
-            staticEntities = &world->staticEntities;
-            dynamicEntities = &world->dynamicEntities;
-            enemiesEntities = &world->enemiesEntities;
-            reducePlayerHealthCallBack = updateHealth;
-            isBoss1Killed = isBoss1KilledRef;
-
-            enemySys = enemySystem;
-
-            // For each entity in the world
-            for (auto entity : world->getEntities())
-            {
-                // Get the movement component if it exists
-                std::vector<ColliderComponent *> colliders = entity->getComponents<ColliderComponent>();
-
-                CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
-                if (worldCamera)
-                {
-                    camera = worldCamera;
-                    cameraController = entity->getComponent<FreeCameraControllerComponent>();
-                }
-
-                // If the movement component exists
-                if (colliders.size() > 0)
-                {
-                    for (auto collider : colliders)
-                    {
-                        collider->setEntity(entity);
-                    }
-                    if (colliders[0]->type == ColliderType::STATIC)
-                    {
-                        staticEntities->push_back(entity);
-                    }
-                    else
-                    {
-                        dynamicEntities->push_back(entity);
-                    }
-                }
-            }
-        }
-
-        // function that runs in each frame to check for collisions
-        // returns true if boss 2 is killed
-        bool update(World *world)
+        // UTILITY to check if the player damage an enemy
+        // returns true if boss 2 is killed (check for win)
+        bool updatePlayerBullets(World *world)
         {
             // used to get the new iterator of the rocket bullet when an explosion is generated
             int counter = 0;
@@ -202,11 +149,15 @@ namespace our
                     auto staticComponent = (*staticIt)->getComponent<ColliderComponent>();
                     glm::vec3 collisionDepth = (*dynamicIt)->getComponent<ColliderComponent>()->collisionDepth(staticComponent);
 
-                    if (ColliderComponent::isColliding(collisionDepth)) // if there's a collision
+                    // if there's a collision
+                    if (ColliderComponent::isColliding(collisionDepth))
                     {
-                        if ((*dynamicIt)->getComponent<CameraComponent>()) // camera collided with static object (wall)
+                        // camera collided with static object (wall or spider)
+                        if ((*dynamicIt)->getComponent<CameraComponent>())
                         {
                             auto staticComponentPostion = glm::vec3(staticComponent->x, staticComponent->y, staticComponent->z);
+                            
+                            // if camera collided with an enemy
                             if (enemy)
                             {
                                 if (enemy->type == EnemyType::MELEE)
@@ -225,11 +176,14 @@ namespace our
                                     removeEnemy(world, enemy->getOwner());
                                 }
                             }
+
+                            // camera is over an object
                             if (fabs(collisionDepth[1]) > fabs(staticComponentPostion[1]))
                             {
                                 camera->getOwner()->localTransform.position[1] = camera->lastPosition[1];
                                 cameraController->verticalVelocity = 0.0f;
                             }
+                            // camera collided with a wall
                             else
                                 camera->getOwner()->localTransform.position = camera->lastPosition;
 
@@ -283,7 +237,6 @@ namespace our
                                 else if (isBoss2)
                                 {
                                     isBoss2Killed = true;
-                                    // removeEnemy(world, (*staticIt));
 
                                     for (auto it = staticEntities->begin(); it != staticEntities->end(); it++ )
                                     {
@@ -324,6 +277,126 @@ namespace our
             return isBoss2Killed;
         }
 
+        // UTILITY to checks if the player is hit
+        void updateEnemyBullets(World* world)
+        {
+            std::vector<our::Entity *>::iterator cameraIt;
+
+            // find camera iterator
+            for (auto it = dynamicEntities->begin(); it != dynamicEntities->end(); it++)
+            {
+                if ((*it)->getComponent<CameraComponent>() != NULL)
+                {
+                    cameraIt = it;
+                    break;
+                }
+            }            
+
+            // if there's only the camera in dynamic colliders vector
+            std::vector<our::Entity *>::iterator bulletIt = cameraIt+1;
+            if (bulletIt == dynamicEntities->end())
+                return;
+
+            // loop through bullets
+            for (; bulletIt != dynamicEntities->end(); bulletIt++)
+            {
+                ColliderComponent* bulletCollider = (*bulletIt)->getComponent<ColliderComponent>();
+
+                // if it's not a bullet skip it
+                if (bulletCollider->type != ColliderType::BULLET)
+                    continue;
+
+                glm::vec3 collisionDepth = bulletCollider->collisionDepth((*cameraIt)->getComponent<ColliderComponent>());
+
+                // if a bullet hit the player
+                if (ColliderComponent::isColliding(collisionDepth))
+                {
+                    our::LaserBullet *laser = (*bulletIt)->getComponent<our::LaserBullet>();       // possible laser bullet component
+                    our::ShotgunBullet *shotgun = (*bulletIt)->getComponent<our::ShotgunBullet>(); // possible shotgun bullet component
+                    our::RocketBullet *rocket = (*bulletIt)->getComponent<our::RocketBullet>();    // possible rocket component
+                    our::Explosion *explosion = (*bulletIt)->getComponent<our::Explosion>();       // possible explosion component
+
+                    // check the bullets type and if it's fired from an enemy
+                    // then apply the corresponding damage
+                    if (laser && !laser-> isFriendly)
+                    {
+                        reducePlayerHealthCallBack(camera, 5);
+                    }
+                    else if (shotgun && !shotgun-> isFriendly)
+                    {
+                        reducePlayerHealthCallBack(camera, 50);
+                    }
+                    else if (rocket && !rocket-> isFriendly)
+                    {
+                        reducePlayerHealthCallBack(camera, 200);
+                    }
+                    else if (explosion && !explosion-> isFriendly)
+                    {
+                        reducePlayerHealthCallBack(camera, 100);
+                    }
+                    // just for safety
+                    else
+                    {
+                        continue;
+                    }
+                    removeBullet(world, &bulletIt);
+                    
+                }
+            }
+        }
+
+    public:
+        // Only called when the play state starts to add the colliders in an array
+        void enter(World *world, EnemySystem *enemySystem, CallbackFunction updateHealth, bool* isBoss1KilledRef)
+        {
+            // get access to the needed entities
+            staticEntities = &world->staticEntities;
+            dynamicEntities = &world->dynamicEntities;
+            enemiesEntities = &world->enemiesEntities;
+            reducePlayerHealthCallBack = updateHealth;
+            isBoss1Killed = isBoss1KilledRef;
+
+            enemySys = enemySystem;
+
+            // For each entity in the world
+            for (auto entity : world->getEntities())
+            {
+                // Get the movement component if it exists
+                std::vector<ColliderComponent *> colliders = entity->getComponents<ColliderComponent>();
+
+                CameraComponent *worldCamera = entity->getComponent<CameraComponent>();
+                if (worldCamera)
+                {
+                    camera = worldCamera;
+                    cameraController = entity->getComponent<FreeCameraControllerComponent>();
+                }
+
+                // If the movement component exists
+                if (colliders.size() > 0)
+                {
+                    for (auto collider : colliders)
+                    {
+                        collider->setEntity(entity);
+                    }
+                    if (colliders[0]->type == ColliderType::STATIC)
+                    {
+                        staticEntities->push_back(entity);
+                    }
+                    else
+                    {
+                        dynamicEntities->push_back(entity);
+                    }
+                }
+            }
+        }
+
+        // function that runs in each frame to check for collisions
+        bool update(World* world)
+        {
+            updateEnemyBullets(world);
+            return updatePlayerBullets(world);
+        }
+
         // function to remove shotgun bullets and explosions after a certain time
         void updateBullets(World *world)
         {
@@ -351,16 +424,6 @@ namespace our
                     return;
                 }
             }
-        }
-
-        bool checkBoss1Killed()
-        {
-            return isBoss1Killed;
-        }
-
-        bool checkBoss2Killed()
-        {
-            return isBoss2Killed;
         }
     };
 }

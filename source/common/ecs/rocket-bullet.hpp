@@ -54,17 +54,22 @@ namespace our{
             rocketBulletEntity->appendComponent<RocketBullet>(this);
         };
 
-        // returns true of the hit entity's health is depleted
-        bool hit(World* world, Entity* hitEntity) override
+        void rocketExplode(our::World *world)
         {
             // copy the rocket's position
             glm::vec3 bulletPosition = getOwner()->localTransform.position;
             float explosionPosition[3] = {bulletPosition.x, bulletPosition.y, bulletPosition.z};
-            
+
             // create an explosion when a collision happens
-            Explosion* explosion = new Explosion(explosionPosition, world, isFriendly);
+            Explosion *explosion = new Explosion(explosionPosition, world, isFriendly);
             explosion->isFriendly = isFriendly;
             explosion->shoot();
+        };
+
+        // returns true of the hit entity's health is depleted
+        bool hit(World* world, Entity* hitEntity) override
+        {
+            rocketExplode(world);
 
             if (isFriendly && hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
             {    
@@ -76,6 +81,6 @@ namespace our{
                 }
             }
             return false;
-        };
+        }
     };    
 }
