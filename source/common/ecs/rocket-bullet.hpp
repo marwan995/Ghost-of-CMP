@@ -52,6 +52,10 @@ namespace our{
 
             // add the laser bullet component to the entity to use the hit function later
             rocketBulletEntity->appendComponent<RocketBullet>(this);
+
+            if (isFriendly)
+                world->audioPlayer.play("Rocket Launch.wav"); // added here so there isn't a lot of noise
+
         };
 
         void rocketExplode(our::World *world)

@@ -26,6 +26,16 @@ void our::Audio::play(std::string audio_file){
     audioThread.detach();
 }
 
+void our::Audio::playLoop(std::string audio_file) {
+        if (!isPlaying) {
+            // Set the flag to indicate that the sound is playing
+            isPlaying = true;
+            
+            // Call your play function
+            play(audio_file);
+        }
+    }
+
 void our::Audio::data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
     if (pDecoder == NULL) {

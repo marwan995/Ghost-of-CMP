@@ -68,6 +68,8 @@ class Playstate: public our::State {
     }
 
     void onDraw(double deltaTime) override {
+        world.audioPlayer.playLoop("Play Theme.wav");
+
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
 
