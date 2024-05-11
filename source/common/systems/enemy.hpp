@@ -90,7 +90,7 @@ namespace our
                                 float bulletMovementDirections[3] = {direction[0],direction[1],direction[2]};
                                 float bulletPosition[3] = {position.x + direction[0] * 2, position.y + direction[1] * 2, position.z + direction[2] * 2};
 
-                                RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation,bulletMovementDirections , world, false);
+                                RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation,bulletMovementDirections , world, false,true);
                                 rocketBullet->shoot();
                             }
                             float distance =glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);

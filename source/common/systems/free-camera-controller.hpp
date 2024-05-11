@@ -36,9 +36,9 @@ namespace our
     {
         Application *app; // The application in which the state runs
 
-        std::string activeWeapon = "rocket";
-        int deltasCounter=0;
-        std::map<std::string, float> weapons_BPS = {{"rocket", 25}};   // map that hold the weapons and their rate of fire
+        std::string activeWeapon = "laser";
+        int deltasCounter = 0;
+        std::map<std::string, float> weapons_BPS = {{"laser", 25}}; // map that hold the weapons and their rate of fire
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -63,31 +63,38 @@ namespace our
         }
 
     public:
-        std::map<std::string, float>* getPlayerWeaponsMap()
+        std::map<std::string, float> *getPlayerWeaponsMap()
         {
             return &weapons_BPS;
         }
 
         // it's public as when a weapon is unlocked unlock system will switch to it
-        void changeWeapon(std::string newWeapon,Entity* weapons)
+        void changeWeapon(std::string newWeapon, Entity *weapons)
         {
             // new weapon is in the weapons_BPS & isn't the current weapon
             if ((newWeapon != activeWeapon) && (weapons_BPS.find(newWeapon) != weapons_BPS.end()))
             {
-                activeWeapon = newWeapon;   // switch weapons
-                deltasCounter = 0;          // reset fire rate counter
+                activeWeapon = newWeapon; // switch weapons
+                deltasCounter = 0;        // reset fire rate counter
                 // TODO: change weapon's mesh and maybe add an animation
-                if(newWeapon=="shotgun"){
-                    weapons->children[1]->localTransform.position =glm::vec3(0.9, -0.5, -0.55);
-                    weapons->children[0]->localTransform.position = glm::vec3(1, -1, 1);
-                }
-                else if(newWeapon=="laser")
+                if (activeWeapon == "shotgun")
                 {
-                    weapons->children[1]->localTransform.position =glm::vec3(0.9, -0.5, 1);
-                    weapons->children[0]->localTransform.position = glm::vec3(1, -1, -1);
+                    weapons->children[2]->localTransform.position.z =  1;
+                    weapons->children[1]->localTransform.position.z = -0.55;
+                    weapons->children[0]->localTransform.position.z =  1;
                 }
-
-
+                else if (activeWeapon == "laser")
+                {
+                    weapons->children[2]->localTransform.position.z =  1;
+                    weapons->children[1]->localTransform.position.z =  1;
+                    weapons->children[0]->localTransform.position.z = -1;
+                }
+                else if (activeWeapon == "rocket")
+                {
+                    weapons->children[2]->localTransform.position.z = -1.2;
+                    weapons->children[1]->localTransform.position.z =  1;
+                    weapons->children[0]->localTransform.position.z =  1;
+                }
             }
         }
 
@@ -97,19 +104,21 @@ namespace our
             this->app = app;
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
         }
-        
-        static void updateHealth(CameraComponent *camera,float changeBy =.01 ){
+
+        static void updateHealth(CameraComponent *camera, float changeBy = .01)
+        {
             // TODO: add red health effect
-            if(camera->getOwner()->health == 500 && changeBy < 0) return;
-            auto healthBar = camera->getOwner()->children[2]->children[0];
+            if (camera->getOwner()->health == 500 && changeBy < 0)
+                return;
+            auto healthBar = camera->getOwner()->children[3]->children[0];
 
             float decreasedBy = (changeBy * 0.95) / (500.0);
             camera->getOwner()->health -= changeBy;
             camera->getOwner()->health = glm::clamp(camera->getOwner()->health, 0.0f, 500.0f);
 
-            healthBar->localTransform.scale[0] -= decreasedBy ;
+            healthBar->localTransform.scale[0] -= decreasedBy;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
-            healthBar->localTransform.position[0] -= ((decreasedBy/2.0)*9.6) ;
+            healthBar->localTransform.position[0] -= ((decreasedBy / 2.0) * 9.6);
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
@@ -153,20 +162,20 @@ namespace our
                     if (activeWeapon == "laser")
                     {
                         // LASER RIFLE
-                        LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
+                        LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         laserBullet->shoot();
-                        world->audioPlayer.play("Laser.wav");       // added here so there isn't a lot of noise
+                        world->audioPlayer.play("Laser.wav"); // added here so there isn't a lot of noise
                     }
                     else if (activeWeapon == "shotgun")
                     {
                         // SHOTGUN
-                        ShotgunBullet* shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
+                        ShotgunBullet *shotgunBullet = new ShotgunBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         shotgunBullet->shoot();
                     }
                     else if (activeWeapon == "rocket")
                     {
                         // ROCKET LAUNCHER
-                        RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
+                        RocketBullet *rocketBullet = new RocketBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         rocketBullet->shoot();
                     }
                 }
@@ -198,20 +207,22 @@ namespace our
             // open scope when right click is pressed
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_2))
             {
-                if(activeWeapon=="laser"){
-                camera->fovY = glm::pi<float>() * 0.1f;
-                entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.07, 0.07, 0.07);
-                entity->children[0]->localTransform.position = glm::vec3(0, -1.05, -1.1);
-                entity->children[0]->localTransform.rotation = glm::vec3(0, 0, 0);
+                if (activeWeapon == "laser")
+                {
+                    camera->fovY = glm::pi<float>() * 0.1f;
+                    entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.07, 0.07, 0.07);
+                    entity->children[0]->localTransform.position = glm::vec3(0, -1.05, -1.1);
+                    entity->children[0]->localTransform.rotation = glm::vec3(0, 0, 0);
                 }
             }
-            if(app->getMouse().justReleased(GLFW_MOUSE_BUTTON_2))
+            if (app->getMouse().justReleased(GLFW_MOUSE_BUTTON_2))
             {
-                if(activeWeapon=="laser"){
-                camera->fovY = .49 * glm::pi<float>();
-                entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.0088, 0.0088, 0.0088);
-                entity->children[0]->localTransform.position = glm::vec3(1, -1, -1);
-                entity->children[0]->localTransform.rotation = glm::radians(glm::vec3(0, 30, 0));
+                if (activeWeapon == "laser")
+                {
+                    camera->fovY = .49 * glm::pi<float>();
+                    entity->children[entity->children.size() - 1]->localTransform.scale = glm::vec3(0.0088, 0.0088, 0.0088);
+                    entity->children[0]->localTransform.position = glm::vec3(1, -1, -1);
+                    entity->children[0]->localTransform.rotation = glm::radians(glm::vec3(0, 30, 0));
                 }
             } // We get the camera model matrix (relative to its parent) to compute the front, up and right directions
             glm::mat4 matrix = entity->localTransform.toMat4();
@@ -272,17 +283,17 @@ namespace our
             // Check for weapon change
             if (app->getKeyboard().isPressed(GLFW_KEY_1))
             {
-                changeWeapon("laser",entity);
+                changeWeapon("laser", entity);
             }
             else if (app->getKeyboard().isPressed(GLFW_KEY_2))
             {
-                changeWeapon("shotgun",entity);
+                changeWeapon("shotgun", entity);
             }
             else if (app->getKeyboard().isPressed(GLFW_KEY_3))
             {
-                changeWeapon("rocket",entity);
+                changeWeapon("rocket", entity);
             }
-            
+
             locationInMap(camera);
 
             // std::cout<<position.x<<' '<<position.z<<'\n';
@@ -290,21 +301,21 @@ namespace our
         void locationInMap(CameraComponent *camera)
         {
             auto position = camera->getOwner()->localTransform.position;
-            if( (position[0] > -8.5  && position[0] < 7.5) && (position[2] > 1  && position[1] < 12.45) && app->alpha==0.5f)
-                    app->currentRoam = "START";
-            else if( (position[0] > -28.45  && position[0] < -17.42) &&(position[2] > -14.95  && position[2] < -3.57) && app->alpha==0.5f)
-                    app->currentRoam = "GPU BOOSTER";
-            else if( (position[0] > -41 && position[0] < 19.88) && (position[2] > -32 && position[2] < -19.9) && app->alpha==0.5f)
+            if ((position[0] > -8.5 && position[0] < 7.5) && (position[2] > 1 && position[1] < 12.45) && app->alpha == 0.5f)
+                app->currentRoam = "START";
+            else if ((position[0] > -28.45 && position[0] < -17.42) && (position[2] > -14.95 && position[2] < -3.57) && app->alpha == 0.5f)
+                app->currentRoam = "GPU BOOSTER";
+            else if ((position[0] > -41 && position[0] < 19.88) && (position[2] > -32 && position[2] < -19.9) && app->alpha == 0.5f)
                 app->currentRoam = "JUSTICE CPU";
-            else if( (position[0] > 24.58 && position[0] < 57.05) && (position[2] > -38.8 && position[2] < -19.5) && app->alpha==0.5f)
+            else if ((position[0] > 24.58 && position[0] < 57.05) && (position[2] > -38.8 && position[2] < -19.5) && app->alpha == 0.5f)
                 app->currentRoam = "RAM ROOM";
-            else if( (position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha==0.5f)
+            else if ((position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha == 0.5f)
                 app->currentRoam = "DARK SSD";
-            else if( (position[0] > -81.1 && position[0] < -49.1) && (position[2] > -34.88 && position[2] < -19.45) && app->alpha==0.5f)
+            else if ((position[0] > -81.1 && position[0] < -49.1) && (position[2] > -34.88 && position[2] < -19.45) && app->alpha == 0.5f)
                 app->currentRoam = "DATA HALL";
-            else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
+            else if ((position[0] > -119.664 && position[0] < -86.64) && (position[2] > -42.4393 && position[2] < -11.61) && app->alpha == 0.5f)
                 app->currentRoam = "MOTHER OF BOARDS";
-           // std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
+            // std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked

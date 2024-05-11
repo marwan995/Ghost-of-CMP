@@ -11,10 +11,10 @@ namespace our{
 
     public:
         // initialize the bullet attributes
-        RocketBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld, bool friendlyFire)
+        RocketBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld, bool friendlyFire,bool isBoss = false)
         {
             mesh = "laser";
-            material = "laser";
+            material = isBoss?"laser":"rocketBullet";
             scale[0] = 0.4;
             scale[1] = 0.4;
             scale[2] = 0.03;

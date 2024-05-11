@@ -16,7 +16,7 @@ namespace our{
         ShotgunBullet(const float (&cameraPosition)[3], const float (&cameraRotation)[3], const float (&cameraRotationProjection)[3], World* currentWorld, bool friendlyFire)
         {
             mesh = "laser";
-            material = "laser";
+            material = "shotgunBullet";
             scale[0] = 2;
             scale[1] = 2;
             scale[2] = 0.3;

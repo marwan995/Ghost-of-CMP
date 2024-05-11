@@ -47,7 +47,8 @@
         "heal": "assets/textures/heal.png",
         "Explosion": "assets/textures/Explosion.png",
         "shotgun": "assets/textures/shotgun.png",
-        "boss1_baseColor": "assets/textures/lambert1_baseColor.jpeg"
+        "boss1_baseColor": "assets/textures/lambert1_baseColor.jpeg",
+        "rocket": "assets/textures/Rockets.jpg"
       },
       "meshes": {
         "sniper": "assets/models/sniper.obj",
@@ -74,7 +75,8 @@
         "spider": "assets/models/spider.obj",
         "cannon": "assets/models/cannon.obj",
         "shotgun": "assets/models/shotgun.obj",
-        "boss1": "assets/models/boss1.obj"
+        "boss1": "assets/models/boss1.obj",
+        "rocket": "assets/models/rocket.obj"
       },
       "samplers": {
         "default": {},
@@ -203,6 +205,32 @@
           },
           "tint": [0.8, 0, 0.2, 0.7]
         },
+        "shotgunBullet": {
+          "type": "tinted",
+          "shader": "tinted",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.2, 0.2, 0.9, 1.0]
+        },
+        "rocketBullet": {
+          "type": "tinted",
+          "shader": "tinted",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.1, 0.1, 0.2, 0.7]
+        },
         "texture1": {
           "type": "textured",
           "shader": "textured",
@@ -216,6 +244,23 @@
           },
           "tint": [0.5, 0, 0.5, 0.7],
           "texture": "texture1",
+          "sampler": "groundObstaclesSampler",
+          "shininess": 8.0
+        
+        },
+        "rocket": {
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [2.1, 1, 1.8, 1.0],
+          "texture": "rocket",
           "sampler": "groundObstaclesSampler",
           "shininess": 8.0
         
@@ -465,7 +510,8 @@
     },
     "world": [
       {
-        "position": [29.1119, 0 ,-28.6506],
+        // "position": [29.1119, 0 ,-28.6506],
+        "position": [0, 0 ,10],
         "health": 500,
         "components": [
           {
@@ -478,7 +524,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 0.2
+            "radius": 0.3
           }
         ],
         "children": [
@@ -504,6 +550,20 @@
                 "mesh": "shotgun",
                 "material": "metal"
               }
+            ]
+          },
+          {
+            "position": [0.9, -0.6, 1],
+            "rotation": [0, 180, 0],
+            "name": "world rocket",
+            "scale": [0.006, 0.003, 0.002],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "rocket",
+                "material": "metal"
+              }
+              
             ]
           },
         
@@ -593,12 +653,12 @@
         "position": [-62, -0.5, -49.3],
         "rotation": [0, 0, 0],
         "name": "world rocket",
-        "scale": [0.03, 0.03, 0.02],
+        "scale": [0.002, 0.002, 0.002],
         "components": [
           {
             "type": "Mesh Renderer",
-            "mesh": "sniper",
-            "material": "metal"
+            "mesh": "rocket",
+            "material": "rocket"
           },
           {
             "type": "Movement",
