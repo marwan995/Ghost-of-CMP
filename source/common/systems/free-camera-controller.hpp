@@ -124,6 +124,7 @@ namespace our
             healthBar->localTransform.scale[0] -= decreasedBy;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
             healthBar->localTransform.position[0] -= ((decreasedBy / 2.0) * 9.6);
+            healthBar->localTransform.position[0] = glm::clamp(healthBar->localTransform.position[0],-4.95f,-0.4456f);
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
