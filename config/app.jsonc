@@ -881,7 +881,8 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "static",
-            "radius": 0.9
+            "radius": 0.9,
+            "shifted": [0,-0.3,0]
           },
           
           {
@@ -972,10 +973,15 @@
       },
       {
         "position": [-83, 0, -27.2],
-        "scale": [0.5, 0, 5],
+        "scale": [2, 6, 10],
         "rotation": [0, 0, 0],
         "name": "boss 2 wall",
         "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "Image_7"
+          },
           {
             "type": "Collider",
             "colliderShape": "rect",
@@ -1011,6 +1017,19 @@
             "colliderShape": "sphere",
             "colliderType": "dynamic",
             "radius": 15
+          }
+        ]
+      },
+      {
+        "position": [0, -2, 0],
+        "scale": [1.8, 1.8, 1.8],
+        "rotation": [0, 0, 0],
+        "components": [
+          {
+            "type": "Collider",
+            "colliderShape": "rect",
+            "colliderType": "static",
+            "scale": [500, 2, 500]
           }
         ]
       }
