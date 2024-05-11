@@ -170,7 +170,6 @@ namespace our
                         // LASER RIFLE
                         LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, true);
                         laserBullet->shoot();
-                        world->audioPlayer.play("Laser.wav"); // added here so there isn't a lot of noise
                     }
                     else if (activeWeapon == "shotgun")
                     {
