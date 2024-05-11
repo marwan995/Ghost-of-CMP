@@ -99,6 +99,14 @@ namespace our
                             }
 
                         }
+                        else if (enemy->type ==EnemyType::BOSS2)
+                        {
+                            enemy->aimAt(camera);
+                            float distance =glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
+                            if(distance < 7){
+                                enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime);
+                            }
+                        }
                         else if (enemy->type == EnemyType::SHOOTER)
                         {
                             enemy->aimAt(camera);
