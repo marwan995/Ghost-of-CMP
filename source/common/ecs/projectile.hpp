@@ -75,7 +75,7 @@ namespace our {
                 };
         }
 
-        void decreaseHealthbar(Entity* hitEntity, int damage)
+        void decreaseHealthbar(Entity* hitEntity, int damage, float maxHealth = 500, float xScale = 0.6)
         {
             auto enemy = hitEntity->getComponent<EnemyComponent>();
             if(enemy)
@@ -83,8 +83,11 @@ namespace our {
                 if(enemy->getOwner()->children.size() == 0) 
                     return;
                 auto healthBar = enemy->getOwner()->children[0];
-                healthBar->localTransform.scale[0] -= 0.05;
+                // We should take the health of the enemy and the scale of the health bar
+                float decreasedBy = (damage * xScale) / (maxHealth);
+                healthBar->localTransform.scale[0] -= decreasedBy;
                 healthBar->localTransform.scale[0] = std::max(0.0f, healthBar->localTransform.scale[0]);
+                healthBar->localTransform.position[0] += ((decreasedBy / 2.0) * 9.6);
             }
         }
 

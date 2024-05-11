@@ -1016,6 +1016,20 @@
             "colliderType": "dynamic",
             "radius": 15
           }
+        ],
+        "children": [
+          {
+            "position": [-0.4, 1.9, 0.5],
+            "rotation": [0, 0, 0],
+            "scale": [0.6, 0.4, 1],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "healthBar",
+                "material": "healthBar"
+              }
+            ]
+          }
         ]
       },
       {

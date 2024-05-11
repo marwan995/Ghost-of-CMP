@@ -25,6 +25,8 @@ namespace our
                                   // If parent is null, the entity is a root entity (has no parent).
         Transform localTransform; // The transform of this entity relative to its parent.
         float health = FLT_MAX;  // as it's an FPS game almost all entities have health INT_MAX is for static objects
+        float maxHealth = FLT_MAX;
+        float healthBarScale = 0.6;
         std::vector<Entity *> children;
 
         World *getWorld() const { return world; } // Returns the world to which this entity belongs

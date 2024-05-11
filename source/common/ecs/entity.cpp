@@ -29,6 +29,7 @@ namespace our {
         if(!data.is_object()) return;
         name = data.value("name", name);
         health = data.value("health", FLT_MAX);             // read the health of the entity (INT_MAX is the default)
+        maxHealth = health;             // read the health of the entity (INT_MAX is the default)
         localTransform.deserialize(data);
         if(data.contains("components")){
             if(const auto& components = data["components"]; components.is_array()){
@@ -36,6 +37,9 @@ namespace our {
                     deserializeComponent(component, this);
                 }
             }
+        }
+        if(data.contains("childern")){
+            healthBarScale = data["childern"][0]["scale"][0].get<float>();
         }
     }
 

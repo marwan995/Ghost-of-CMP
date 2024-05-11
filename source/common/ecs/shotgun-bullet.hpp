@@ -63,6 +63,7 @@ namespace our{
             if (hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
             {    
                 hitEntity->health -= damage;            // decrease enemy's health
+                decreaseHealthbar(hitEntity, damage, hitEntity->maxHealth, hitEntity->healthBarScale);
                 if (hitEntity->health <= 0)             // if no remaining health remove the enemy
                 {
                     world->markForRemoval(hitEntity);
