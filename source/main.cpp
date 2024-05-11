@@ -17,6 +17,7 @@
 #include "states/entity-test-state.hpp"
 #include "states/renderer-test-state.hpp"
 #include "states/gameover-state.hpp"
+#include "states/win-state.hpp"
 int main(int argc, char** argv) {
 
     flags::args args(argc, argv); // Parse the command line arguments
@@ -44,6 +45,7 @@ int main(int argc, char** argv) {
     // Register all the states of the project in the application
     app.registerState<Menustate>("menu");
     app.registerState<Gameoverstate>("gameover");
+    app.registerState<Winstate>("win");
     app.registerState<Playstate>("play");
     app.registerState<ShaderTestState>("shader-test");
     app.registerState<MeshTestState>("mesh-test");
