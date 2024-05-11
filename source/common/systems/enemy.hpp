@@ -78,20 +78,39 @@ namespace our
                             enemy->aimAt(camera,true);
                             enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime);
                         }
-                        else if (enemy->type == EnemyType::SHOOTER)
-                        {
-                        enemy->aimAt(camera);
+                        else if (enemy->type ==EnemyType::BOSS1){
+
+                            enemy->aimAt(camera);
                             if (enemy->checkRateOfFire())
                             {
                                 glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
                                 glm::vec3 position = enemy->getOwner()->localTransform.position;
+                                glm::vec3 direction = -glm::normalize(position - camera->getOwner()->localTransform.position);
+                                float bulletRotation[3] = { glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z)};
+                                float bulletMovementDirections[3] = {direction[0],direction[1],direction[2]};
+                                float bulletPosition[3] = {position.x + direction[0] * 2, position.y + direction[1] * 2, position.z + direction[2] * 2};
 
-                                float bulletRotation[3] = {180 - glm::degrees(rotation.x), glm::degrees(rotation.y) - 180, glm::degrees(rotation.z)};
-                                float bulletSpeedX = -cos(-rotation.x) * sin(rotation.y);
-                                float bulletSpeedY = -sin(-rotation.x);
-                                float bulletSpeedZ = -cos(-rotation.x) * cos(rotation.y);
-                                float bulletMovementDirections[3] = {bulletSpeedX, bulletSpeedY, bulletSpeedZ};
-                                float bulletPosition[3] = {position.x + bulletSpeedX * 2, position.y + bulletSpeedY * 2, position.z + bulletSpeedZ * 2};
+                                RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation,bulletMovementDirections , world, false);
+                                rocketBullet->shoot();
+                            }
+                            float distance =glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
+                            if(distance<4.9){
+                                enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime,true);
+                            }
+
+                        }
+                        else if (enemy->type == EnemyType::SHOOTER)
+                        {
+                            enemy->aimAt(camera);
+                            if (enemy->checkRateOfFire())
+                            {
+                                glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
+                                glm::vec3 position = enemy->getOwner()->localTransform.position;
+                                glm::vec3 direction = -glm::normalize(position - camera->getOwner()->localTransform.position);
+                                float bulletRotation[3] = { glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z)};
+
+                                float bulletMovementDirections[3] = {direction[0],direction[1],direction[2]};
+                                float bulletPosition[3] = {position.x + direction[0] * 2, position.y + direction[1] * 2, position.z + direction[2] * 2};
 
                                 LaserBullet *laserBullet = new LaserBullet(bulletPosition, bulletRotation, bulletMovementDirections, world, false);
                                 laserBullet->shoot();

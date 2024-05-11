@@ -211,9 +211,13 @@ namespace our
                                     reducePlayerHealthCallBack(camera, 60);
                                     removeEnemy(world, enemy->getOwner());
                                 }
+                                if (enemy->type == EnemyType::BOSS1)
+                                {
+                                    enemy->getOwner()->localTransform.position=glm::vec3(40.8, 6, -29.15);
+                                    reducePlayerHealthCallBack(camera, 10);
+                                }
                                 if (enemy->type == EnemyType::HEAL)
                                 {
-                                    std::cout<<"copllider\n";
                                     reducePlayerHealthCallBack(camera, -60);
                                     removeEnemy(world, enemy->getOwner());
                                 }

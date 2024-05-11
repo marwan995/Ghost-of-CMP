@@ -5,7 +5,7 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-
+#include <glm/gtc/quaternion.hpp>
 #include "../ecs/component.hpp"
 // #include "../ecs/laser-bullet.hpp"
 
@@ -61,6 +61,7 @@ namespace our
             else if (enemyTypeStr == "boss1")
             {
                 type = EnemyType::BOSS1;
+                rateOfFire=5;
                 range = 30;
             }
             else if (enemyTypeStr == "boss2")
@@ -99,45 +100,29 @@ namespace our
         // function to rotate the enemy to point to the player
         void aimAt(CameraComponent *camera, bool isMelee = false)
         {
-            auto M = getOwner()->getLocalToWorldMatrix();
-            glm::vec3 eye = glm::vec3(M * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-            glm::vec3 up = glm::vec3(M * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
-            glm::mat4 matrix = glm::lookAt(eye, camera->getOwner()->localTransform.position, up);
-
-            glm::quat newRotation;
-            glm::vec3 temp;
-            glm::vec4 temp4;
-
-            glm::decompose(matrix, temp, newRotation, temp, temp, temp4);
-
-            glm::vec3 rotationDegrees = glm::degrees(glm::eulerAngles(newRotation));
+            glm::vec3 direction = -glm::normalize(this->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
+            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // Assuming Y-axis is up
+            glm::quat rotation = glm::quatLookAt(direction, up);
+            glm::vec3 rotationDegrees = glm::degrees(glm::eulerAngles(rotation));
+            if (cos(glm::radians(rotationDegrees.x)) < 0)
+            {
+                rotationDegrees.y *= -1; // Player is behind, turn around
+            }
+            if(rotationDegrees.x>=90)
+                rotationDegrees.x *=-1;
             
-            // if player is behind the enemy
-            if (cos(glm::radians(rotationDegrees.x)) > 0)
-            {
-                // as the result is ranging from -PI/2 to PI/2 (strange)
-                rotationDegrees.y *= -1;
-                // z axis to prevent wiggling
-                rotationDegrees.z = 0;
-            }
-            else
-            {
-                rotationDegrees.z = -180;
-            }
 
-            rotationDegrees.x *= -1;
             if (isMelee)
             {
                 getOwner()->localTransform.rotation.x = 0;
                 getOwner()->localTransform.rotation.z = 0;
-                getOwner()->localTransform.rotation.y = glm::radians(rotationDegrees[1] - 90);
+                getOwner()->localTransform.rotation.y = glm::radians(rotationDegrees[1]);
             }
             else
                 getOwner()->localTransform.rotation = glm::radians(rotationDegrees);
         }
 
-
-        void moveTowardsTarget(Entity *camera, float speed, float deltaTime)
+        void moveTowardsTarget(Entity *camera, float speed, float deltaTime,bool boss=false)
         {
             // Calculate direction vector from moving object to target object
             glm::vec3 direction = -normalize(this->getOwner()->localTransform.position - camera->localTransform.position);
@@ -163,8 +148,9 @@ namespace our
                     this->getOwner()->localTransform.position.z += direction.z * zigzagSpeed;
                     this->getOwner()->localTransform.position.x -= direction.x * zigzagSpeed;
                 }
-                else{
-                     this->getOwner()->localTransform.position.x += direction.x * zigzagSpeed;
+                else
+                {
+                    this->getOwner()->localTransform.position.x += direction.x * zigzagSpeed;
                     this->getOwner()->localTransform.position.z -= direction.z * zigzagSpeed;
                 }
             }
@@ -176,21 +162,14 @@ namespace our
                 zigZag = !zigZag;              // Invert the zigzag pattern
                 timeSinceLastInversion = 0.0f; // Reset the timer
             }
+            if(boss){
+                this->getOwner()->localTransform.position.y += direction.y * zigzagSpeed;
+
+            }
             this->getOwner()->getComponents<ColliderComponent>()[0]->setEntity(this->getOwner());
             this->getOwner()->getComponents<ColliderComponent>()[1]->setEntity(this->getOwner());
         }
-        void moveCircular(Entity *camera, float radius, float angularSpeed, float deltaTime)
-        {
-            // Calculate direction vector from moving object to target object
-            glm::vec3 direction = -normalize(this->getOwner()->localTransform.position - camera->localTransform.position);
-            // Calculate position on the circle
-            float angle = 5 * deltaTime;
-            glm::vec3 offset = glm::vec3(10 * cos(angle), 0.0f, 10 * sin(angle));
-            // Adjust position of moving object based on direction and speed
-            this->getOwner()->localTransform.position[0] += direction[0] + offset[0];
-            this->getOwner()->localTransform.position[1] += direction[1] + offset[1];
-            this->getOwner()->localTransform.position[2] += direction[2] + offset[2];
-        }
+
         bool isPlayerInRange(CameraComponent *player)
         {
             glm::vec3 playerPosition = player->getOwner()->localTransform.position;

@@ -36,9 +36,9 @@ namespace our
     {
         Application *app; // The application in which the state runs
 
-        std::string activeWeapon = "laser";
+        std::string activeWeapon = "rocket";
         int deltasCounter=0;
-        std::map<std::string, float> weapons_BPS = {{"laser", 25}};   // map that hold the weapons and their rate of fire
+        std::map<std::string, float> weapons_BPS = {{"rocket", 25}};   // map that hold the weapons and their rate of fire
 
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
@@ -304,7 +304,7 @@ namespace our
                 app->currentRoam = "DATA HALL";
             else if( (position[0] > -119.664 && position[0] < -86.64) && (position[2] >  -42.4393 && position[2] < -11.61) && app->alpha==0.5f)
                 app->currentRoam = "MOTHER OF BOARDS";
-            std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
+           // std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked

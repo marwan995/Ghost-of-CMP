@@ -46,7 +46,8 @@
         "M_Screen_Emissive": "assets/textures/M_Screen_Emissive.png",
         "heal": "assets/textures/heal.png",
         "Explosion": "assets/textures/Explosion.png",
-        "shotgun": "assets/textures/shotgun.png"
+        "shotgun": "assets/textures/shotgun.png",
+        "boss1_baseColor": "assets/textures/lambert1_baseColor.jpeg"
       },
       "meshes": {
         "sniper": "assets/models/sniper.obj",
@@ -72,7 +73,8 @@
         "Explosion": "assets/models/explosion.obj",
         "spider": "assets/models/spider.obj",
         "cannon": "assets/models/cannon.obj",
-        "shotgun": "assets/models/shotgun.obj"
+        "shotgun": "assets/models/shotgun.obj",
+        "boss1": "assets/models/boss1.obj"
       },
       "samplers": {
         "default": {},
@@ -216,6 +218,23 @@
           "texture": "texture1",
           "sampler": "groundObstaclesSampler",
           "shininess": 8.0
+        
+        },
+        "boss1": {
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.8, 0.1, 0.8, 1.0],
+          "texture": "boss1_baseColor",
+          "sampler": "groundObstaclesSampler",
+          "shininess": 6.0
         },
         "heal": {
           "type": "textured",
@@ -446,7 +465,7 @@
     },
     "world": [
       {
-        "position": [0, 0, 10],
+        "position": [29.1119, 0 ,-28.6506],
         "health": 500,
         "components": [
           {
@@ -459,7 +478,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 0.1
+            "radius": 0.2
           }
         ],
         "children": [
@@ -629,6 +648,7 @@
             "mesh": "plane",
             "material": "grass"
           }
+          
         ]
       },
       {
@@ -905,16 +925,16 @@
         ]
       },
       {
-        "position": [45, 0, -23],
-        "scale": [1, 1, 1],
+        "position": [40.8, 4, -29.15],
+        "scale": [1.8, 1.8, 1.8],
         "rotation": [0, 0, 0],
         "name": "boss 1",
         "health": 500,
         "components": [
           {
             "type": "Mesh Renderer",
-            "mesh": "column-1",
-            "material": "Image_5"
+            "mesh": "boss1",
+            "material": "boss1"
           },
           {
             "type": "Enemy",
@@ -924,15 +944,13 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "static",
-            "shifted": [0, 0.5, 0],
-            "radius": 1.5
+            "radius": 1
           },
           {
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "shifted": [0, 0.5, 0],
-            "radius": 6
+            "radius": 15
           }
         ]
       }
