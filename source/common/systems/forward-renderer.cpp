@@ -59,46 +59,66 @@ namespace our
         // Then we check if there is a postprocessing shader in the configuration
         if (config.contains("postprocess"))
         {
-            // TODO: (Req 11) Create a framebuffer
-            glGenFramebuffers(1, &postprocessFrameBuffer);
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
-
-            // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
-            //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
-            //  The depth format can be (Depth component with 24 bits).
-            // void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-            colorTarget = texture_utils::empty(GL_RGBA8, windowSize);
-            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
-
-            depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT24, windowSize);
-            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
-            // TODO: (Req 11) Unbind the framebuffer just to be safe
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-            // Create a vertex array to use for drawing the texture
-            glGenVertexArrays(1, &postProcessVertexArray);
-
-            // Create a sampler to use for sampling the scene texture in the post processing shader
-            Sampler *postprocessSampler = new Sampler();
-            postprocessSampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            postprocessSampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            postprocessSampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            postprocessSampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            // Create the post processing shader
-            ShaderProgram *postprocessShader = new ShaderProgram();
-            postprocessShader->attach("assets/shaders/fullscreen.vert", GL_VERTEX_SHADER);
-            postprocessShader->attach(config.value<std::string>("postprocess", ""), GL_FRAGMENT_SHADER);
-            postprocessShader->link();
-
-            // Create a post processing material
-            postprocessMaterial = new TexturedMaterial();
-            postprocessMaterial->shader = postprocessShader;
-            postprocessMaterial->texture = colorTarget;
-            postprocessMaterial->sampler = postprocessSampler;
-            // The default options are fine but we don't need to interact with the depth buffer
-            // so it is more performant to disable the depth mask
-            postprocessMaterial->pipelineState.depthMask = false;
+            string filePath = config.value<std::string>("postprocess", "");
+            initializePostprocess(config.value<std::string>("postprocess", ""));
         }
+    }
+    
+    void ForwardRenderer::initializePostprocess(std::string filePath)
+    {
+        // TODO: This may cause error, you need to delte the current postprocess material before creating a new one
+        if(postprocessMaterial)
+            deletePostprocessMatrial();
+        // TODO: (Req 11) Create a framebuffer
+        glGenFramebuffers(1, &postprocessFrameBuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
+
+        // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
+        //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
+        //  The depth format can be (Depth component with 24 bits).
+        // void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+        colorTarget = texture_utils::empty(GL_RGBA8, windowSize);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
+
+        depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT24, windowSize);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
+        // TODO: (Req 11) Unbind the framebuffer just to be safe
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        // Create a vertex array to use for drawing the texture
+        glGenVertexArrays(1, &postProcessVertexArray);
+
+        // Create a sampler to use for sampling the scene texture in the post processing shader
+        Sampler *postprocessSampler = new Sampler();
+        postprocessSampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        postprocessSampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        postprocessSampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        postprocessSampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // Create the post processing shader
+        ShaderProgram *postprocessShader = new ShaderProgram();
+        postprocessShader->attach("assets/shaders/fullscreen.vert", GL_VERTEX_SHADER);
+        postprocessShader->attach(filePath, GL_FRAGMENT_SHADER);
+        postprocessShader->link();
+
+        // Create a post processing material
+        postprocessMaterial = new TexturedMaterial();
+        postprocessMaterial->shader = postprocessShader;
+        postprocessMaterial->texture = colorTarget;
+        postprocessMaterial->sampler = postprocessSampler;
+        // The default options are fine but we don't need to interact with the depth buffer
+        // so it is more performant to disable the depth mask
+        postprocessMaterial->pipelineState.depthMask = false;
+    }
+
+    void ForwardRenderer::deletePostprocessMatrial()
+    {
+        glDeleteFramebuffers(1, &postprocessFrameBuffer);
+        glDeleteVertexArrays(1, &postProcessVertexArray);
+        delete colorTarget;
+        delete depthTarget;
+        delete postprocessMaterial->sampler;
+        delete postprocessMaterial->shader;
+        delete postprocessMaterial;
     }
 
     void ForwardRenderer::destroy()
@@ -114,15 +134,7 @@ namespace our
         }
         // Delete all objects related to post processing
         if (postprocessMaterial)
-        {
-            glDeleteFramebuffers(1, &postprocessFrameBuffer);
-            glDeleteVertexArrays(1, &postProcessVertexArray);
-            delete colorTarget;
-            delete depthTarget;
-            delete postprocessMaterial->sampler;
-            delete postprocessMaterial->shader;
-            delete postprocessMaterial;
-        }
+            deletePostprocessMatrial();
     }
 
     void ForwardRenderer::render(World *world)
