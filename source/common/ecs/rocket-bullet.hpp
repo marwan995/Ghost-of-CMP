@@ -62,11 +62,11 @@ namespace our{
             float explosionPosition[3] = {bulletPosition.x, bulletPosition.y, bulletPosition.z};
             
             // create an explosion when a collision happens
-            Explosion* explosion = new Explosion(explosionPosition, world, true);
-            explosion->isFriendly = true;
+            Explosion* explosion = new Explosion(explosionPosition, world, isFriendly);
+            explosion->isFriendly = isFriendly;
             explosion->shoot();
 
-            if (hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
+            if (isFriendly && hitEntity->health != FLT_MAX)           // not a static object (a wall for example)
             {    
                 hitEntity->health -= damage;            // decrease enemy's health
                 if (hitEntity->health <= 0)             // if no remaining health remove the enemy

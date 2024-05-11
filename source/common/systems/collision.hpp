@@ -109,8 +109,11 @@ namespace our
                 if (rocket->isFriendly)                         // player's bullet
                     isEnemyKilled = rocket->hit(world, (*(*staticIt))); // apply damage & check if enemy is killed
                 else                                            // enemy's bullet
+                {
+                    rocket->hit(world, (*(*staticIt)));
                     reducePlayerHealthCallBack(camera, 200);
-                (*dynamicIt) = dynamicEntities->begin() + (*counter);
+                    (*dynamicIt) = dynamicEntities->begin() + (*counter);
+                }
             }
             else if (explosion)
             {
