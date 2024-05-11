@@ -81,7 +81,7 @@ namespace our
                         else if (enemy->type ==EnemyType::BOSS1){
 
                             enemy->aimAt(camera);
-                            if (enemy->checkRateOfFire())
+                            if (enemy->checkRateOfFire()&&!enemy->boss1_following)
                             {
                                 glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
                                 glm::vec3 position = enemy->getOwner()->localTransform.position;
@@ -93,9 +93,14 @@ namespace our
                                 RocketBullet* rocketBullet = new RocketBullet(bulletPosition, bulletRotation,bulletMovementDirections , world, false,true);
                                 rocketBullet->shoot();
                             }
-                            float distance =glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
-                            if(distance<4.9){
+                            float distance = glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
+                            if(distance < 7){
                                 enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime,true);
+                                enemy->boss1_following = true;
+                            }
+                            else if(glm::length(enemy->getOwner()->localTransform.position - enemy->boss1_home)>1){
+                                enemy->boss1_back(deltaTime);
+                                enemy->boss1_following = false;
                             }
 
                         }

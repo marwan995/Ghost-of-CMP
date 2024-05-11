@@ -763,10 +763,10 @@
             "lightType": "POINT",
             "ambient": [0.1, 0.1, 0.1],
             "diffuse": [0.5, 0.5, 0.5],
-            "specular": [8.0, 8.0, 8.0],
+            "specular": [0.8, 0.8, 0.8],
             "constant": 1.0,
-            "linear": 0.22,
-            "quadratic": 0.2
+            "linear": 0.07,
+            "quadratic": 0.017
           }
         ]
       },
@@ -951,7 +951,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 5
+            "radius": 10
           }
         ]
       },
@@ -960,7 +960,7 @@
         "position": [0, -1.3, 0],
         "rotation": [0, 90, 0],
         "objectType": "spider",
-        "health": 200,
+        "health": 240,
         "components": [
           {
             "type": "Mesh Renderer",
@@ -983,7 +983,7 @@
             "colliderShape": "sphere",
             "colliderType": "dynamic",
             "shifted": [0, 0.5, 0],
-            "radius": 6
+            "radius": 8
           }
         ]
       },
@@ -1011,7 +1011,7 @@
         "scale": [1.8, 1.8, 1.8],
         "rotation": [0, 0, 0],
         "name": "boss 1",
-        "health": 500,
+        "health": 1200,
         "components": [
           {
             "type": "Mesh Renderer",
@@ -1032,7 +1032,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 15
+            "radius": 16
           }
         ],
         "children": [

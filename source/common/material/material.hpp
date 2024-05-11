@@ -17,10 +17,6 @@ namespace our
     // 2- The shader program used to draw objects using this material
     // 3- Whether this material is transparent or not
     // Materials that send uniforms to the shader should inherit from the is material and add the required uniforms
-    struct Lighting{
-
-
-    };
     class Material
     {
     public:
@@ -88,7 +84,7 @@ namespace our
         }
         // else if(type == "lighted"){      
         //     return new LightingMaterial();
-        //} 
+        // } 
         else
         {
             return new Material();
