@@ -48,6 +48,7 @@
         "Explosion": "assets/textures/Explosion.png",
         "shotgun": "assets/textures/shotgun.png",
         "boss1_baseColor": "assets/textures/lambert1_baseColor.jpeg",
+        "boss2_baseColor": "assets/textures/boss2_baseColor.jpeg",
         "rocket": "assets/textures/Rockets.jpg"
       },
       "meshes": {
@@ -76,6 +77,7 @@
         "cannon": "assets/models/cannon.obj",
         "shotgun": "assets/models/shotgun.obj",
         "boss1": "assets/models/boss1.obj",
+        "boss2": "assets/models/boss2.obj",
         "rocket": "assets/models/rocket.obj"
       },
       "samplers": {
@@ -266,6 +268,22 @@
         
         },
         "boss1": {
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.8, 0.1, 0.8, 1.0],
+          "texture": "boss1_baseColor",
+          "sampler": "groundObstaclesSampler",
+          "shininess": 6.0
+        },
+        "boss2": {
           "type": "textured",
           "shader": "textured",
           "pipelineState": {
@@ -1022,6 +1040,50 @@
             "position": [-0.4, 1.9, 0.5],
             "rotation": [0, 0, 0],
             "scale": [0.6, 0.4, 1],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "healthBar",
+                "material": "healthBar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [-110.8, 2, -29.15],
+        "scale": [1.8, 1.8, 1.8],
+        "rotation": [0, 0, 0],
+        "name": "boss 2",
+        "health": 500,
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "boss2",
+            "material": "boss2"
+          },
+          {
+            "type": "Enemy",
+            "enemyType": "boss2"
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "static",
+            "radius": 1
+          },
+          {
+            "type": "Collider",
+            "colliderShape": "sphere",
+            "colliderType": "dynamic",
+            "radius": 15
+          }
+        ],
+        "children": [
+          {
+            "position": [-0.4, 1.9, 0.5],
+            "rotation": [0, 0, 0],
+            "scale": [0.7, 0.4, 1],
             "components": [
               {
                 "type": "Mesh Renderer",
