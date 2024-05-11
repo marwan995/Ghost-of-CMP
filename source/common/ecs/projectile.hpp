@@ -75,6 +75,19 @@ namespace our {
                 };
         }
 
+        void decreaseHealthbar(Entity* hitEntity, int damage)
+        {
+            auto enemy = hitEntity->getComponent<EnemyComponent>();
+            if(enemy)
+            {
+                if(enemy->getOwner()->children.size() == 0) 
+                    return;
+                auto healthBar = enemy->getOwner()->children[0];
+                healthBar->localTransform.scale[0] -= 0.05;
+                healthBar->localTransform.scale[0] = std::max(0.0f, healthBar->localTransform.scale[0]);
+            }
+        }
+
         // only overriden to be able to make projectile a component
         // can be changed later if the structure of bullet/grenade creation is changed (probably not)
         void deserialize(const nlohmann::json& data) override{};

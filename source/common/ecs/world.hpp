@@ -64,7 +64,13 @@ namespace our
         {
             // TODO: (Req 8) If the entity is in this world, add it to the "markedForRemoval" set.
             if (entities.find(entity) != entities.end())
+            {
+                if(entity->children.size())
+                {
+                    markedForRemoval.insert(entity->children[0]);
+                }
                 markedForRemoval.insert(entity);
+            }
         }
 
         // This removes the elements in "markedForRemoval" from the "entities" set.
