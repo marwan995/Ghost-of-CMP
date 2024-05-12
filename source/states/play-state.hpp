@@ -55,7 +55,7 @@ class Playstate: public our::State {
         
         // Initialize the unlock system
         bool * isBoss1KilledRef = unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
-
+    
         // Initialize the collision system
         // a pointer function is used to give the collision system the access to the updateHealth function
         collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef, &renderer);
@@ -94,19 +94,22 @@ class Playstate: public our::State {
 
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
+            world.audioPlayer.stop();
             getApp()->changeState("menu");
         }
 
         // player died
         if (camera->getOwner()->health <= 0)
         {
+            world.audioPlayer.stop();
             getApp()->changeState("gameover");
         }
 
         // last boss is killed so player won
         if (isBoss2Killed)
         {
-            // change state to win
+            world.audioPlayer.stop();
+            getApp()->changeState("win");
         }
     }
 
