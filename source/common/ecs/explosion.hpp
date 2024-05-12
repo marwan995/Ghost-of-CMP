@@ -55,6 +55,10 @@ namespace our{
 
             // add the laser bullet component to the entity to use the hit function later
             explosionEntity->appendComponent<Explosion>(this);
+        
+            // for the player only so there isn't a lot of noise
+            if (isFriendly)
+                world->audioPlayer.play("Rocket Explosion.wav");
         };
 
         // returns true of the hit entity's health is depleted

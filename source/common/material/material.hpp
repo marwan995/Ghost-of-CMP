@@ -17,10 +17,6 @@ namespace our
     // 2- The shader program used to draw objects using this material
     // 3- Whether this material is transparent or not
     // Materials that send uniforms to the shader should inherit from the is material and add the required uniforms
-    struct Lighting{
-
-
-    };
     class Material
     {
     public:
@@ -62,19 +58,22 @@ namespace our
         void deserialize(const nlohmann::json &data) override;
     };
 
-    // class LightingMaterial : public Material
-    // {
-    // public:
-    //     Texture2D *albedo;
-    //     Texture2D *specular;
-    //     Texture2D *emissive;
-    //     Texture2D *roughness;
-    //     Texture2D *ambient_occlusion;
-    //     Sampler *sampler;
+    // light material
+    class LightMaterial : public Material
+    {
+    public:
+        Texture2D *albedo;
+        Texture2D *specular;
+        Texture2D *emissive;
+        Texture2D *roughness;
+        Texture2D *ambientOcclusion;
+        Sampler *sampler;
 
-    //     void setup() const override;
-    //     void deserialize(const nlohmann::json &data) override;
-    // };
+        void setup() const override;
+        void deserialize(const nlohmann::json &data) override;
+    };
+
+
     // This function returns a new material instance based on the given type
     inline Material *createMaterialFromType(const std::string &type)
     {
@@ -86,9 +85,9 @@ namespace our
         {
             return new TexturedMaterial();
         }
-        // else if(type == "lighted"){      
-        //     return new LightingMaterial();
-        //} 
+        else if(type == "lighting"){      
+            return new LightMaterial();
+        } 
         else
         {
             return new Material();

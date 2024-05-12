@@ -55,20 +55,22 @@ namespace our
             this->skyMaterial->alphaThreshold = 1.0f;
             this->skyMaterial->transparent = false;
         }
+        
 
         // Then we check if there is a postprocessing shader in the configuration
         if (config.contains("postprocess"))
         {
             string filePath = config.value<std::string>("postprocess", "");
-            initializePostprocess(config.value<std::string>("postprocess", ""));
+            initializePostprocess(filePath);
         }
+
     }
     
     void ForwardRenderer::initializePostprocess(std::string filePath)
     {
         // TODO: This may cause error, you need to delte the current postprocess material before creating a new one
-        if(postprocessMaterial)
-            deletePostprocessMatrial();
+        // if(postprocessMaterial)
+        //     deletePostprocessMatrial();
         // TODO: (Req 11) Create a framebuffer
         glGenFramebuffers(1, &postprocessFrameBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
@@ -112,6 +114,7 @@ namespace our
 
     void ForwardRenderer::deletePostprocessMatrial()
     {
+        
         glDeleteFramebuffers(1, &postprocessFrameBuffer);
         glDeleteVertexArrays(1, &postProcessVertexArray);
         delete colorTarget;
@@ -119,6 +122,7 @@ namespace our
         delete postprocessMaterial->sampler;
         delete postprocessMaterial->shader;
         delete postprocessMaterial;
+        postprocessMaterial = NULL;
     }
 
     void ForwardRenderer::destroy()
@@ -171,14 +175,7 @@ namespace our
                     opaqueCommands.push_back(command);
                 }
             }
-            // if (auto bullet = entity->getComponent<Bullet>(); bullet)
-            // {
-            //     // Construct a command for the bullet
-            //     bulletCommand.localToWorld = bullet->getOwner()->getLocalToWorldMatrix();
-            //     bulletCommand.center = bullet->position; // Assuming bullet's position is at the center
-            //     bulletCommand.mesh = bullet->mesh;
-            //     bulletCommand.material = bullet->material;
-            // }
+
 
             auto lightComp = entity->getComponent<LightingComponent>();
             if (lightComp)
@@ -282,11 +279,6 @@ namespace our
             // Draw the mesh using the material's shader
             command.mesh->draw();
         }
-
-        // bulletCommand.material->setup(); //  u called the set before the setup what an idiot
-        // bulletCommand.material->shader->set("transform", VP * bulletCommand.localToWorld);
-        // // Draw the mesh using the material's shader
-        // bulletCommand.mesh->draw();
 
         // If there is a sky material, draw the sky
         if (this->skyMaterial)

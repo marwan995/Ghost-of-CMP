@@ -11,7 +11,6 @@ our::Texture2D *our::texture_utils::empty(GLenum format, glm::ivec2 size)
     // TODO: (Req 11) Finish this function to create an empty texture with the given size and format
     texture->bind();
     glTexStorage2D(GL_TEXTURE_2D, 1, format, size.x, size.y);
-    texture->unbind();
     return texture;
 }
 
@@ -43,7 +42,7 @@ our::Texture2D *our::texture_utils::loadImage(const std::string &filename, bool 
     // TODO: (Req 5) Finish this function to fill the texture with the data found in "pixels"
     texture->bind();
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void *)pixels);
 
     // Generate mipmaps if needed
     if (generate_mipmap)
@@ -51,8 +50,7 @@ our::Texture2D *our::texture_utils::loadImage(const std::string &filename, bool 
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    // Unbind the texture object
-    Texture2D::unbind();
+
     stbi_image_free(pixels); // Free image data after uploading to GPU
     return texture;
 }

@@ -33,9 +33,11 @@ namespace our
         bool zigZag = true;
         float timeSinceLastInversion = 0.0f;
         float inversionInterval = 0.1f;
-
     public:
         our::EnemyType type;
+        bool boss1_following = false;
+        glm::vec3 boss1_home=glm::vec3(40.8, 4, -29.15);
+
 
         static std::string getID() { return "Enemy"; }
 
@@ -166,6 +168,21 @@ namespace our
                 this->getOwner()->localTransform.position.y += direction.y * zigzagSpeed;
 
             }
+            this->getOwner()->getComponents<ColliderComponent>()[0]->setEntity(this->getOwner());
+            this->getOwner()->getComponents<ColliderComponent>()[1]->setEntity(this->getOwner());
+        }
+
+        void boss1_back(float deltaTime)
+        {   
+            // Calculate direction vector from moving object to target object
+            glm::vec3 direction = -normalize(this->getOwner()->localTransform.position - boss1_home);
+            float speed = 5 * deltaTime; // Adjust speed for the current frame
+
+            this->getOwner()->localTransform.position.x += direction.x * speed;
+            this->getOwner()->localTransform.position.y += direction.y * speed ;
+            this->getOwner()->localTransform.position.z += direction.z * speed ;
+
+
             this->getOwner()->getComponents<ColliderComponent>()[0]->setEntity(this->getOwner());
             this->getOwner()->getComponents<ColliderComponent>()[1]->setEntity(this->getOwner());
         }

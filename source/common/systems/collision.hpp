@@ -38,9 +38,12 @@ namespace our
         CameraComponent *camera;
         FreeCameraControllerComponent *cameraController;
         CallbackFunction reducePlayerHealthCallBack;
+        ForwardRenderer* forwardRenderer;
 
         bool* isBoss1Killed = NULL;               // reference to the flag to control the navigation to boss 2 in unlock system
         bool isBoss2Killed = false;               // flag to know the player has won
+        double playerLastHit = 0;
+        std::string currentPostProcess = "vignette";
 
         void removeEntityFromVector(Entity *entityToRemove, std::vector<Entity *> &entitiesVector)
         {
@@ -167,7 +170,7 @@ namespace our
                                 }
                                 if (enemy->type == EnemyType::BOSS1)
                                 {
-                                    enemy->getOwner()->localTransform.position=glm::vec3(40.8, 6, -29.15);
+                                    enemy->getOwner()->localTransform.position=glm::vec3(40.8, 10, -29.15);
                                     reducePlayerHealthCallBack(camera, 10);
                                 }
                                 if (enemy->type == EnemyType::HEAL)
@@ -242,6 +245,7 @@ namespace our
                                     {
                                         if ((*it)->name == "boss 2")
                                         {
+                                            
                                             staticEntities->erase(it);
                                             break;
                                         }
@@ -278,7 +282,7 @@ namespace our
         }
 
         // UTILITY to checks if the player is hit
-        void updateEnemyBullets(World* world)
+        void updateEnemyBullets(World* world, float deltaTime)
         {
             std::vector<our::Entity *>::iterator cameraIt;
 
@@ -340,6 +344,12 @@ namespace our
                         continue;
                     }
                     removeBullet(world, &bulletIt);
+
+                    if (currentPostProcess != "blood")
+                    {
+                        currentPostProcess = "blood";
+                        forwardRenderer->initializePostprocess("assets/shaders/postprocess/blood-vignette.frag");
+                    }
                     
                 }
             }
@@ -347,7 +357,7 @@ namespace our
 
     public:
         // Only called when the play state starts to add the colliders in an array
-        void enter(World *world, EnemySystem *enemySystem, CallbackFunction updateHealth, bool* isBoss1KilledRef)
+        void enter(World *world, EnemySystem *enemySystem, CallbackFunction updateHealth, bool* isBoss1KilledRef, ForwardRenderer* renderer)
         {
             // get access to the needed entities
             staticEntities = &world->staticEntities;
@@ -355,6 +365,10 @@ namespace our
             enemiesEntities = &world->enemiesEntities;
             reducePlayerHealthCallBack = updateHealth;
             isBoss1Killed = isBoss1KilledRef;
+            isBoss2Killed = false;
+            forwardRenderer = renderer;
+            playerLastHit = 0;
+            currentPostProcess = "vignette";
 
             enemySys = enemySystem;
 
@@ -391,9 +405,16 @@ namespace our
         }
 
         // function that runs in each frame to check for collisions
-        bool update(World* world)
+        bool update(World* world, float deltaTime)
         {
-            updateEnemyBullets(world);
+            playerLastHit += deltaTime;
+            if (currentPostProcess != "vignette" && playerLastHit >= 2)
+            {
+                forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+                playerLastHit = 0;
+                currentPostProcess = "vignette";
+            }
+            updateEnemyBullets(world, deltaTime);
             return updatePlayerBullets(world);
         }
 

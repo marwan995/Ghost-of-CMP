@@ -40,7 +40,7 @@ class Playstate: public our::State {
         getApp()-> lastRoam = "";
         getApp()-> alpha = 0.5f;
         // We initialize the camera controller system since it needs a pointer to the app
-        cameraController.enter(getApp());
+        cameraController.enter(getApp(),&renderer);
 
         // get the camera that represents the player
         for (auto entity: world.getEntities())
@@ -53,21 +53,25 @@ class Playstate: public our::State {
             }
         }
         
+        
         // Initialize the unlock system
         bool * isBoss1KilledRef = unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
-
+    
         // Initialize the collision system
         // a pointer function is used to give the collision system the access to the updateHealth function
-        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef);
+        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef, &renderer);
         // Initialize the enemy system
         enemySystem.enter(&world);
             
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+        world.audioPlayer.playLoop("Play Theme.wav");
+
     }
 
     void onDraw(double deltaTime) override {
+
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
 
@@ -79,7 +83,7 @@ class Playstate: public our::State {
         unlockSystem.update();
 
         // check for collisions and bullet collisions
-        bool isBoss2Killed = collisionSystem.update(&world);
+        bool isBoss2Killed = collisionSystem.update(&world, (float)deltaTime);
 
         // check shotguns and explosions
         collisionSystem.updateBullets(&world);
@@ -92,23 +96,27 @@ class Playstate: public our::State {
 
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
+            world.audioPlayer.stop();
             getApp()->changeState("menu");
         }
 
         // player died
         if (camera->getOwner()->health <= 0)
         {
+            world.audioPlayer.stop();
             getApp()->changeState("gameover");
         }
 
         // last boss is killed so player won
         if (isBoss2Killed)
         {
-            // change state to win
+            world.audioPlayer.stop();
+            getApp()->changeState("win");
         }
     }
 
     void onDestroy() override {
+       
         // Don't forget to destroy the renderer
         renderer.destroy();
         // On exit, we call exit for the camera controller system to make sure that the mouse is unlocked
