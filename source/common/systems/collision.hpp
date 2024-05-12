@@ -170,7 +170,7 @@ namespace our
                                 }
                                 if (enemy->type == EnemyType::BOSS1)
                                 {
-                                    enemy->getOwner()->localTransform.position=glm::vec3(40.8, 6, -29.15);
+                                    enemy->getOwner()->localTransform.position=glm::vec3(40.8, 10, -29.15);
                                     reducePlayerHealthCallBack(camera, 10);
                                 }
                                 if (enemy->type == EnemyType::HEAL)

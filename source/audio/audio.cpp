@@ -26,6 +26,10 @@ void our::Audio::play(std::string audio_file){
     audioThread.detach();
 }
 
+void our::Audio::stop() {
+    // Stop the audio engine
+    ma_engine_stop(&engine);
+}
 void our::Audio::playLoop(std::string audio_file) {
         if (!isPlaying) {
             // Set the flag to indicate that the sound is playing
