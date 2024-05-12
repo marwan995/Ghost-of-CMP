@@ -26,6 +26,10 @@
         "texturedWithoutLight": {
           "vs": "assets/shaders/textureWithoutLight.vert",
           "fs": "assets/shaders/textureWithoutLight.frag"
+        },
+        "lightingMaterial": {
+          "vs": "assets/shaders/lighting.vert",
+          "fs": "assets/shaders/lighting.frag"
         }
       },
       "textures": {
@@ -48,7 +52,9 @@
         "Explosion": "assets/textures/Explosion.png",
         "shotgun": "assets/textures/shotgun.png",
         "boss1_baseColor": "assets/textures/lambert1_baseColor.jpeg",
-        "boss2_baseColor": "assets/textures/boss2_baseColor.jpeg",
+        "boss1_emissive": "assets/textures/lambert1_emissive.jpeg",
+        "boss1_specular": "assets/textures/lambert1_specularf0.png",
+        "boss1_roughness": "assets/textures/lambert1_metallicRoughness.png",
         "rocket": "assets/textures/Rockets.jpg"
       },
       "meshes": {
@@ -268,6 +274,31 @@
         
         },
         "boss1": {
+          "type": "lighting",
+          "shader": "lightingMaterial",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "albedo": "boss1_baseColor",
+          "specular": "boss1_specular",
+          "emissive": "boss1_emissive",
+          "roughness": "boss1_roughness",
+          "ambientOcclusion": "",
+          "samplerAlbedo": "default",
+          "samplerSpecular": "default",
+          "samplerEmissive": "default",
+          "samplerRoughness": "default",
+          "samplerAmbientOcclusion": "default",
+          "tint": [0.8, 0.1, 0.8, 1.0]
+          // "sampler": "groundObstaclesSampler",
+          // "shininess": 6.0
+        },
+         "boss1V2": {
           "type": "textured",
           "shader": "textured",
           "pipelineState": {
@@ -282,7 +313,8 @@
           "texture": "boss1_baseColor",
           "sampler": "groundObstaclesSampler",
           "shininess": 6.0
-        },
+        }
+        ,
         "boss2": {
           "type": "textured",
           "shader": "textured",
@@ -1016,7 +1048,7 @@
           {
             "type": "Mesh Renderer",
             "mesh": "boss1",
-            "material": "boss1"
+            "material": "boss1V2"
           },
           {
             "type": "Enemy",

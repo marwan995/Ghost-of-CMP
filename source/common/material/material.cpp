@@ -73,4 +73,75 @@ namespace our
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+    void LightMaterial::setup() const
+    {
+        Material::setup();
+        if (albedo)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            albedo->bind();
+            if (sampler)
+            {
+                sampler->bind(0);
+            }
+            shader->set("material.albedo", 0);
+        }
+        if (specular)
+        {
+            glActiveTexture(GL_TEXTURE1);
+            specular->bind();
+            if (sampler)
+            {
+                sampler->bind(1);
+            }
+            shader->set("material.specular", 1);
+        }
+        if (roughness)
+        {
+            glActiveTexture(GL_TEXTURE2);
+            roughness->bind();
+            if (sampler)
+            {
+                sampler->bind(2);
+            }
+            shader->set("material.roughness", 2);
+        }
+        if (ambientOcclusion)
+        {
+            glActiveTexture(GL_TEXTURE3);
+            ambientOcclusion->bind();
+            if (sampler)
+            {
+                sampler->bind(3);
+            }
+            shader->set("material.ambientOcclusion", 3);
+        }
+        if (emissive)
+        {
+            glActiveTexture(GL_TEXTURE4);
+            emissive->bind();
+            if (sampler)
+            {
+                sampler->bind(4);
+            }
+            shader->set("material.emissive", 4);
+        }
+    }
+
+    void LightMaterial::deserialize(const nlohmann::json &data)
+    {
+        Material::deserialize(data);
+
+        if (!data.is_object())
+            return;
+
+        albedo = AssetLoader<Texture2D>::get(data.value("albedo", ""));
+        specular = AssetLoader<Texture2D>::get(data.value("specular", ""));
+        emissive = AssetLoader<Texture2D>::get(data.value("emissive", ""));
+        roughness = AssetLoader<Texture2D>::get(data.value("roughness", ""));
+        ambientOcclusion = AssetLoader<Texture2D>::get(data.value("ambientOcclusion", ""));
+
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+    }
+
 }
