@@ -40,7 +40,7 @@ class Playstate: public our::State {
         getApp()-> lastRoam = "";
         getApp()-> alpha = 0.5f;
         // We initialize the camera controller system since it needs a pointer to the app
-        cameraController.enter(getApp());
+        cameraController.enter(getApp(),&renderer);
 
         // get the camera that represents the player
         for (auto entity: world.getEntities())

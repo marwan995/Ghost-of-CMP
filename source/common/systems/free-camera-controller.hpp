@@ -39,7 +39,7 @@ namespace our
         std::string activeWeapon;
         int deltasCounter;
         std::map<std::string, float> weapons_BPS; // map that hold the weapons and their rate of fire
-
+        ForwardRenderer* forwardRenderer;
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
         {
@@ -79,28 +79,29 @@ namespace our
                 // TODO: change weapon's mesh and maybe add an animation
                 if (activeWeapon == "shotgun")
                 {
-                    weapons->children[2]->localTransform.position.z =  1;
+                    weapons->children[2]->localTransform.position.z = 1;
                     weapons->children[1]->localTransform.position.z = -0.55;
-                    weapons->children[0]->localTransform.position.z =  1;
+                    weapons->children[0]->localTransform.position.z = 1;
                 }
                 else if (activeWeapon == "laser")
                 {
-                    weapons->children[2]->localTransform.position.z =  1;
-                    weapons->children[1]->localTransform.position.z =  1;
+                    weapons->children[2]->localTransform.position.z = 1;
+                    weapons->children[1]->localTransform.position.z = 1;
                     weapons->children[0]->localTransform.position.z = -1;
                 }
                 else if (activeWeapon == "rocket")
                 {
                     weapons->children[2]->localTransform.position.z = -1.2;
-                    weapons->children[1]->localTransform.position.z =  1;
-                    weapons->children[0]->localTransform.position.z =  1;
+                    weapons->children[1]->localTransform.position.z = 1;
+                    weapons->children[0]->localTransform.position.z = 1;
                 }
             }
         }
 
         // When a state enters, it should call this function and give it the pointer to the application
-        void enter(Application *app)
+        void enter(Application *app,ForwardRenderer* renderer)
         {
+            forwardRenderer = renderer;
             // initialize attributes
             weapons_BPS = {{"laser", 25}};
             activeWeapon = "laser";
@@ -124,7 +125,7 @@ namespace our
             healthBar->localTransform.scale[0] -= decreasedBy;
             healthBar->localTransform.scale[0] = glm::clamp(healthBar->localTransform.scale[0], 0.0f, 0.95f);
             healthBar->localTransform.position[0] -= ((decreasedBy / 2.0) * 9.6);
-            healthBar->localTransform.position[0] = glm::clamp(healthBar->localTransform.position[0],-4.95f,-0.4456f);
+            healthBar->localTransform.position[0] = glm::clamp(healthBar->localTransform.position[0], -4.95f, -0.4456f);
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent
@@ -306,20 +307,50 @@ namespace our
         void locationInMap(CameraComponent *camera)
         {
             auto position = camera->getOwner()->localTransform.position;
+
             if ((position[0] > -8.5 && position[0] < 7.5) && (position[2] > 1 && position[1] < 12.45) && app->alpha == 0.5f)
+            {
                 app->currentRoam = "START";
+                if (app->currentRoam != app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+            }
             else if ((position[0] > -28.45 && position[0] < -17.42) && (position[2] > -14.95 && position[2] < -3.57) && app->alpha == 0.5f)
+            {
                 app->currentRoam = "GPU BOOSTER";
+                if (app->currentRoam != app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+            }
             else if ((position[0] > -41 && position[0] < 19.88) && (position[2] > -32 && position[2] < -19.9) && app->alpha == 0.5f)
+            {
                 app->currentRoam = "JUSTICE CPU";
+                if (app->currentRoam != app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+            }
             else if ((position[0] > 24.58 && position[0] < 57.05) && (position[2] > -38.8 && position[2] < -19.5) && app->alpha == 0.5f)
+            {
                 app->currentRoam = "RAM ROOM";
-            else if ((position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha == 0.5f)
+                if (app->currentRoam != app->lastRoam){
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
+                }
+
+            }
+            else if ((position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha == 0.5f){
                 app->currentRoam = "DARK SSD";
-            else if ((position[0] > -81.1 && position[0] < -49.1) && (position[2] > -34.88 && position[2] < -19.45) && app->alpha == 0.5f)
+                if(app->currentRoam !=app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+            }
+            else if ((position[0] > -81.1 && position[0] < -49.1) && (position[2] > -34.88 && position[2] < -19.45) && app->alpha == 0.5f){
                 app->currentRoam = "DATA HALL";
-            else if ((position[0] > -119.664 && position[0] < -86.64) && (position[2] > -42.4393 && position[2] < -11.61) && app->alpha == 0.5f)
+                if(app->currentRoam !=app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
+            }
+            else if ((position[0] > -119.664 && position[0] < -86.64) && (position[2] > -42.4393 && position[2] < -11.61) && app->alpha == 0.5f){
                 app->currentRoam = "MOTHER OF BOARDS";
+                if(app->currentRoam !=app->lastRoam)
+                    forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
+
+            }
+
             // std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
         }
 

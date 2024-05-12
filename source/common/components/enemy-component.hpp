@@ -174,7 +174,6 @@ namespace our
 
         void boss1_back(float deltaTime)
         {   
-            std::cout<<this->getOwner()->localTransform.position[0]<<" "<<this->getOwner()->localTransform.position[1]<<" "<<this->getOwner()->localTransform.position[2]<<"\n";
             // Calculate direction vector from moving object to target object
             glm::vec3 direction = -normalize(this->getOwner()->localTransform.position - boss1_home);
             float speed = 5 * deltaTime; // Adjust speed for the current frame
@@ -186,8 +185,6 @@ namespace our
 
             this->getOwner()->getComponents<ColliderComponent>()[0]->setEntity(this->getOwner());
             this->getOwner()->getComponents<ColliderComponent>()[1]->setEntity(this->getOwner());
-            std::cout<<this->getOwner()->localTransform.position[0]<<" "<<this->getOwner()->localTransform.position[1]<<" "<<this->getOwner()->localTransform.position[2]<<"\n";
-
         }
 
         bool isPlayerInRange(CameraComponent *player)

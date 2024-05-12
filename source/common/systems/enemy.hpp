@@ -101,7 +101,7 @@ namespace our
                             else if(glm::length(enemy->getOwner()->localTransform.position - enemy->boss1_home)>1){
                                 enemy->boss1_back(deltaTime);
                                 enemy->boss1_following = false;
-                            }
+                            }                         
 
                         }
                         else if (enemy->type ==EnemyType::BOSS2)
