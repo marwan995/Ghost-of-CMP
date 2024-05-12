@@ -561,7 +561,7 @@
     "world": [
       {
         // "position": [29.1119, 0 ,-28.6506],
-        "position": [40.8, 4, -29.15],
+        "position": [0, 0, 10],
         "health": 500,
         "components": [
           {
