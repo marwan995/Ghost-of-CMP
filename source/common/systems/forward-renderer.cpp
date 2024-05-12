@@ -171,14 +171,7 @@ namespace our
                     opaqueCommands.push_back(command);
                 }
             }
-            // if (auto bullet = entity->getComponent<Bullet>(); bullet)
-            // {
-            //     // Construct a command for the bullet
-            //     bulletCommand.localToWorld = bullet->getOwner()->getLocalToWorldMatrix();
-            //     bulletCommand.center = bullet->position; // Assuming bullet's position is at the center
-            //     bulletCommand.mesh = bullet->mesh;
-            //     bulletCommand.material = bullet->material;
-            // }
+
 
             auto lightComp = entity->getComponent<LightingComponent>();
             if (lightComp)
@@ -282,11 +275,6 @@ namespace our
             // Draw the mesh using the material's shader
             command.mesh->draw();
         }
-
-        // bulletCommand.material->setup(); //  u called the set before the setup what an idiot
-        // bulletCommand.material->shader->set("transform", VP * bulletCommand.localToWorld);
-        // // Draw the mesh using the material's shader
-        // bulletCommand.mesh->draw();
 
         // If there is a sky material, draw the sky
         if (this->skyMaterial)
