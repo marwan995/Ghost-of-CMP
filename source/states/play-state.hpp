@@ -58,7 +58,7 @@ class Playstate: public our::State {
 
         // Initialize the collision system
         // a pointer function is used to give the collision system the access to the updateHealth function
-        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef);
+        collisionSystem.enter(&world, &enemySystem, our::FreeCameraControllerSystem::updateHealth, isBoss1KilledRef, &renderer);
         // Initialize the enemy system
         enemySystem.enter(&world);
             
@@ -81,7 +81,7 @@ class Playstate: public our::State {
         unlockSystem.update();
 
         // check for collisions and bullet collisions
-        bool isBoss2Killed = collisionSystem.update(&world);
+        bool isBoss2Killed = collisionSystem.update(&world, (float)deltaTime);
 
         // check shotguns and explosions
         collisionSystem.updateBullets(&world);
