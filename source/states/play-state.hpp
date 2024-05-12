@@ -53,6 +53,7 @@ class Playstate: public our::State {
             }
         }
         
+        
         // Initialize the unlock system
         bool * isBoss1KilledRef = unlockSystem.enter(&world, cameraController.getPlayerWeaponsMap(), &camera->getOwner()->localTransform.position);
     

@@ -64,8 +64,8 @@ out vec4 frag_color;
 uniform vec4 tint;
 uniform vec3 camPos;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, vec3 material_shininess);  
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, vec3 material_shininess);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess);  
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess);
 
 
 void main(){
@@ -101,7 +101,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambie
     vec3 specular = light.specular * (specAmount *  material_specular); 
     return (ambient + diffuse + specular);
 }  
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, vec3 material_shininess)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess)
 {
     vec3 lightDirection =normalize(light.position - fs_in.fragPosition);
     float diff = max(dot(normal, lightDirection), 0.0f);
@@ -123,7 +123,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection, vec3 mate
 
     return (ambient + diffuse + specular); 
 }
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDirection, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, vec3 material_shininess){
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDirection, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess){
     vec3 lightDirection =normalize(light.position - fs_in.fragPosition);
     float diff = max(dot(normal, lightDirection), 0.0f);
 

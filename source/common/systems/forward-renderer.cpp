@@ -55,20 +55,22 @@ namespace our
             this->skyMaterial->alphaThreshold = 1.0f;
             this->skyMaterial->transparent = false;
         }
+        
 
         // Then we check if there is a postprocessing shader in the configuration
         if (config.contains("postprocess"))
         {
             string filePath = config.value<std::string>("postprocess", "");
-            initializePostprocess(config.value<std::string>("postprocess", ""));
+            initializePostprocess(filePath);
         }
+
     }
     
     void ForwardRenderer::initializePostprocess(std::string filePath)
     {
-        // TODO: This may cause error, you need to delte the current postprocess material before creating a new one
-        if(postprocessMaterial)
-            deletePostprocessMatrial();
+        // TODO: This may cause error, you need to delete the current postprocess material before creating a new one
+        // if(postprocessMaterial)
+        //     deletePostprocessMatrial();
         // TODO: (Req 11) Create a framebuffer
         glGenFramebuffers(1, &postprocessFrameBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
@@ -112,6 +114,7 @@ namespace our
 
     void ForwardRenderer::deletePostprocessMatrial()
     {
+        
         glDeleteFramebuffers(1, &postprocessFrameBuffer);
         glDeleteVertexArrays(1, &postProcessVertexArray);
         delete colorTarget;
