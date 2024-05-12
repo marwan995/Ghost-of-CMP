@@ -61,7 +61,6 @@ uniform Material material;
 
 out vec4 frag_color;
 
-uniform vec4 tint;
 uniform vec3 camPos;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular,float material_shininess);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess);  
@@ -84,7 +83,7 @@ void main(){
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         combination += CalcPointLight(pointLights[i],normalized,viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
     combination += CalcSpotLight(spotLight, normalized, viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
-    frag_color =  vec4(combination,1.0);
+    frag_color =  vec4(0.8, 0.1, 0.25, 1.0)*vec4(combination,1.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular,float material_shininess)

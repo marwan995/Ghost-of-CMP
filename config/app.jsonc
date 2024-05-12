@@ -295,7 +295,6 @@
           "samplerEmissive": "default",
           "samplerRoughness": "default",
           "samplerAmbientOcclusion": "default",
-          "tint": [0.8, 0.1, 0.8, 0.5],
           "sampler": "groundObstaclesSampler",
           "shininess": 6.0
         },
@@ -661,8 +660,8 @@
                 "diffuse": [0.5, 0.5, 0.5],
                 "specular": [0.5, 0.5, 0.5],
                 "constant": 1.0,
-                "linear": 0.22,
-                "quadratic": 0.20
+                "linear": 0.014,
+                "quadratic": 0.0007
               }
             ]
           },
