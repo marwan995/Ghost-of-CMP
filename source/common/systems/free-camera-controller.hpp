@@ -246,7 +246,7 @@ namespace our
 
             // If the LEFT SHIFT key is pressed, we multiply the position sensitivity by the speed up factor
             if (app->getKeyboard().isPressed(GLFW_KEY_LEFT_SHIFT))
-                current_sensitivity *= (controller->speedupFactor * 5);
+                current_sensitivity *= (controller->speedupFactor);
 
             // We change the camera position based on the keys WASD
             // S & W moves the player back and forth
@@ -338,6 +338,7 @@ namespace our
                 if (app->currentRoam != app->lastRoam){
                     forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
                     isVignette = false;
+                    enterRoomCounter = 0;
                 }
             }
             else if ((position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha == 0.5f){
@@ -356,14 +357,14 @@ namespace our
                 {
                     forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
                     isVignette = false;
+                    enterRoomCounter = 0;
                 }
+            }
 
-            if (!isVignette && deltaTime >= 3)
+            if (!isVignette && enterRoomCounter >= 3)
             {
                 isVignette = true;
                 forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
-            }
-
             }
         }
 

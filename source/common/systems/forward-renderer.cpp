@@ -67,8 +67,8 @@ namespace our
     void ForwardRenderer::initializePostprocess(std::string filePath)
     {
         // TODO: This may cause error, you need to delte the current postprocess material before creating a new one
-        if(postprocessMaterial)
-            deletePostprocessMatrial();
+        // if(postprocessMaterial)
+        //     deletePostprocessMatrial();
         // TODO: (Req 11) Create a framebuffer
         glGenFramebuffers(1, &postprocessFrameBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
@@ -119,6 +119,7 @@ namespace our
         delete postprocessMaterial->sampler;
         delete postprocessMaterial->shader;
         delete postprocessMaterial;
+        postprocessMaterial = NULL;
     }
 
     void ForwardRenderer::destroy()
