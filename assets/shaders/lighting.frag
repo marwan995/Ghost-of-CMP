@@ -84,7 +84,7 @@ void main(){
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         combination += CalcPointLight(pointLights[i],normalized,viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
     combination += CalcSpotLight(spotLight, normalized, viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
-    frag_color = tint * vec4(1.0);
+    frag_color = tint * vec4(combination,1.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular)
