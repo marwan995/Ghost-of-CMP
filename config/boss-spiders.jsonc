@@ -1,0 +1,132 @@
+{
+    "nodes":[
+        {
+            "scale": [1, 1, 1],
+            "position": [-91.75, -1.3, -17.67],
+            "rotation": [0, 90, 0],
+            "objectType": "spider",
+            "health": 200,
+            "components": [
+                {
+                "type": "Mesh Renderer",
+                "mesh": "spider",
+                "material": "Image_7"
+                },
+                {
+                "type": "Enemy",
+                "enemyType": "melee"
+                },
+                {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "static",
+                "shifted": [0, 0.5, 0],
+                "radius": 1.5
+                },
+                {
+                    "type": "Collider",
+                    "colliderShape": "sphere",
+                    "colliderType": "dynamic",
+                    "shifted": [0, 0.5, 0],
+                    "radius": 6
+                }
+            ]
+          },
+          {
+            "scale": [1, 1, 1],
+            "position": [-91.75, -1.3, -35.17099952697754],
+            "rotation": [0, 90, 0],
+            "objectType": "spider",
+            "health": 200,
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "spider",
+                "material": "Image_7"
+              },
+              {
+                "type": "Enemy",
+                "enemyType": "melee"
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "static",
+                "shifted": [0, 0.5, 0],
+                "radius": 1.5
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "dynamic",
+                "shifted": [0, 0.5, 0],
+                "radius": 6
+              }
+            ]
+          },
+          {
+            "scale": [1, 1, 1],
+            "position": [-114.0, -1.3, -17.67],
+            "rotation": [0, 90, 0],
+            "objectType": "spider",
+            "health": 200,
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "spider",
+                "material": "Image_7"
+              },
+              {
+                "type": "Enemy",
+                "enemyType": "melee"
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "static",
+                "shifted": [0, 0.5, 0],
+                "radius": 1.5
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "dynamic",
+                "shifted": [0, 0.5, 0],
+                "radius": 6
+              }
+            ]
+          },
+          {
+            "scale": [1, 1, 1],
+            "position": [-114.0, -1.3, -35.17099952697754],
+            "rotation": [0, 90, 0],
+            "objectType": "spider",
+            "health": 200,
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "spider",
+                "material": "Image_7"
+              },
+              {
+                "type": "Enemy",
+                "enemyType": "melee"
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "static",
+                "shifted": [0, 0.5, 0],
+                "radius": 1.5
+              },
+              {
+                "type": "Collider",
+                "colliderShape": "sphere",
+                "colliderType": "dynamic",
+                "shifted": [0, 0.5, 0],
+                "radius": 6
+              }
+            ]
+          }
+        ]
+}

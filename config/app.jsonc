@@ -294,7 +294,7 @@
               "enabled": true
             }
           },
-          "tint": [0.8, 0.1, 0.8, 1.0],
+          "tint": [0.8, 0.1, 0.6, 1.0],
           "texture": "boss1_baseColor",
           "sampler": "groundObstaclesSampler",
           "shininess": 6.0
@@ -1070,7 +1070,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "static",
-            "radius": 1
+            "radius": 1.5
           },
           {
             "type": "Collider",

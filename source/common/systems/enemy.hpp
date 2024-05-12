@@ -23,7 +23,7 @@ namespace our
     {
         CameraComponent *camera;
         std::vector<Entity *> *enemiesEntities;
-
+        float previousTime = 0;
     public:
         void enter(World *world)
         {
@@ -102,9 +102,28 @@ namespace our
                         else if (enemy->type ==EnemyType::BOSS2)
                         {
                             enemy->aimAt(camera);
+                            if (enemy->checkRateOfFire())
+                            {
+                                glm::vec3 rotation = enemy->getOwner()->localTransform.rotation;
+                                glm::vec3 position = enemy->getOwner()->localTransform.position;
+                                glm::vec3 direction = -glm::normalize(position - camera->getOwner()->localTransform.position);
+                                float bulletRotation[3] = { glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z)};
+                                float bulletMovementDirections[3] = {direction[0],direction[1],direction[2]};
+                                float bulletPosition[3] = {position.x + direction[0] * 2, position.y + direction[1] * 2, position.z + direction[2] * 2};
+
+                                LaserBullet* laserBullet = new LaserBullet(bulletPosition, bulletRotation,bulletMovementDirections , world, false);
+                                laserBullet->shoot();
+                            }
+
                             float distance =glm::length(enemy->getOwner()->localTransform.position - camera->getOwner()->localTransform.position);
-                            if(distance < 7){
+                            if(distance < 15){
                                 enemy->moveTowardsTarget(camera->getOwner(),deltaTime,deltaTime);
+                                float curTime = glfwGetTime();
+                                if(curTime - previousTime >= 8) // wait 7 seconds before rendering some spiders
+                                { 
+                                    previousTime = curTime;
+                                    addBossSpiders(world);
+                                }
                             }
                         }
                         else if (enemy->type == EnemyType::SHOOTER)
@@ -126,6 +145,56 @@ namespace our
                         }
                     }
                 }
+            }
+        }
+
+        void addBossSpiders(World *world)
+        {
+            // Create a JSON object for the spider entity
+            std::filesystem::path currentPath = std::filesystem::current_path();
+            currentPath.append("config");
+            currentPath.append("boss-spiders.jsonc");
+            std::ifstream inputFile(currentPath);
+            std::vector<nlohmann::json> spidersData;
+            if (inputFile)
+            {
+                nlohmann::json jsonData = nlohmann::json::parse(inputFile, nullptr, true, true);
+                if (jsonData.contains("nodes"))
+                {
+                    auto nodes = jsonData["nodes"];
+                    for(auto &node : nodes) {
+                        spidersData.push_back(node);
+                    }
+                }
+                inputFile.close();
+            }else{
+                std::cerr << "Error opening file: " << strerror(errno) << std::endl;
+            }
+            
+            for(auto &spiderData : spidersData)
+            {
+                Entity *spider = world->add();
+                spider->deserialize(spiderData);
+                auto colliders = spider->getComponents<ColliderComponent>();
+                ColliderComponent *staticCollider;
+                ColliderComponent *dynamicCollider;
+                for(auto collider : colliders)
+                {
+                    if(collider->type == ColliderType::STATIC)
+                    {
+                        staticCollider = collider;
+                    }
+                    else if(collider->type == ColliderType::DYNAMIC)
+                    {
+                        dynamicCollider = collider;
+                    }
+                }
+
+                staticCollider->setEntity(spider);
+                dynamicCollider->setEntity(spider);
+                world->addDynamicEntity(spider);
+                world->staticEntities.push_back(spider);
+                world->enemiesEntities.push_back(spider);
             }
         }
 
