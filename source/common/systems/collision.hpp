@@ -245,6 +245,7 @@ namespace our
                                     {
                                         if ((*it)->name == "boss 2")
                                         {
+                                            
                                             staticEntities->erase(it);
                                             break;
                                         }

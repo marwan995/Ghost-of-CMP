@@ -1,5 +1,5 @@
 {
-  "start-scene": "win",
+  "start-scene": "menu",
   "window": {
     "title": "Ghost of CMP",
     "size": {
@@ -574,7 +574,7 @@
             "type": "Collider",
             "colliderShape": "sphere",
             "colliderType": "dynamic",
-            "radius": 0.3
+            "radius": 0.5
           }
         ],
         "children": [
