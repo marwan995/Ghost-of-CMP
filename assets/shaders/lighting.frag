@@ -61,9 +61,8 @@ uniform Material material;
 
 out vec4 frag_color;
 
-uniform vec4 tint;
 uniform vec3 camPos;
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular,float material_shininess);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDirection,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess);  
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir,vec3 material_ambient, vec3 material_diffuse, vec3 material_specular, float material_shininess);
 
@@ -75,26 +74,26 @@ void main(){
     vec3 material_specular = texture(material.specular, fs_in.tex_coord).rgb;
     vec3 material_ambient = material_diffuse * texture(material.ambientOcclusion, fs_in.tex_coord).r;
 	float material_roughness = texture(material.roughness, fs_in.tex_coord).r;
-    float material_shininess = 2.0 / pow(clamp(material_roughness, 0.001, 0.999), 4.0) - 2.0;
+    float material_shininess = 2.0 / pow(clamp(material_roughness, 0.001, 0.999), 4.0) ;
 
     vec3 viewDirection = normalize(camPos - fs_in.fragPosition);
-    vec3 combination = CalcDirLight(dirLight, normalized, viewDirection, material_ambient, material_diffuse, material_specular);
+    vec3 combination = CalcDirLight(dirLight, normalized, viewDirection, material_ambient, material_diffuse, material_specular,material_shininess);
 
         // do the same for all point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         combination += CalcPointLight(pointLights[i],normalized,viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
     combination += CalcSpotLight(spotLight, normalized, viewDirection, material_ambient, material_diffuse, material_specular, material_shininess);
-    frag_color = tint * vec4(combination,1.0);
+    frag_color =  vec4(0.8, 0.1, 0.25, 1.0)*vec4(combination,1.0);
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 material_ambient, vec3 material_diffuse, vec3 material_specular,float material_shininess)
 {
     vec3 lightDirection = normalize(-light.direction);
     // diffuse shading
     float diff = max(dot(normal, lightDirection), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDirection, normal);
-    float specAmount  = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float specAmount  = pow(max(dot(viewDir, reflectDir), 0.0), material_shininess);
     // combine results
     vec3 ambient  = light.ambient * material_ambient;
     vec3 diffuse = light.diffuse * (diff *  material_diffuse);

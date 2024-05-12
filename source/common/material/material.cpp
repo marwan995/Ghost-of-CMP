@@ -55,6 +55,7 @@ namespace our
         TintedMaterial::setup();
         GLuint textureUnit = 0;
         shader->set("alphaThreshold", alphaThreshold);
+        glActiveTexture(GL_TEXTURE0);
         texture->bind();
         sampler->bind(textureUnit);
         shader->set("material.tex", textureUnit);     

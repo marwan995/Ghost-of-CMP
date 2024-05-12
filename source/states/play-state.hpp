@@ -66,10 +66,11 @@ class Playstate: public our::State {
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+        world.audioPlayer.playLoop("Play Theme.wav");
+
     }
 
     void onDraw(double deltaTime) override {
-        world.audioPlayer.playLoop("Play Theme.wav");
 
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
@@ -115,6 +116,7 @@ class Playstate: public our::State {
     }
 
     void onDestroy() override {
+       
         // Don't forget to destroy the renderer
         renderer.destroy();
         // On exit, we call exit for the camera controller system to make sure that the mouse is unlocked

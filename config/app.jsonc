@@ -55,6 +55,7 @@
         "boss1_emissive": "assets/textures/lambert1_emissive.jpeg",
         "boss1_specular": "assets/textures/lambert1_specularf0.png",
         "boss1_roughness": "assets/textures/lambert1_metallicRoughness.png",
+        "boss1_ambientOcclusion": "assets/textures/lambert1_am.png",
         "rocket": "assets/textures/Rockets.jpg"
       },
       "meshes": {
@@ -284,19 +285,18 @@
               "enabled": true
             }
           },
-          "albedo": "boss1_baseColor",
+          "albedo": "texture1",
           "specular": "boss1_specular",
           "emissive": "boss1_emissive",
           "roughness": "boss1_roughness",
-          "ambientOcclusion": "",
+          "ambientOcclusion": "boss1_ambientOcclusion",
           "samplerAlbedo": "default",
           "samplerSpecular": "default",
           "samplerEmissive": "default",
           "samplerRoughness": "default",
           "samplerAmbientOcclusion": "default",
-          "tint": [0.8, 0.1, 0.8, 1.0]
-          // "sampler": "groundObstaclesSampler",
-          // "shininess": 6.0
+          "sampler": "groundObstaclesSampler",
+          "shininess": 6.0
         },
          "boss1V2": {
           "type": "textured",
@@ -561,7 +561,7 @@
     "world": [
       {
         // "position": [29.1119, 0 ,-28.6506],
-        "position": [0, 0 ,10],
+        "position": [0, 0, 10],
         "health": 500,
         "components": [
           {
@@ -657,11 +657,11 @@
                 "type": "Lighting",
                 "lightType": "SPOT",
                 "ambient": [0.1, 0.1, 0.1],
-                "diffuse": [0.8, 0.8, 0.8],
-                "specular": [1.0, 1.0, 1.0],
+                "diffuse": [0.5, 0.5, 0.5],
+                "specular": [0.5, 0.5, 0.5],
                 "constant": 1.0,
-                "linear": 0.045,
-                "quadratic": 0.0075
+                "linear": 0.014,
+                "quadratic": 0.0007
               }
             ]
           },
@@ -797,8 +797,8 @@
             "diffuse": [0.5, 0.5, 0.5],
             "specular": [0.8, 0.8, 0.8],
             "constant": 1.0,
-            "linear": 0.07,
-            "quadratic": 0.017
+            "linear": 0.09,
+            "quadratic": 0.032
           }
         ]
       },
@@ -1048,7 +1048,7 @@
           {
             "type": "Mesh Renderer",
             "mesh": "boss1",
-            "material": "boss1V2"
+            "material": "boss1"
           },
           {
             "type": "Enemy",
