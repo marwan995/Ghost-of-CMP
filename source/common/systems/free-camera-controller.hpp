@@ -40,6 +40,9 @@ namespace our
         int deltasCounter;
         std::map<std::string, float> weapons_BPS; // map that hold the weapons and their rate of fire
         ForwardRenderer* forwardRenderer;
+        double enterRoomCounter = 0;
+        bool isVignette= true;
+
         // utility to return true if a bullet should be spawned
         bool checkRateOfFire()
         {
@@ -106,6 +109,8 @@ namespace our
             weapons_BPS = {{"laser", 25}};
             activeWeapon = "laser";
             deltasCounter = 0;
+            enterRoomCounter = 0;
+            isVignette= true;
 
             this->app = app;
             app->getMouse().lockMouse(app->getWindow()); // lock the mouse when play state is entered
@@ -300,12 +305,13 @@ namespace our
                 changeWeapon("rocket", entity);
             }
 
-            locationInMap(camera);
+            locationInMap(camera, deltaTime);
 
-            // std::cout<<position.x<<' '<<position.z<<'\n';
         }
-        void locationInMap(CameraComponent *camera)
+        void locationInMap(CameraComponent *camera, float deltaTime)
         {
+            enterRoomCounter += deltaTime;
+
             auto position = camera->getOwner()->localTransform.position;
 
             if ((position[0] > -8.5 && position[0] < 7.5) && (position[2] > 1 && position[1] < 12.45) && app->alpha == 0.5f)
@@ -331,8 +337,8 @@ namespace our
                 app->currentRoam = "RAM ROOM";
                 if (app->currentRoam != app->lastRoam){
                     forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
+                    isVignette = false;
                 }
-
             }
             else if ((position[0] > -64.1 && position[0] < -53.1) && (position[2] > -54.95 && position[2] < -43.43) && app->alpha == 0.5f){
                 app->currentRoam = "DARK SSD";
@@ -347,11 +353,18 @@ namespace our
             else if ((position[0] > -119.664 && position[0] < -86.64) && (position[2] > -42.4393 && position[2] < -11.61) && app->alpha == 0.5f){
                 app->currentRoam = "MOTHER OF BOARDS";
                 if(app->currentRoam !=app->lastRoam)
+                {
                     forwardRenderer->initializePostprocess("assets/shaders/postprocess/film-grain.frag");
+                    isVignette = false;
+                }
 
+            if (!isVignette && deltaTime >= 3)
+            {
+                isVignette = true;
+                forwardRenderer->initializePostprocess("assets/shaders/postprocess/vignette.frag");
             }
 
-            // std::cout<<position[0]<<" "<<position[1]<<" "<<position[2]<<"\n";
+            }
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked
