@@ -288,7 +288,7 @@ int our::Application::run(int run_for_frames)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        if (currentState == states["play"] && alpha > 0&&lastRoam!=currentRoam)
+        if (currentState == states["play"] && alpha > 0 && lastRoam != currentRoam)
         {
             // Calculate fading alpha value based on time or other conditions
             alpha -= (.25 * (current_frame_time - last_frame_time));
@@ -305,22 +305,21 @@ int our::Application::run(int run_for_frames)
             ImGui::SetNextWindowPos(imagePos);
             ImGui::SetNextWindowSize(imageSize);
             ImGui::Begin("ImageWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
-        
-            std::filesystem::path roomPath = std::filesystem::current_path().append("x").append("source").append(currentRoam+".png").string();
+
+            std::filesystem::path roomPath = std::filesystem::current_path().append("assets").append("textures").append(currentRoam + ".png").string();
             // Display image
-            ImGui::Image((ImTextureID)our::texture_utils::loadImage(roomPath.string(), true)->getOpenGLName(),
-            imageSize,ImVec2(0, 0), ImVec2(1, 1),imageColor);
+            ImGui::Image(reinterpret_cast<ImTextureID>(our::texture_utils::loadImage(roomPath.string(), true)->getOpenGLName()), imageSize, ImVec2(0, 0), ImVec2(1, 1), imageColor);
 
             // End ImGui window
             ImGui::End();
-            if(alpha<=0){
+            if (alpha <= 0)
+            {
                 lastRoam = currentRoam;
-                alpha=0.5f;
+                alpha = 0.5f;
             }
         }
         if (currentState)
             currentState->onImmediateGui(); // Call to run any required Immediate GUI.
-        //! look here MARWAAANNNN
         // If ImGui is using the mouse or keyboard, then we don't want the captured events to affect our keyboard and mouse objects.
         // For example, if you're focusing on an input and writing "W", the keyboard object shouldn't record this event.
         // keyboard.setEnabled(!io.WantCaptureKeyboard, window);

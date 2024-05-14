@@ -16,7 +16,7 @@ void our::Audio::play(std::string audio_file){
     std::thread audioThread([this, audio_file]() {
     
         // Get the full path of the audio file
-        std::filesystem::path audioPath = std::filesystem::current_path().append("source").append("audio").append(audio_file).string();
+        std::filesystem::path audioPath = std::filesystem::current_path().append("assets").append("audio").append(audio_file).string();
         std::string audioName = audioPath.string();
         // Play the audio file
         ma_engine_play_sound(&engine, audioName.c_str(), NULL);
