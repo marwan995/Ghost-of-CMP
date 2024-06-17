@@ -12,7 +12,6 @@
 
 <div align="center">
 
-[![GitHub contributors](https://img.shields.io/github/contributors/marwan995/Ghost-of-CMP)](https://github.com/marwan995/Ghost-of-CMP/contributors)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub forks](https://img.shields.io/github/forks/marwan995/Ghost-of-CMP)](https://github.com/marwan995/Ghost-of-CMP/network)
 [![GitHub stars](https://img.shields.io/github/stars/marwan995/Ghost-of-CMP)](https://github.com/marwan995/Ghost-of-CMP/stargazers)
