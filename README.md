@@ -26,6 +26,7 @@
 
 - [📑 About](#about)
 - [📖 Story](#story)
+- [🎥 Trailer](#trailer)
 - [⛏️ Built With](#built-with)
 - [🎮 Gameplay](#gameplay)
 - [🏁 Getting started](#getting-started)
@@ -47,6 +48,9 @@
 - Armed with his trusty weapons, he navigates through a labyrinth of circuits and battles against vicious viruses and rogue components.
 
 - Step into the shoes of Atef while he tries to free his precious PC from the clutches of the killer virus infecting it and get out of the digital realm back to being a normal human being working on his college projects.
+
+## 🎥 Trailer<a name = "trailer"></a>
+[Trailer on YouTube](https://www.youtube.com/watch?v=qEoj2z_DWy4&ab_channel=MarwanSamy)
 
 ## ⛏️ Built with <a name = "built-with"></a>
 
