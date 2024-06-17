@@ -13,12 +13,11 @@
 <div align="center">
 
 [![GitHub contributors](https://img.shields.io/github/contributors/Qwitter/Qwitter-Frontend)](https://github.com/Qwitter/Qwitter-Frontend/contributors)
-[![GitHub issues](https://img.shields.io/github/issues/Qwitter/Qwitter-Frontend)](https://github.com/Qwitter/Qwitter-Frontend/issues)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub forks](https://img.shields.io/github/forks/Qwitter/Qwitter-Frontend)](https://github.com/Qwitter/Qwitter-Frontend/network)
-[![GitHub stars](https://img.shields.io/github/stars/Qwitter/Qwitter-Frontend)](https://github.com/Qwitter/Qwitter-Frontend/stargazers)
-[![GitHub Language](https://img.shields.io/github/languages/top/Qwitter/Qwitter-Frontend)](https://img.shields.io/github/languages/Qwitter/Qwitter-Frontend)
-![GitHub repo size](https://img.shields.io/github/repo-size/Qwitter/Qwitter-Frontend?style=plastic)
+[![GitHub forks](https://img.shields.io/github/forks/marwan995/Ghost-of-CMP)](https://github.com/marwan995/Ghost-of-CMP/network)
+[![GitHub stars](https://img.shields.io/github/stars/marwan995/Ghost-of-CMP)](https://github.com/marwan995/Ghost-of-CMP/stargazers)
+[![GitHub Language](https://img.shields.io/github/languages/top/marwan995/Ghost-of-CMP)](https://img.shields.io/github/languages/marwan995/Ghost-of-CMP)
+![GitHub repo size](https://img.shields.io/github/repo-size/marwan995/Ghost-of-CMP?style=plastic)
 </div>
 
 <details open="open">
